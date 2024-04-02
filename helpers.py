@@ -1,6 +1,7 @@
 from geomeppy import IDF
 import sys
 import os
+from icecream import ic
 
 ENERGY_PLUS_LOCATION = "../../../../../Applications/EnergyPlus-22-2-0"
 IDD_FILE = f"{ENERGY_PLUS_LOCATION}/Energy+.idd"
@@ -37,6 +38,9 @@ class EneryPlusCase:
     def save_idf(self):
         # TODO what if there are multiple saves (and runs..)
         self.idf.save(filename=os.path.join(self.path, "out.idf"))
+
+    def create_obj(self):
+        self.idf.to_obj(fname=os.path.join(self.path, "out.obj"))
 
     def run_idf(self):
         self.idf.run(output_directory=os.path.join(self.path, "results"))
