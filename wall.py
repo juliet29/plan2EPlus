@@ -10,13 +10,13 @@ class Wall:
         self.line:sp.LineString = None
         self.boundary_condition = None
 
-        self.get_wall_geometry()
+        self.get_geometry()
 
 
     def __repr__(self):
         return f"Wall({self.name})"    
 
-    def get_wall_geometry(self,):
+    def get_geometry(self,):
         z_coords = fnmatch.filter(self.data.fieldnames, "Vertex_[0-4]_Zcoordinate")
 
         # Define the regex pattern to match digits
