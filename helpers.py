@@ -32,7 +32,7 @@ def get_plotly_colors(n_colors=10, color_scheme="turbo"):
     return colors, iter(colors)
 
 
-def plot_line_string(line: sp.LineString, color="yellow", label=None, width=1):
+def plot_line_string(line: sp.LineString, color="yellow", label=None, width=5):
     x, y = get_plottable_coords(line.coords)
     trace = go.Scatter(
         x=x,
@@ -58,5 +58,19 @@ def plot_polygon(polygon: sp.Polygon, color="blue", label=None):
         
     )
     return trace
+
+
+##MARK: text editing 
+def get_last_word(string):
+  
+    # split by space and converting 
+    # string to list and
+    lis = list(string.split(" "))
+    
+    # length of list
+    length = len(lis)
+    
+    # returning last element in list
+    return lis[length-1]
 
 

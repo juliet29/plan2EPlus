@@ -10,11 +10,19 @@ class Wall:
         self.line:sp.LineString = None
         self.boundary_condition = None
 
-        self.get_geometry()
+        self.run()
 
 
     def __repr__(self):
-        return f"Wall({self.name})"    
+        return f"Wall({self.name})"  
+
+    def run(self):
+        self.get_wall_number()
+        self.get_geometry()
+
+    def get_wall_number(self):
+        self.number = get_last_word(self.name)
+
 
     def get_geometry(self,):
         z_coords = fnmatch.filter(self.data.fieldnames, "Vertex_[0-4]_Zcoordinate")

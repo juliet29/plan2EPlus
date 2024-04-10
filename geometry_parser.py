@@ -39,6 +39,6 @@ class GeometryParser:
             self.traces.append(trace)
 
             for wall in zone.walls:
-                trace = plot_line_string(wall.line, color=color)
+                trace = plot_line_string(wall.line, color=color, label=f"Wall {wall.number}")
                 self.traces.append(trace)
 
