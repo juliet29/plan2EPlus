@@ -26,7 +26,18 @@ class EneryPlusCase:
         self.idf.save(filename=os.path.join(self.path, "out.idf"))
 
     def create_obj(self):
+        # this is for 3d objects! 
         self.idf.to_obj(fname=os.path.join(self.path, "out.obj"))
 
-    def run_idf(self):
-        self.idf.run(output_directory=os.path.join(self.path, "results"))
+    # TODO add materials, intersect and match surfaces.. 
+
+    def prepare_to_run(self):
+        self.idf.intersect_match()
+        self.idf.set_default_constructions()
+        # self.save_idf()
+
+    def run_idf(self, run_local=False):
+        if not run_local:
+            self.idf.run(output_directory=os.path.join(self.path, "results"))
+        else:
+            self.idf.run(idf=os.path.join(self.path, "out.idf"), output_directory=os.path.join(self.path, "results"))

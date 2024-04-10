@@ -19,12 +19,10 @@ class Zone:
     
 
     def get_walls(self,  expected_walls=4):
-        # walls are differentiated from floors / cielings because they have 2 different z values within their coordinates.
-
         self.walls = [Wall(surface) for surface in self.all_surfaces if surface.Zone_Name == self.name and surface.Surface_Type == "wall"]
 
         assert len(self.walls) == expected_walls, "Added walls != expected walls"
-        
+
 
     def create_geometry(self):
         wall_lines = [self.walls[i].line for i in range(4)]
