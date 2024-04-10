@@ -32,7 +32,7 @@ def get_plotly_colors(n_colors=10, color_scheme="turbo"):
     return colors, iter(colors)
 
 
-def plot_line_string(line: sp.LineString, color="yellow", label=None, width=5):
+def plot_line_string(line: sp.LineString, color="yellow", label=None, width=3):
     x, y = get_plottable_coords(line.coords)
     trace = go.Scatter(
         x=x,
