@@ -1,5 +1,5 @@
-from helpers import *
-from zone import *
+from geometry.zone import Zone
+
 
 
 class GeometryParser:

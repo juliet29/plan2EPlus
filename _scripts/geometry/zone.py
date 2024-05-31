@@ -1,5 +1,6 @@
-from helpers import *
-from wall import *
+from geometry.wall import Wall
+from geomeppy.patches import EpBunch
+import shapely as sp
 
 class Zone:
     def __init__(self, idf_data:EpBunch, all_surfaces) -> None:

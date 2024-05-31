@@ -1,4 +1,8 @@
-from helpers import *
+from geomeppy.patches import EpBunch
+from helpers.helpers import get_last_word
+import fnmatch
+import re
+import shapely as sp
 
 class Wall:
     def __init__(self, idf_data:EpBunch) -> None:

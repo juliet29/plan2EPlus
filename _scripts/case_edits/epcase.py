@@ -1,6 +1,8 @@
-from helpers import *
+import os 
+from geomeppy import IDF
 
 
+# TODO move to another file 
 ENERGY_PLUS_LOCATION = "../../../../../Applications/EnergyPlus-22-2-0"
 IDD_FILE = f"{ENERGY_PLUS_LOCATION}/Energy+.idd"
 IDF_FILE = f"base_idfs/Minimal.idf" # based on EP Examples/Minimal.idf

@@ -1,18 +1,6 @@
-import sys
-import os
-import fnmatch
-import re
-
-from icecream import ic
-
-from geomeppy import IDF
-from geomeppy.patches import EpBunch
-
-
 import shapely as sp
 import plotly.graph_objects as go
 import plotly.express as px
-
 
 def get_plottable_coords(coords: sp.coords.CoordinateSequence):
     x = [c[0] for c in coords]
@@ -58,19 +46,3 @@ def plot_polygon(polygon: sp.Polygon, color="blue", label=None):
         
     )
     return trace
-
-
-##MARK: text editing 
-def get_last_word(string):
-  
-    # split by space and converting 
-    # string to list and
-    lis = list(string.split(" "))
-    
-    # length of list
-    length = len(lis)
-    
-    # returning last element in list
-    return lis[length-1]
-
-
