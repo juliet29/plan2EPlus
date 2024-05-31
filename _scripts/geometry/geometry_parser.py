@@ -1,4 +1,7 @@
+import plotly.graph_objects as go
+
 from geometry.zone import Zone
+from helpers.plots import get_plotly_colors, plot_polygon, plot_line_string
 
 
 
