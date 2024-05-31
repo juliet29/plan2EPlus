@@ -1,8 +1,11 @@
 from ladybug.sql import SQLiteResult
 
+from helpers.helpers import min_max_norm
+from helpers.plots import get_norm_plotly_colors
 
 from outputs.output_names import OutputVariables
 from outputs.output_data import OutputData
+
 
 class SQLReader:
     def __init__(self, SQL_PATH) -> None:
@@ -31,10 +34,23 @@ class SQLReader:
             self.spatial_data[time_ix] = []
             for ix, val in enumerate(self.data.values()):
                 value = round(val.values[time_ix],3)
-                self.spatial_data[time_ix].append((val.name, value))
+                self.spatial_data[time_ix].append([val.name, value])
                 self.spatial_values.append(value)
                 if ix == 0:
                     self.spatial_times.append(val.times[time_ix])
+
+    def prepare_spatial_colors(self):
+        min_val = min(self.spatial_values)
+        max_val = max(self.spatial_values)
+        for time in self.spatial_data.values():
+            for zone in time:
+                #TODO turn into class?
+                norm_val = min_max_norm(zone[1], min_val, max_val)
+                color = get_norm_plotly_colors(norm_val, min_val, max_val)[0]
+                zone.append(color)
+
+        
+
 
             
 

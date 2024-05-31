@@ -8,6 +8,7 @@ class Zone:
         self.name = idf_data.Name
         self.walls:list[Wall] = [] 
         self.all_surfaces = all_surfaces
+        # self.output_data = {}
         
         self.run()
 

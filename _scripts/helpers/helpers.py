@@ -1,14 +1,9 @@
-# from icecream import ic
-
-# from geomeppy import IDF
-# from geomeppy.patches import EpBunch
+def min_max_norm(val, min, max):
+    return (val - min)/(max - min)
 
 
 
-
-##MARK: text editing 
 def get_last_word(string):
-  
     # split by space and converting 
     # string to list and
     lis = list(string.split(" "))

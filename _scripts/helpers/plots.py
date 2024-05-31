@@ -19,6 +19,10 @@ def get_plotly_colors(n_colors=10, color_scheme="turbo"):
 
     return colors, iter(colors)
 
+def get_norm_plotly_colors(sample_pts, min, max, color_scheme="turbo"):
+    return px.colors.sample_colorscale(colorscale=color_scheme, samplepoints=sample_pts, low=min, high=max)
+
+
 
 def plot_line_string(line: sp.LineString, color="yellow", label=None, width=3):
     x, y = get_plottable_coords(line.coords)

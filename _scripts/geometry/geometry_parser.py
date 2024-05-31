@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+from geomeppy import IDF
 
 from geometry.zone import Zone
 from helpers.plots import get_plotly_colors, plot_polygon, plot_line_string
@@ -6,7 +7,7 @@ from helpers.plots import get_plotly_colors, plot_polygon, plot_line_string
 
 
 class GeometryParser:
-    def __init__(self, idf) -> None:
+    def __init__(self, idf:IDF) -> None:
         self.idf = idf
 
 
@@ -44,4 +45,6 @@ class GeometryParser:
             for wall in zone.walls:
                 trace = plot_line_string(wall.line, color=color, label=f"Wall {wall.number}")
                 self.traces.append(trace)
+
+
 
