@@ -2,13 +2,15 @@ from geometry.wall import Wall
 from geomeppy.patches import EpBunch
 import shapely as sp
 
+from outputs.output_data import GeometryOutputData
+
 class Zone:
     def __init__(self, idf_data:EpBunch, all_surfaces) -> None:
         self.data = idf_data
         self.name = idf_data.Name
         self.walls:list[Wall] = [] 
         self.all_surfaces = all_surfaces
-        # self.output_data = {}
+        self.output_data = {}
         
         self.run()
 
@@ -31,3 +33,7 @@ class Zone:
         self.polygon = sp.get_geometry(sp.polygonize(wall_lines),0)
 
         assert type(self.polygon) == sp.Polygon, "When creating zone geometry, zone was not polygonal "
+
+
+    def update_output_data(self, data:GeometryOutputData):
+        self.output_data[data.short_name] = data

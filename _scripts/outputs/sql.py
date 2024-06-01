@@ -1,19 +1,61 @@
+import os
 from ladybug.sql import SQLiteResult
+from ladybug.analysisperiod import AnalysisPeriod
 
 from helpers.helpers import min_max_norm
 from helpers.plots import get_norm_plotly_colors
 
+from case_edits.epcase import EneryPlusCaseReader
+from geometry.geometry_parser import GeometryParser
+
 from outputs.output_names import OutputVariables
-from outputs.output_data import OutputData
+from outputs.output_data import OutputData, GeometryOutputData
+
+
+def create_analysis_period(ap_dict):
+    ap_dict.pop("type")
+    ap = AnalysisPeriod(**ap_dict)
+    ap_name = f"{ap.st_month}-{ap.st_day}"
+    return ap, ap_name
 
 
 class SQLReader:
-    def __init__(self, SQL_PATH) -> None:
-        self.sqld = SQLiteResult(SQL_PATH)
+    def __init__(self, CASE_NAME) -> None:
+        self.case_name = CASE_NAME
+        self.get_sql_outputs()
+        self.get_geometry()
+
+
         self.data = {}
 
+    def get_sql_outputs(self, ):
+        SQL_PATH = os.path.join("cases", self.case_name, "results","eplusout.sql" )
+        self.sqld = SQLiteResult(SQL_PATH)
 
-    def get_zone_data(self, index):
+
+    def get_geometry(self):
+        e = EneryPlusCaseReader(self.case_name)
+        geo = GeometryParser(e.idf)
+        geo.get_zones()
+        self.zone_dict =  {i.name.upper(): i  for i in geo.zones}
+        
+    def match_geom_sql(self, output_var=OutputVariables.zone_mean_air_temp):
+        self.collection = self.sqld.data_collections_by_output_name(output_var.value)
+
+        for dataset in self.collection:
+            zone_name = dataset.header.to_dict()["metadata"]["Zone"] 
+            ap, ap_name = create_analysis_period(dataset.header.to_dict()["analysis_period"])
+            dataset_name = f"{output_var.name}{ap_name}"
+            out_data = GeometryOutputData(dataset, ap, dataset_name)
+            
+            self.zone_dict[zone_name].update_output_data(out_data)
+
+
+
+
+
+
+    def get_zone_level_data(self, index):
         # TODO assert that this data is at the zone level 
         self.collection = self.sqld.data_collections_by_output_name(OutputVariables.zone_mean_air_temp.value)
 
