@@ -2,38 +2,50 @@ from geometry.wall import Wall
 from geomeppy.patches import EpBunch
 import shapely as sp
 
-from outputs.output_data import GeometryOutputData
+from outputs.output_data import GeometryOutputData, TimeExtractData
+
 
 class Zone:
-    def __init__(self, idf_data:EpBunch, all_surfaces) -> None:
+    def __init__(self, idf_data: EpBunch, all_surfaces) -> None:
         self.data = idf_data
         self.name = idf_data.Name
-        self.walls:list[Wall] = [] 
+        self.walls: list[Wall] = []
         self.all_surfaces = all_surfaces
         self.output_data = {}
-        
+        self.extracted_data = {}
+
         self.run()
 
     def __repr__(self):
         return f"Zone({self.name})"
-    
+
     def run(self):
         self.get_walls()
         self.create_geometry()
-    
 
-    def get_walls(self,  expected_walls=4):
-        self.walls = [Wall(surface) for surface in self.all_surfaces if surface.Zone_Name == self.name and surface.Surface_Type == "wall"]
+    def get_walls(self, expected_walls=4):
+        self.walls = [
+            Wall(surface)
+            for surface in self.all_surfaces
+            if surface.Zone_Name == self.name and surface.Surface_Type == "wall"
+        ]
 
         assert len(self.walls) == expected_walls, "Added walls != expected walls"
 
-
     def create_geometry(self):
         wall_lines = [self.walls[i].line for i in range(4)]
-        self.polygon = sp.get_geometry(sp.polygonize(wall_lines),0)
+        self.polygon = sp.get_geometry(sp.polygonize(wall_lines), 0)
 
-        assert type(self.polygon) == sp.Polygon, "When creating zone geometry, zone was not polygonal "
+        assert (
+            type(self.polygon) == sp.Polygon
+        ), "When creating zone geometry, zone was not polygonal "
 
-
-    def update_output_data(self, data:GeometryOutputData):
+    def create_output_data(self, data: GeometryOutputData):
         self.output_data[data.short_name] = data
+
+    def create_extracted_data(self, dataset_name, data: TimeExtractData):
+        self.extracted_data[dataset_name] = data
+
+
+    def color_extracted_data(self, dataset_name, color):
+        self.extracted_data[dataset_name].update_color(color)

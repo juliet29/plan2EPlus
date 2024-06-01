@@ -26,3 +26,11 @@ class GeometryOutputData:
 
     def __repr__(self):
         return f"OutputData({self.short_name})"  
+    
+
+class TimeExtractData:
+    def __init__(self, value) -> None:
+        self.value = value
+
+    def update_color(self, color):
+        self.color = color
