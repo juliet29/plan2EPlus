@@ -1,6 +1,7 @@
 import shapely as sp
 import plotly.graph_objects as go
 import plotly.express as px
+import numpy as np
 
 def get_plottable_coords(coords: sp.coords.CoordinateSequence):
     x = [c[0] for c in coords]
@@ -49,4 +50,21 @@ def plot_polygon(polygon: sp.Polygon, color="blue", label=None):
         name=label,
         
     )
+    return trace
+
+
+def create_colorbar(min, max, color_scheme="turbo", ):
+    trace = go.Scatter(x=[None],
+                        y=[None],
+                        mode='markers',
+                        marker=dict(
+                            colorscale=color_scheme, 
+                            showscale=True,
+                            cmin=min,
+                            cmax=max,
+                            colorbar=dict(thickness=5, tickvals=np.arange(min, max, 0.05), ticktext=[round(min, 3), round(max,3)], outlinewidth=0)
+                        ),
+                        # hoverinfo='none'
+                    )
+    
     return trace

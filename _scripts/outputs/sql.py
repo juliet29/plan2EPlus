@@ -3,7 +3,7 @@ from ladybug.sql import SQLiteResult
 from ladybug.analysisperiod import AnalysisPeriod
 
 from helpers.helpers import min_max_norm
-from helpers.plots import get_norm_plotly_colors
+from helpers.plots import get_norm_plotly_colors, create_colorbar
 
 from case_edits.epcase import EneryPlusCaseReader
 from geometry.geometry_parser import GeometryParser
@@ -53,6 +53,7 @@ class SQLReader:
             if dataset_name not in self.dataset_names:
                 self.dataset_names.append(dataset_name)
 
+    # to own function if want to think about different times.. 
 
     def extract_time_data(self, time_index, dataset_name):
         self.spatial_values = []
@@ -71,6 +72,13 @@ class SQLReader:
             norm_val = min_max_norm(val, min_val, max_val)
             color = get_norm_plotly_colors(norm_val, min_val, max_val)[0]
             zone.color_extracted_data(dataset_name, color)
+
+        self.colorbar_trace = create_colorbar(min_val, max_val)
+
+    # def prepare_colorbar(self):
+    #     pass
+
+
 
 
 
