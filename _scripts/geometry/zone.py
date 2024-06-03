@@ -49,5 +49,5 @@ class Zone:
         self.extracted_data[dataset_name].append(data)
 
 
-    def color_extracted_data(self, dataset_name, color):
-        self.extracted_data[dataset_name].update_color(color)
+    def color_extracted_data(self, dataset_name, ix, color):
+        self.extracted_data[dataset_name][ix].update_color(color)

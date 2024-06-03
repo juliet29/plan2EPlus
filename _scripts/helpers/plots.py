@@ -84,6 +84,7 @@ def plot_rectangle_shape(polygon: sp.Polygon, color="blue", label=None):
     return d 
 
 def create_colorbar(min, max, color_scheme="turbo", ):
+    # TODO make ticks dynamic.. 
     trace = go.Scatter(
         # hoverinfo='none'
         x=[None],
@@ -94,6 +95,6 @@ def create_colorbar(min, max, color_scheme="turbo", ):
             showscale=True,
             cmin=min,
             cmax=max,
-            colorbar=dict(thickness=5, tickvals=np.arange(min, max, 0.05), ticktext=[round(min, 3), round(max,3)], outlinewidth=0)
+            colorbar=dict(thickness=5, tickvals=np.linspace(min, max, 5), ticktext=[round(min, 3), round(max,3)], outlinewidth=0)
         ))
     return trace

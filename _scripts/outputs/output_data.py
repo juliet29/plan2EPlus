@@ -11,7 +11,7 @@ class OutputData:
     def __repr__(self):
         return f"OutputData({self.name})"  
     
-
+# TODO rename as objects.. 
 
 class GeometryOutputData:
     def __init__(self, dataset, analysis_period, short_name) -> None:

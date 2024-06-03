@@ -1,24 +1,34 @@
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+
 from outputs.sql import SQLReader
 from outputs.output_data import TimeExtractData
-# from datetime import time
 
 from helpers.helpers import min_max_norm
-from helpers.plots import get_norm_plotly_colors, create_colorbar
+from helpers.plots import get_norm_plotly_colors, create_colorbar, plot_polygon, plot_line_string, plot_rectangle_shape
 
 class SpaceTimePlot(SQLReader):
-    def __init__(self, CASE_NAME) -> None:
+    def __init__(self, CASE_NAME, ) -> None:
         super().__init__(CASE_NAME)
+        
+        self.spatial_values = []
 
 
     def extract_many_times(self, times, dataset_name):
-        # TODO should be init vars..
         self.dataset_name = dataset_name
         self.candidate_times = times
+        # TODO should be init vars..
+        
         self.get_dataset_datetimes()
         self.get_time_indices()
          
         for ix in self.time_indices:
             self.extract_time_data(ix)
+
+    def get_dataset_datetimes(self):
+        dataset = self.zone_list[0].output_data[self.dataset_name].dataset
+        self.datetimes = dataset.datetimes
+        self.timestep = dataset.timestep_text
 
     def get_time_indices(self):
         self.time_indices = []
@@ -34,28 +44,63 @@ class SpaceTimePlot(SQLReader):
 
 
     def extract_time_data(self, time_index):
-        self.spatial_values = []
-        for zone in self.zone_dict.values():
-            value = zone.output_data[self.dataset_name].dataset.values[time_index]
+        for zone in self.zone_list:
+            value = round(zone.output_data[self.dataset_name].dataset.values[time_index],3)
             self.spatial_values.append(value)
 
             data = TimeExtractData(value, time_index)
             zone.create_extracted_data(self.dataset_name, data)
             
 
-    def prepare_spatial_colors(self, dataset_name):
+    def create_spatial_plots(self):
+        self.prepare_spatial_colors()
+        self.prepare_spatial_plots()
+
+        titles = [i.strftime("%H:%M") for i in self.candidate_times]
+
+        self.fig = make_subplots(rows=len(self.candidate_times), cols=1, subplot_titles=titles)
+
+        for k,v in self.dictionaries.items():
+            for trace_dict in v:
+                self.fig.add_shape(**trace_dict, row=k+1, col=1)
+
+        for k,v  in self.traces.items():
+            for trace in v:
+                self.fig.add_trace(trace, row=k+1, col=1)
+
+        self.fig['layout']['showlegend'] = False
+        self.fig.add_trace(self.colorbar_trace)
+        self.fig.update_layout(title_text=self.dataset_name)
+
+        self.fig.show()
+
+    def prepare_spatial_colors(self):
         min_val = min(self.spatial_values)
         max_val = max(self.spatial_values)
-        for zone in self.zone_dict.values():
-            val = zone.extracted_data[dataset_name].value
-            norm_val = min_max_norm(val, min_val, max_val)
-            color = get_norm_plotly_colors(norm_val, min_val, max_val)[0]
-            zone.color_extracted_data(dataset_name, color)
+        for zone in self.zone_list:
+            time_datas = zone.extracted_data[self.dataset_name]
+            for ix, data in enumerate(time_datas):
+                val = data.value
+                norm_val = min_max_norm(val, min_val, max_val)
+                color = get_norm_plotly_colors(norm_val, min_val, max_val)[0]
+                zone.color_extracted_data(self.dataset_name, ix, color)
 
         self.colorbar_trace = create_colorbar(min_val, max_val)
 
 
-    def get_dataset_datetimes(self):
-        dataset = self.zone_list[0].output_data[self.dataset_name].dataset
-        self.datetimes = dataset.datetimes
-        self.timestep = dataset.timestep_text
+    def prepare_spatial_plots(self):
+        self.dictionaries = {}
+        self.traces = {}
+
+        for ix, time in enumerate(self.candidate_times):
+            self.dictionaries[ix] = []
+            self.traces[ix] = []
+            for zone in self.zone_list:
+                data = zone.extracted_data[self.dataset_name][ix]
+                trace_dict = plot_rectangle_shape(zone.polygon, color=data.color, label=f"{zone.name}: {data.value}ºC")
+                self.dictionaries[ix].append(trace_dict)
+
+                for wall in zone.walls:
+                    trace = plot_line_string(wall.line, color="black", label=f"Wall {wall.number}")
+                    self.traces[ix].append(trace)
+
