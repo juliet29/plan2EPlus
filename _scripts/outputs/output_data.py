@@ -29,8 +29,12 @@ class GeometryOutputData:
     
 
 class TimeExtractData:
-    def __init__(self, value) -> None:
+    def __init__(self, value, index) -> None:
         self.value = value
+        self.index = index 
+
+    def __repr__(self):
+        return f"TimeExtractData({self.index})"  
 
     def update_color(self, color):
         self.color = color

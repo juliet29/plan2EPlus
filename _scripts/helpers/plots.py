@@ -8,6 +8,23 @@ def get_plottable_coords(coords: sp.coords.CoordinateSequence):
     y = [c[1] for c in coords]
     return x, y
 
+class RectFromCoords:
+    # ref: https://plotly.com/python/reference/layout/shapes/#layout-shapes-items-shape-x0
+    def __init__(self, coords: sp.coords.CoordinateSequence) -> None:
+        xs = [i[0]for i in coords]
+        ys = [i[1]for i in coords]
+        # self.x0 = min(xs)
+        # self.x1 = max(xs)
+        # self.y0 = min(ys)
+        # self.y1 = max(ys)
+        self.x0 = coords[0][0]
+        self.x1 = coords[2][0]
+        self.y0 = coords[0][1]
+        self.y1 = coords[1][1]
+
+    def __repr__(self):
+        return f"Rect(({self.x0}, {self.y0}), ({self.x1}, {self.y1}))"
+
 def get_plotly_colors(n_colors=10, color_scheme="turbo"):
     """
     rainbow like: turbo, jet
@@ -53,18 +70,30 @@ def plot_polygon(polygon: sp.Polygon, color="blue", label=None):
     return trace
 
 
+def plot_rectangle_shape(polygon: sp.Polygon, color="blue", label=None):
+    r = RectFromCoords(polygon.exterior.coords)
+    d = dict(type="rect",
+    xref="x", yref="y",
+    fillcolor=color,
+    x0=r.x0,
+    y0=r.y0,
+    x1=r.x1,
+    y1=r.y1,
+    label=dict(text=label))
+
+    return d 
+
 def create_colorbar(min, max, color_scheme="turbo", ):
-    trace = go.Scatter(x=[None],
-                        y=[None],
-                        mode='markers',
-                        marker=dict(
-                            colorscale=color_scheme, 
-                            showscale=True,
-                            cmin=min,
-                            cmax=max,
-                            colorbar=dict(thickness=5, tickvals=np.arange(min, max, 0.05), ticktext=[round(min, 3), round(max,3)], outlinewidth=0)
-                        ),
-                        # hoverinfo='none'
-                    )
-    
+    trace = go.Scatter(
+        # hoverinfo='none'
+        x=[None],
+        y=[None],
+        mode='markers',
+        marker=dict(
+            colorscale=color_scheme, 
+            showscale=True,
+            cmin=min,
+            cmax=max,
+            colorbar=dict(thickness=5, tickvals=np.arange(min, max, 0.05), ticktext=[round(min, 3), round(max,3)], outlinewidth=0)
+        ))
     return trace

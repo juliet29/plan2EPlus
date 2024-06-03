@@ -44,7 +44,9 @@ class Zone:
         self.output_data[data.short_name] = data
 
     def create_extracted_data(self, dataset_name, data: TimeExtractData):
-        self.extracted_data[dataset_name] = data
+        if dataset_name not in self.extracted_data.keys():
+            self.extracted_data[dataset_name] = []
+        self.extracted_data[dataset_name].append(data)
 
 
     def color_extracted_data(self, dataset_name, color):
