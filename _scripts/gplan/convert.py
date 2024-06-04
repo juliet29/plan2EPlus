@@ -7,8 +7,8 @@ class GPLANRoom:
         self.name = f"0{index}"
         self.room_height = room_height
 
-        self.xo = block["left"]
-        self.yo = block["top"]
+        self.left_x = block["left"]
+        self.top_y = block["top"]
         self.width = block["width"]
         self.height = block["height"]
 
@@ -21,14 +21,14 @@ class GPLANRoom:
         
 
     def create_pos(self):
-        self.bottom_y = self.yo - self.height
-        self.right_x = self.xo + self.width
+        self.toptop_y = self.top_y + self.height
+        self.right_x = self.left_x + self.width
 
-        self.top_left = (self.xo, self.yo)
-        self.top_right = (self.right_x, self.yo)
+        self.top_left = (self.left_x, self.top_y)
+        self.top_right = (self.right_x, self.top_y)
 
-        self.bottom_left = (self.xo, self.bottom_y)
-        self.bottom_right = (self.right_x, self.bottom_y)
+        self.bottom_left = (self.left_x, self.toptop_y)
+        self.bottom_right = (self.right_x, self.toptop_y)
 
     def create_coords(self):
         # positions in geomeppy block are arranged counter clockwise starting from the bottom right corner
