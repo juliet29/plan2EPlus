@@ -31,8 +31,8 @@ class SQLReader:
 
 
     def _get_geometry(self):
-        e = EneryPlusCaseReader(self.case_name)
-        geo = GeometryParser(e.idf)
+        self.epcase = EneryPlusCaseReader(self.case_name)
+        geo = GeometryParser(self.epcase.idf)
         geo.get_zones()
         self.zone_dict =  {i.name.upper(): i  for i in geo.zones}
         self.zone_list = geo.zones

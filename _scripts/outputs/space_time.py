@@ -1,5 +1,5 @@
 from plotly.subplots import make_subplots
-import plotly.graph_objects as go
+
 
 from outputs.sql import SQLReader
 from outputs.output_data import TimeExtractData
@@ -8,16 +8,16 @@ from helpers.helpers import min_max_norm
 from helpers.plots import get_norm_plotly_colors, create_colorbar, plot_polygon, plot_line_string, plot_rectangle_shape
 
 class SpaceTimePlot(SQLReader):
-    def __init__(self, CASE_NAME, ) -> None:
+    def __init__(self, CASE_NAME) -> None:
         super().__init__(CASE_NAME)
         
         self.spatial_values = []
 
 
     def extract_many_times(self, times, dataset_name):
+        # TODO should be init vars.. but dataset names are not known before initializing.. 
         self.dataset_name = dataset_name
         self.candidate_times = times
-        # TODO should be init vars..
         
         self.get_dataset_datetimes()
         self.get_time_indices()
