@@ -5,8 +5,12 @@ class OutputVariables(str, Enum):
     zone_mean_air_temp = 'Zone Mean Air Temperature'
 
     # site 
-    site_db_temp = "Site Outdoor Air Drybulb Temperature"
-    site_wb_temp = "Site Outdoor Air Wetbulb Temperature"
-    direct_solar_rad_rate = "Site Direct Solar Radiation Rate per Area"
+    db_temp = "Site Outdoor Air Drybulb Temperature"
+    wb_temp = "Site Outdoor Air Wetbulb Temperature"
+    dp_temp = "Site Outdoor Air Dewpoint Temperature"
+    direct_solar_rad = "Site Direct Solar Radiation Rate per Area"
+    diffuse_solar_rad = "Site Diffuse Solar Radiation Rate per Area"
+    solar_angle = "Site Solar Azimuth Angle"
+
 
 # access name by value 

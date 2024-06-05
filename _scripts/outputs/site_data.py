@@ -76,7 +76,7 @@ class SiteDataPlots(SQLReader):
             data = output[analysis_period]
             dataset = data.dataset
             fig.add_trace(go.Scatter(x=dataset.datetimes, y=dataset.values), row=ix+1, col=1)
-            fig.update_yaxes(title_text=f"{data.type} [{data.unit}]", row=ix+1, col=1)
+            fig.update_yaxes(title_text=f"{data.type} [{data.unit}]", row=ix+1, col=1, title_font=dict(size=10))
 
         fig.update_layout(title_text=f"{analysis_period} {self.site_name}", showlegend=False)
 
