@@ -12,6 +12,10 @@ class EneryPlusCaseReader:
     def __init__(self, case_name:str) -> None:
         IDF_PATH = os.path.join("cases", case_name, "out.idf")
         self.idf = IDF(IDF_PATH)
+        self.get_geometry()
+
+    def get_geometry(self):
+        self.geometry = GeometryParser(self.idf)  
 
 
 class EneryPlusCaseEditor:

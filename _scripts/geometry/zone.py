@@ -29,8 +29,6 @@ class Zone:
             for surface in self.all_surfaces
             if surface.Zone_Name == self.name and surface.Surface_Type == "wall"
         ]
-        print([w.name for w in self.walls])
-        print(len(self.walls))
 
         assert len(self.walls) == expected_walls, f"For zone {self.name}, added walls != expected walls"
 

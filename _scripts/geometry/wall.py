@@ -3,11 +3,22 @@ from helpers.helpers import get_last_word
 import fnmatch
 import re
 import shapely as sp
+from enum import Enum
+
+class CardinalDirection(Enum):
+    # direction of outward normal of the wall..
+    # https://eppy.readthedocs.io/en/latest/eppy.geometry.html#eppy.geometry.surface.azimuth
+    NORTH = 0.0
+    EAST = 90.0
+    SOUTH = 180.0
+    WEST = 270.0
+
 
 class Wall:
     def __init__(self, idf_data:EpBunch) -> None:
         self.data = idf_data
         self.name = idf_data.Name
+
         # self.fieldnames = idf_data.fieldnames
         # self.fieldvalues = idf_data.fieldnames
 
@@ -22,10 +33,19 @@ class Wall:
 
     def run(self):
         self.get_wall_number()
+        self.get_direction()
+        self.create_better_wall_name()
         self.get_geometry()
 
     def get_wall_number(self):
         self.number = get_last_word(self.name)
+
+    def get_direction(self):
+        self.direction = CardinalDirection(self.data.azimuth).name
+
+    def create_better_wall_name(self):
+        self.zone = self.name.split()[1]
+        self.name2 = f"{self.zone}_{self.direction}"
 
 
     def get_geometry(self,):
@@ -53,3 +73,5 @@ class Wall:
                 vertices.append([x_val, y_val])
 
         self.line = sp.LineString(vertices)
+
+
