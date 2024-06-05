@@ -25,6 +25,7 @@ class SQLReader:
         self.dataset_names = []
         self._match_geom_sql()
 
+
     def _get_sql_outputs(self, ):
         SQL_PATH = os.path.join("cases", self.case_name, "results","eplusout.sql" )
         self.sqld = SQLiteResult(SQL_PATH)
@@ -50,6 +51,9 @@ class SQLReader:
 
             if dataset_name not in self.dataset_names:
                 self.dataset_names.append(dataset_name)
+
+
+
 
 
 
