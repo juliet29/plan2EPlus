@@ -1,7 +1,9 @@
 from geomeppy import IDF
 
 def add_output_variable(idf:IDF, name, reporting_frequency="Timestep"):
-    # see https://bigladdersoftware.com/epx/docs/23-2/input-output-reference/input-for-output.html#outputvariable
+    if check_existing_variable(idf, name):
+        return idf
+    
     idf.newidfobject("OUTPUT:VARIABLE")
 
     obj = idf.idfobjects["OUTPUT:VARIABLE"][-1]
@@ -29,5 +31,13 @@ def request_json(idf:IDF, ):
     obj.Option_Type = "TimeSeries" 
 
     return idf
+
+def check_existing_variable(idf:IDF, var):
+    var_names = [o.Variable_Name  for o in idf.idfobjects["OUTPUT:VARIABLE"]]
+    if var in var_names:
+        print(f"`{var}` is already in IDF")
+        return True
+        # raise(Exception(f"{var} is already in IDF"))
+
 
     
