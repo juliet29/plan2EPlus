@@ -1,5 +1,6 @@
 import os
 from geomeppy import IDF
+from geometry.geometry_parser import GeometryParser
 
 from case_edits.defaults import IDF_PATH, IDD_PATH, WEATHER_FILE
 
@@ -30,7 +31,10 @@ class EneryPlusCaseEditor:
             self.idf = IDF(IDF_PATH)
         else:
             self.starting_idf_path = os.path.join("cases", self.starting_case, "out.idf")
-            self.idf = IDF(self.starting_idf_path)    
+            self.idf = IDF(self.starting_idf_path)  
+
+    def get_geometry(self):
+        self.geometry = GeometryParser(self.idf)  
 
     def save_idf(self):
         # TODO what if there are multiple saves (and runs..) => check if want to overwrite existing file.. 

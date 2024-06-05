@@ -9,6 +9,7 @@ from helpers.plots import get_plotly_colors, plot_polygon, plot_line_string
 class GeometryParser:
     def __init__(self, idf:IDF) -> None:
         self.idf = idf
+        self.get_zones()
 
 
     def get_zones(self):

@@ -6,7 +6,7 @@ from outputs.classes import GeometryOutputData, TimeExtractData
 
 
 class Zone:
-    def __init__(self, idf_data: EpBunch, all_surfaces) -> None:
+    def __init__(self, idf_data:EpBunch, all_surfaces) -> None:
         self.data = idf_data
         self.name = idf_data.Name
         self.walls: list[Wall] = []
@@ -29,8 +29,10 @@ class Zone:
             for surface in self.all_surfaces
             if surface.Zone_Name == self.name and surface.Surface_Type == "wall"
         ]
+        print([w.name for w in self.walls])
+        print(len(self.walls))
 
-        assert len(self.walls) == expected_walls, "Added walls != expected walls"
+        assert len(self.walls) == expected_walls, f"For zone {self.name}, added walls != expected walls"
 
     def create_geometry(self):
         wall_lines = [self.walls[i].line for i in range(4)]
@@ -39,6 +41,11 @@ class Zone:
         assert (
             type(self.polygon) == sp.Polygon
         ), "When creating zone geometry, zone was not polygonal "
+
+
+
+
+    # dealing with outputs.. 
 
     def create_output_data(self, data: GeometryOutputData):
         self.output_data[data.short_name] = data
