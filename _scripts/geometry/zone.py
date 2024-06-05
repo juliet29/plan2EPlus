@@ -2,7 +2,7 @@ from geometry.wall import Wall
 from geomeppy.patches import EpBunch
 import shapely as sp
 
-from outputs.output_data import GeometryOutputData, TimeExtractData
+from outputs.classes import GeometryOutputData, TimeExtractData
 
 
 class Zone:

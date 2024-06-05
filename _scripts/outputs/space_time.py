@@ -2,7 +2,7 @@ from plotly.subplots import make_subplots
 
 
 from outputs.sql import SQLReader
-from outputs.output_data import TimeExtractData
+from outputs.classes import TimeExtractData
 
 from helpers.helpers import min_max_norm
 from helpers.plots import get_norm_plotly_colors, create_colorbar, plot_polygon, plot_line_string, plot_rectangle_shape
