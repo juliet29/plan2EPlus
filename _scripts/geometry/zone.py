@@ -1,7 +1,7 @@
-from geometry.wall import Wall
 from geomeppy.patches import EpBunch
 import shapely as sp
 
+from geometry.wall import Wall
 from outputs.classes import GeometryOutputData, TimeExtractData
 
 

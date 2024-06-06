@@ -1,9 +1,11 @@
 from geomeppy.patches import EpBunch
-from helpers.helpers import get_last_word
 import fnmatch
 import re
 import shapely as sp
 from enum import Enum
+
+from helpers.helpers import get_last_word
+from outputs.classes import GeometryOutputData
 
 class CardinalDirection(Enum):
     # direction of outward normal of the wall..
@@ -19,17 +21,15 @@ class Wall:
         self.data = idf_data
         self.name = idf_data.Name
 
-        # self.fieldnames = idf_data.fieldnames
-        # self.fieldvalues = idf_data.fieldnames
-
         self.line:sp.LineString = None
         self.boundary_condition = None
+        self.output_data = {}
 
         self.run()
 
 
     def __repr__(self):
-        return f"Wall({self.name})"  
+        return f"Wall({self.name2})"  
 
     def run(self):
         self.get_wall_number()
@@ -46,7 +46,6 @@ class Wall:
     def create_better_wall_name(self):
         self.zone = self.name.split()[1]
         self.name2 = f"{self.zone}_{self.direction}"
-
 
     def get_geometry(self,):
         z_coords = fnmatch.filter(self.data.fieldnames, "Vertex_[0-4]_Zcoordinate")
@@ -75,3 +74,6 @@ class Wall:
         self.line = sp.LineString(vertices)
 
 
+    # dealing with outputs 
+    def create_output_data(self, data: GeometryOutputData):
+        self.output_data[data.short_name] = data
