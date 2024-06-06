@@ -1,25 +1,27 @@
 from plotly.subplots import make_subplots
+import plotly.express as px
 
 
-from outputs.sql import SQLReader
+from outputs.plotter import Plotter
 from outputs.classes import TimeExtractData
+
 
 from helpers.helpers import min_max_norm
 from helpers.plots import get_norm_plotly_colors, create_colorbar, plot_polygon, plot_line_string, plot_rectangle_shape
 
-class SpaceTimePlot(SQLReader):
-    def __init__(self, CASE_NAME) -> None:
-        super().__init__(CASE_NAME)
+class SpaceTimePlot():
+    def __init__(self, PlotterObj:Plotter) -> None:
+        self.plotter = PlotterObj
+        self.color_scheme = px.colors.sequential.RdBu_r
         
         self.spatial_values = []
 
 
     def extract_many_times(self, times, dataset_name):
-        # TODO should be init vars.. but dataset names are not known before initializing.. 
         self.dataset_name = dataset_name
-        self.check_dataset_is_zonal()
+        self.plotter.check_dataset_is_zonal(self.dataset_name)
+
         self.candidate_times = times
-        
         self.get_dataset_datetimes()
         self.get_time_indices()
          
@@ -27,7 +29,7 @@ class SpaceTimePlot(SQLReader):
             self.extract_time_data(ix)
 
     def get_dataset_datetimes(self):
-        dataset = self.zone_list[0].output_data[self.dataset_name].dataset
+        dataset = self.plotter.zone_list[0].output_data[self.dataset_name].dataset
         self.datetimes = dataset.datetimes
         self.timestep = dataset.timestep_text
 
@@ -45,7 +47,7 @@ class SpaceTimePlot(SQLReader):
 
 
     def extract_time_data(self, time_index):
-        for zone in self.zone_list:
+        for zone in self.plotter.zone_list:
             value = round(zone.output_data[self.dataset_name].dataset.values[time_index],2)
             self.spatial_values.append(value)
 
@@ -78,15 +80,15 @@ class SpaceTimePlot(SQLReader):
     def prepare_spatial_colors(self):
         min_val = min(self.spatial_values)
         max_val = max(self.spatial_values)
-        for zone in self.zone_list:
+        for zone in self.plotter.zone_list:
             time_datas = zone.extracted_data[self.dataset_name]
             for ix, data in enumerate(time_datas):
                 val = data.value
                 norm_val = min_max_norm(val, min_val, max_val)
-                color = get_norm_plotly_colors(norm_val, min_val, max_val, color_scheme="RdBu")[0]
+                color = get_norm_plotly_colors(norm_val, min_val, max_val, color_scheme=self.color_scheme)[0]
                 zone.color_extracted_data(self.dataset_name, ix, color)
 
-        self.colorbar_trace = create_colorbar(min_val, max_val)
+        self.colorbar_trace = create_colorbar(min_val, max_val, color_scheme=self.color_scheme)
 
 
     def prepare_spatial_plots(self):
@@ -96,7 +98,7 @@ class SpaceTimePlot(SQLReader):
         for ix, time in enumerate(self.candidate_times):
             self.dictionaries[ix] = []
             self.traces[ix] = []
-            for zone in self.zone_list:
+            for zone in self.plotter.zone_list:
                 data = zone.extracted_data[self.dataset_name][ix]
                 trace_dict = plot_rectangle_shape(zone.polygon, color=data.color, label=f"{zone.name2}: {data.value}ºC")
                 self.dictionaries[ix].append(trace_dict)

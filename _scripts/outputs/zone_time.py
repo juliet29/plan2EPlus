@@ -1,25 +1,25 @@
 import plotly.graph_objects as go
 
+from outputs.plotter import Plotter
 from outputs.sql import SQLReader
 
-class TimePlot(SQLReader):
-    def __init__(self, CASE_NAME) -> None:
-        super().__init__(CASE_NAME)
+class TimePlot():
+    def __init__(self, PlotterObj:Plotter) -> None:
+        self.plotter = PlotterObj
+        
 
 
     def make_time_plot(self, dataset_name):
         self.dataset_name = dataset_name
-        self.check_dataset_is_zonal()
+        self.plotter.check_dataset_is_zonal(dataset_name)
         self.fig = go.Figure()
 
-        for zone in self.zone_list:
+        for zone in self.plotter.zone_list:
             dataset = zone.output_data[dataset_name].dataset
-            self.fig.add_trace(go.Scatter(x=dataset.datetimes, y=dataset.values, name=zone.name))
+            self.fig.add_trace(go.Scatter(x=dataset.datetimes, y=dataset.values, name=zone.name2))
 
         self.fig.update_layout(title_text=dataset_name)
 
         self.fig.show()
 
-    def check_dataset_is_zonal(self):
-        if "zone" not in self.dataset_name:
-            raise Exception(f"Dataset `{self.dataset_name}` is not zonal!")
+

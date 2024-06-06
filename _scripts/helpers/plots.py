@@ -3,20 +3,10 @@ import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 
-def get_plottable_coords(coords: sp.coords.CoordinateSequence):
-    x = [c[0] for c in coords]
-    y = [c[1] for c in coords]
-    return x, y
 
 class RectFromCoords:
     # ref: https://plotly.com/python/reference/layout/shapes/#layout-shapes-items-shape-x0
     def __init__(self, coords: sp.coords.CoordinateSequence) -> None:
-        xs = [i[0]for i in coords]
-        ys = [i[1]for i in coords]
-        # self.x0 = min(xs)
-        # self.x1 = max(xs)
-        # self.y0 = min(ys)
-        # self.y1 = max(ys)
         self.x0 = coords[0][0]
         self.x1 = coords[2][0]
         self.y0 = coords[0][1]
@@ -25,16 +15,16 @@ class RectFromCoords:
     def __repr__(self):
         return f"Rect(({self.x0}, {self.y0}), ({self.x1}, {self.y1}))"
 
+
+def get_plottable_coords(coords: sp.coords.CoordinateSequence):
+    x = [c[0] for c in coords]
+    y = [c[1] for c in coords]
+    return x, y
+
 def get_plotly_colors(n_colors=10, color_scheme="turbo"):
-    """
-    rainbow like: turbo, jet
-    for-non rainbow, should change n_colors to match # of items!
-    sequential: purp, mint, ...
-    """
     colors = px.colors.sample_colorscale(
         color_scheme, [n / (n_colors - 1) for n in range(n_colors)]
     )
-
     return colors, iter(colors)
 
 def get_norm_plotly_colors(sample_pts, min, max, color_scheme="turbo"):
@@ -98,3 +88,22 @@ def create_colorbar(min, max, color_scheme="turbo", ):
             colorbar=dict(thickness=5, tickvals=np.linspace(min, max, 5), ticktext=[round(min, 3), round(max,3)], outlinewidth=0)
         ))
     return trace
+
+def study_colors(n=6, color_scheme="Agsunset"):
+    colors, _ = get_plotly_colors(n_colors=n, color_scheme=color_scheme)
+    ys = np.linspace(0, 100, n)
+
+    fig = go.Figure()
+
+    for y, c in zip(ys, colors):
+        fig.add_trace(go.Scatter(
+            y = [y],
+            x = [y],
+            mode='markers',
+            marker=dict(
+                size=12,
+                color=c, #set color equal to a variable
+            )
+        ))
+
+    return fig

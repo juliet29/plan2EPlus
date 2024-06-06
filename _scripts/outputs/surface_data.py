@@ -1,13 +1,15 @@
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+import plotly.express as px
 
 from helpers.plots import get_plotly_colors
 from geometry.wall import CardinalDirection
+from outputs.plotter import Plotter
 from outputs.sql import SQLReader
 
 class SurfaceData(SQLReader):
-    def __init__(self, CASE_NAME) -> None:
-        super().__init__(CASE_NAME)
+    def __init__(self, PlotterObj:Plotter) -> None:
+        self.plotter = PlotterObj
 
 
     def prepare_titles(self):
@@ -16,11 +18,10 @@ class SurfaceData(SQLReader):
 
     def create_color_map(self):
         # TODO update for more zones.. 
-        # colors, _ = get_plotly_colors(n_colors=2)
+        colors, _ = get_plotly_colors(n_colors=len(self.plotter.zone_list), color_scheme=px.colors.qualitative.Plotly)
 
-        colors = ["blue", "red"]
-        assert len(colors) == len(self.zone_list)
-        self.color_map = {zone.short_name:color for zone, color in zip(self.zone_list, colors)}
+        assert len(colors) == len(self.plotter.zone_list)
+        self.color_map = {zone.short_name:color for zone, color in zip(self.plotter.zone_list, colors)}
 
 
     def create_fig(self, dataset_name):
@@ -33,7 +34,7 @@ class SurfaceData(SQLReader):
 
         for ix, direction in enumerate(self.direction_names):
             row = ix+1
-            for wall in self.wall_list:
+            for wall in self.plotter.wall_list:
                 if wall.direction == direction:
                     try:
                         data = wall.output_data[dataset_name]
