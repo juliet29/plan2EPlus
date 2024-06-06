@@ -55,10 +55,13 @@ class SQLReader:
         self.zone_dict = {i.name.upper(): i for i in self.geo.zones}
 
     def create_wall_data_structure(self):
+        self.wall_list = []
         self.wall_dict = {}
         for zone in self.zone_list:
             for wall in zone.walls:
+                self.wall_list.append(wall)
                 self.wall_dict[wall.name.upper()] = wall
+        
          
 
     def request_output(self, output_var:OutputVars):

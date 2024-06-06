@@ -45,7 +45,7 @@ class Wall:
 
     def create_better_wall_name(self):
         self.zone = self.name.split()[1]
-        self.name2 = f"{self.zone}_{self.direction}"
+        self.name2 = f"Block {self.zone} - {self.direction.title()}"
 
     def get_geometry(self,):
         z_coords = fnmatch.filter(self.data.fieldnames, "Vertex_[0-4]_Zcoordinate")
