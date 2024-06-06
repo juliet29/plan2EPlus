@@ -24,11 +24,11 @@ class GPLANRoom:
         self.toptop_y = self.top_y + self.height
         self.right_x = self.left_x + self.width
 
-        self.top_left = (self.left_x, self.top_y)
-        self.top_right = (self.right_x, self.top_y)
+        self.bottom_left = (self.left_x, self.top_y)
+        self.bottom_right = (self.right_x, self.top_y)
 
-        self.bottom_left = (self.left_x, self.toptop_y)
-        self.bottom_right = (self.right_x, self.toptop_y)
+        self.top_left = (self.left_x, self.toptop_y)
+        self.top_right = (self.right_x, self.toptop_y)
 
     def create_coords(self):
         # positions in geomeppy block are arranged counter clockwise starting from the bottom right corner

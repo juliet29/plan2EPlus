@@ -7,7 +7,7 @@ from gplan.convert import GPLANtoGeomeppyBlock
 
 def create_case(case_name, outputs, gplans_path, plan_index, run=False):
 
-    with open(gplans_path) as fo:
+    with open(gplans_path) as f:
         gplan_data = json.load(f)
     floor_plan = gplan_data[plan_index]
     gg = GPLANtoGeomeppyBlock(floor_plan)
@@ -29,4 +29,4 @@ def create_case(case_name, outputs, gplans_path, plan_index, run=False):
     if run:
         e.run_idf()
 
-    return e
+    return e, gg
