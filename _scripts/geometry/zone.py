@@ -20,8 +20,14 @@ class Zone:
         return f"Zone({self.name})"
 
     def run(self):
+        self.create_better_zone_name()
         self.get_walls()
         self.create_geometry()
+
+    def create_better_zone_name(self):
+        self.short_name = self.name.split()[1]
+        self.name2 = f"Block {self.short_name}"
+
 
     def get_walls(self, expected_walls=4):
         self.walls = [

@@ -101,7 +101,7 @@ class SQLReader:
             )
         dataset_name = f"{self.curr_output.name}{ap_name}"
         self.update_dataset_names(dataset_name)
-        self.output_object = GeometryOutputData(dataset, ap, dataset_name)
+        self.output_object = GeometryOutputData(dataset, ap, dataset_name, ap_name)
 
 
     def handle_match_geom(self):
