@@ -8,6 +8,8 @@ class TimePlot(SQLReader):
 
 
     def make_time_plot(self, dataset_name):
+        self.dataset_name = dataset_name
+        self.check_dataset_is_zonal()
         self.fig = go.Figure()
 
         for zone in self.zone_list:
@@ -17,3 +19,7 @@ class TimePlot(SQLReader):
         self.fig.update_layout(title_text=dataset_name)
 
         self.fig.show()
+
+    def check_dataset_is_zonal(self):
+        if "zone" not in self.dataset_name:
+            raise Exception(f"Dataset `{self.dataset_name}` is not zonal!")

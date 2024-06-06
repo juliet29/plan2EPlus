@@ -1,6 +1,6 @@
 from geomeppy import IDF
 
-def add_output_variable(idf:IDF, name, reporting_frequency="Timestep"):
+def add_output_variable(idf:IDF, name:str, reporting_frequency="Timestep"):
     if check_existing_variable(idf, name):
         return idf
     

@@ -17,6 +17,7 @@ class SpaceTimePlot(SQLReader):
     def extract_many_times(self, times, dataset_name):
         # TODO should be init vars.. but dataset names are not known before initializing.. 
         self.dataset_name = dataset_name
+        self.check_dataset_is_zonal()
         self.candidate_times = times
         
         self.get_dataset_datetimes()
@@ -45,7 +46,7 @@ class SpaceTimePlot(SQLReader):
 
     def extract_time_data(self, time_index):
         for zone in self.zone_list:
-            value = round(zone.output_data[self.dataset_name].dataset.values[time_index],3)
+            value = round(zone.output_data[self.dataset_name].dataset.values[time_index],2)
             self.spatial_values.append(value)
 
             data = TimeExtractData(value, time_index)
@@ -82,7 +83,7 @@ class SpaceTimePlot(SQLReader):
             for ix, data in enumerate(time_datas):
                 val = data.value
                 norm_val = min_max_norm(val, min_val, max_val)
-                color = get_norm_plotly_colors(norm_val, min_val, max_val)[0]
+                color = get_norm_plotly_colors(norm_val, min_val, max_val, color_scheme="RdBu")[0]
                 zone.color_extracted_data(self.dataset_name, ix, color)
 
         self.colorbar_trace = create_colorbar(min_val, max_val)
@@ -97,10 +98,14 @@ class SpaceTimePlot(SQLReader):
             self.traces[ix] = []
             for zone in self.zone_list:
                 data = zone.extracted_data[self.dataset_name][ix]
-                trace_dict = plot_rectangle_shape(zone.polygon, color=data.color, label=f"{zone.name}: {data.value}ºC")
+                trace_dict = plot_rectangle_shape(zone.polygon, color=data.color, label=f"{zone.name2}: {data.value}ºC")
                 self.dictionaries[ix].append(trace_dict)
 
                 for wall in zone.walls:
                     trace = plot_line_string(wall.line, color="black", label=f"Wall {wall.number}")
                     self.traces[ix].append(trace)
+
+    def check_dataset_is_zonal(self):
+        if "zone" not in self.dataset_name:
+            raise Exception(f"Dataset `{self.dataset_name}` is not zonal!")
 
