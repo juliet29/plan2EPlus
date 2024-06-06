@@ -31,7 +31,7 @@ class GPLANRoom:
         self.top_right = (self.right_x, self.toptop_y)
 
     def create_coords(self):
-        # positions in geomeppy block are arranged counter clockwise starting from the bottom right corner
+        # positions in geomeppy block are arranged counter clockwise starting from the bottom right corner. Search `geomeppy_block_entry.png` in Obsidian Vault
         self.coords = [self.bottom_right, self.top_right, self.top_left, self.bottom_left]
 
     def create_object(self):
