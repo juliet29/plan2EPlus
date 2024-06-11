@@ -1,3 +1,4 @@
+from icecream import ic
 from geomeppy import IDF
 
 from case_edits.epcase import EneryPlusCaseEditor
@@ -21,11 +22,15 @@ class Materials:
         self.constuction_names = [c.Name for c in self.constructions]
     
     def extract_materials(self):
-        # TODO this is too specific to this idf.. 
-        self.materials = self.ref_idf.idfobjects["MATERIAL"]
-        self.materials_air = self.ref_idf.idfobjects["MATERIAL:AIRGAP"]
-        self.materoals_no_mass = self.ref_idf.idfobjects["MATERIAL:NOMASS"]
-    
+        self.material_groups = [] 
+        self.materials = []
+        for k,v in self.ref_idf.idfobjects.items():
+            if v:
+                if "MATERIAL" in k:
+                    self.material_groups.append(k)
+                    self.materials.extend(self.ref_idf.idfobjects[k])
+
+        
 
     def get_construction_materials(self, name):
         self.const = self.get_construction_by_name(name)
@@ -37,36 +42,43 @@ class Materials:
                 mat = self.get_material_by_name(m, self.materials)
                 self.const_materials.append(mat)
             except:
-                try:
-                    mat = self.get_material_by_name(m, self.materials_air)
-                    self.const_materials.append(mat)
-                except:
-                    try:
-                        mat = self.get_material_by_name(m, self.materials_no_mass)
-                        self.const_materials.append(mat)
-                    except:
-                        raise Exception(f"{m} not found!")
+                raise Exception(f"{m} not found!")
+
         self.copy_to_idf()
                     
 
-                    
-        
+                       
     def copy_to_idf(self):
+        assert self.is_unique_construction()
         self.epcase.idf.copyidfobject(self.const)
-        for m in self.const_materials:
-            self.epcase.idf.copyidfobject(m)
-        # TODO check that not already in idf! 
 
-        # self.const = ""
-        # self.const_materials = []
+        for m in self.const_materials:
+            try:
+                assert self.is_unique_material(m)
+                self.epcase.idf.copyidfobject(m)
+            except:
+                print(f"{m.Name} is already in idf")
+                pass
+
 
 
     def is_unique_construction(self):
-        if self.const not in self.epcase.idf.idfobjects["CONSTRUCTION"]:
-            return True 
+        const_objects = self.epcase.idf.idfobjects["CONSTRUCTION"]
+        if self.const in const_objects:
+            return False 
+        else:
+            return True
         
-    def is_unique_material(self):
-        pass
+    def is_unique_material(self, m):
+        for group_name in self.material_groups:
+            mat_objects = self.epcase.idf.idfobjects[group_name]
+   
+            for obj in mat_objects:
+                if m.Name == obj.Name:
+                    ic("A MATCH", m.Name)
+                    return False
+        return True
+    
 
 
         
