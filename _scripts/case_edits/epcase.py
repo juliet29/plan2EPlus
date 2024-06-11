@@ -13,7 +13,7 @@ class EneryPlusCaseReader:
         IDF_PATH = os.path.join("cases", case_name, "out.idf")
         self.idf = IDF(IDF_PATH)
         self.case_name = case_name
-        self.get_geometry()
+        # self.get_geometry()
 
     def __repr__(self):
         return f"EPCaseReader({self.case_name})"  
@@ -62,7 +62,7 @@ class EneryPlusCaseEditor:
     def prepare_to_run(self):
         self.idf.intersect_match()
         self.idf.set_default_constructions()
-        # self.save_idf()
+        self.save_idf()
 
     def run_idf(self, run_local=False):
         # TODO not sure why this is here.. 

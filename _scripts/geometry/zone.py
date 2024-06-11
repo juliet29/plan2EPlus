@@ -36,7 +36,7 @@ class Zone:
             if surface.Zone_Name == self.name and surface.Surface_Type == "wall"
         ]
 
-        assert len(self.walls) == expected_walls, f"For zone {self.name}, added walls != expected walls"
+        assert len(self.walls) == expected_walls, f"For zone {self.name}, added walls != expected walls: {self.walls}"
 
     def create_geometry(self):
         wall_lines = [self.walls[i].line for i in range(4)]

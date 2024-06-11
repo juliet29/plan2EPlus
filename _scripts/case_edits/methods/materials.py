@@ -80,9 +80,6 @@ class Materials:
         return True
     
 
-
-        
-
     def get_construction_by_name(self, name):
         res =  [c for c in self.constructions if c.Name == name]
 
@@ -97,8 +94,13 @@ class Materials:
 
         assert len(res) != 0, f"No material named {name} found"
 
-        assert len(res) == 1, f"Found ore than 1 object with {name}"
+        assert len(res) == 1, f"Found more than 1 object with {name}"
         return res[0]
+    
+    def get_case_constructions(self):
+        self.case_constructions = self.epcase.idf.idfobjects["CONSTRUCTION"]
+        return self.case_constructions
+
     
     
 

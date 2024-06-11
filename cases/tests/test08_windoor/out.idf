@@ -103,6 +103,63 @@ RunPeriod,
     Yes,                      !- Use Weather File Rain Indicators
     Yes;                      !- Use Weather File Snow Indicators
 
+MATERIAL,
+    DefaultMaterial,          !- Name
+    Rough,                    !- Roughness
+    0.1,                      !- Thickness
+    0.1,                      !- Conductivity
+    1000,                     !- Density
+    1000,                     !- Specific Heat
+    0.9,                      !- Thermal Absorptance
+    0.7,                      !- Solar Absorptance
+    0.7;                      !- Visible Absorptance
+
+Material,
+    G05 25mm wood,            !- Name
+    MediumSmooth,             !- Roughness
+    0.0254,                   !- Thickness
+    0.15,                     !- Conductivity
+    608,                      !- Density
+    1630;                     !- Specific Heat
+
+WINDOWMATERIAL:SIMPLEGLAZINGSYSTEM,
+    DefaultGlazing,           !- Name
+    2.7,                      !- UFactor
+    0.763,                    !- Solar Heat Gain Coefficient
+    0.8;                      !- Visible Transmittance
+
+CONSTRUCTION,
+    Project Wall,             !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Partition,        !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Floor,            !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Flat Roof,        !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Ceiling,          !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Door,             !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project External Window,    !- Name
+    DefaultGlazing;           !- Outside Layer
+
+Construction,
+    Light Furnishings,        !- Name
+    G05 25mm wood;            !- Outside Layer
+
 GlobalGeometryRules,
     UpperLeftCorner,          !- Starting Vertex Position
     CounterClockWise,         !- Vertex Entry Direction
@@ -141,10 +198,10 @@ ZONE,
 BUILDINGSURFACE:DETAILED,
     Block North Storey 0 Wall 0001,    !- Name
     wall,                     !- Surface Type
-    ,                         !- Construction Name
+    Project Wall,             !- Construction Name
     Block North Storey 0,     !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    outdoors,                 !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
     SunExposed,               !- Sun Exposure
     WindExposed,              !- Wind Exposure
@@ -166,10 +223,10 @@ BUILDINGSURFACE:DETAILED,
 BUILDINGSURFACE:DETAILED,
     Block North Storey 0 Wall 0002,    !- Name
     wall,                     !- Surface Type
-    ,                         !- Construction Name
+    Project Wall,             !- Construction Name
     Block North Storey 0,     !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    outdoors,                 !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
     SunExposed,               !- Sun Exposure
     WindExposed,              !- Wind Exposure
@@ -191,10 +248,10 @@ BUILDINGSURFACE:DETAILED,
 BUILDINGSURFACE:DETAILED,
     Block North Storey 0 Wall 0003,    !- Name
     wall,                     !- Surface Type
-    ,                         !- Construction Name
+    Project Wall,             !- Construction Name
     Block North Storey 0,     !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    outdoors,                 !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
     SunExposed,               !- Sun Exposure
     WindExposed,              !- Wind Exposure
@@ -214,40 +271,15 @@ BUILDINGSURFACE:DETAILED,
     3;                        !- Vertex 4 Zcoordinate
 
 BUILDINGSURFACE:DETAILED,
-    Block North Storey 0 Wall 0004,    !- Name
-    wall,                     !- Surface Type
-    ,                         !- Construction Name
-    Block North Storey 0,     !- Zone Name
-    ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
-    ,                         !- Outside Boundary Condition Object
-    SunExposed,               !- Sun Exposure
-    WindExposed,              !- Wind Exposure
-    autocalculate,            !- View Factor to Ground
-    autocalculate,            !- Number of Vertices
-    0,                        !- Vertex 1 Xcoordinate
-    7,                        !- Vertex 1 Ycoordinate
-    3,                        !- Vertex 1 Zcoordinate
-    0,                        !- Vertex 2 Xcoordinate
-    7,                        !- Vertex 2 Ycoordinate
-    0,                        !- Vertex 2 Zcoordinate
-    10,                       !- Vertex 3 Xcoordinate
-    7,                        !- Vertex 3 Ycoordinate
-    0,                        !- Vertex 3 Zcoordinate
-    10,                       !- Vertex 4 Xcoordinate
-    7,                        !- Vertex 4 Ycoordinate
-    3;                        !- Vertex 4 Zcoordinate
-
-BUILDINGSURFACE:DETAILED,
     Block North Storey 0 Floor 0001,    !- Name
     floor,                    !- Surface Type
-    ,                         !- Construction Name
+    Project Floor,            !- Construction Name
     Block North Storey 0,     !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    ground,                   !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
-    SunExposed,               !- Sun Exposure
-    WindExposed,              !- Wind Exposure
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
     autocalculate,            !- View Factor to Ground
     autocalculate,            !- Number of Vertices
     10,                       !- Vertex 1 Xcoordinate
@@ -266,10 +298,10 @@ BUILDINGSURFACE:DETAILED,
 BUILDINGSURFACE:DETAILED,
     Block North Storey 0 Roof 0001,    !- Name
     roof,                     !- Surface Type
-    ,                         !- Construction Name
+    Project Flat Roof,        !- Construction Name
     Block North Storey 0,     !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    outdoors,                 !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
     SunExposed,               !- Sun Exposure
     WindExposed,              !- Wind Exposure
@@ -291,10 +323,10 @@ BUILDINGSURFACE:DETAILED,
 BUILDINGSURFACE:DETAILED,
     Block West Storey 0 Wall 0001,    !- Name
     wall,                     !- Surface Type
-    ,                         !- Construction Name
+    Project Wall,             !- Construction Name
     Block West Storey 0,      !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    outdoors,                 !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
     SunExposed,               !- Sun Exposure
     WindExposed,              !- Wind Exposure
@@ -314,37 +346,12 @@ BUILDINGSURFACE:DETAILED,
     3;                        !- Vertex 4 Zcoordinate
 
 BUILDINGSURFACE:DETAILED,
-    Block West Storey 0 Wall 0002,    !- Name
-    wall,                     !- Surface Type
-    ,                         !- Construction Name
-    Block West Storey 0,      !- Zone Name
-    ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
-    ,                         !- Outside Boundary Condition Object
-    SunExposed,               !- Sun Exposure
-    WindExposed,              !- Wind Exposure
-    autocalculate,            !- View Factor to Ground
-    autocalculate,            !- Number of Vertices
-    5,                        !- Vertex 1 Xcoordinate
-    7,                        !- Vertex 1 Ycoordinate
-    3,                        !- Vertex 1 Zcoordinate
-    5,                        !- Vertex 2 Xcoordinate
-    7,                        !- Vertex 2 Ycoordinate
-    0,                        !- Vertex 2 Zcoordinate
-    0,                        !- Vertex 3 Xcoordinate
-    7,                        !- Vertex 3 Ycoordinate
-    0,                        !- Vertex 3 Zcoordinate
-    0,                        !- Vertex 4 Xcoordinate
-    7,                        !- Vertex 4 Ycoordinate
-    3;                        !- Vertex 4 Zcoordinate
-
-BUILDINGSURFACE:DETAILED,
     Block West Storey 0 Wall 0003,    !- Name
     wall,                     !- Surface Type
-    ,                         !- Construction Name
+    Project Wall,             !- Construction Name
     Block West Storey 0,      !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    outdoors,                 !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
     SunExposed,               !- Sun Exposure
     WindExposed,              !- Wind Exposure
@@ -366,10 +373,10 @@ BUILDINGSURFACE:DETAILED,
 BUILDINGSURFACE:DETAILED,
     Block West Storey 0 Wall 0004,    !- Name
     wall,                     !- Surface Type
-    ,                         !- Construction Name
+    Project Wall,             !- Construction Name
     Block West Storey 0,      !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    outdoors,                 !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
     SunExposed,               !- Sun Exposure
     WindExposed,              !- Wind Exposure
@@ -391,13 +398,13 @@ BUILDINGSURFACE:DETAILED,
 BUILDINGSURFACE:DETAILED,
     Block West Storey 0 Floor 0001,    !- Name
     floor,                    !- Surface Type
-    ,                         !- Construction Name
+    Project Floor,            !- Construction Name
     Block West Storey 0,      !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    ground,                   !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
-    SunExposed,               !- Sun Exposure
-    WindExposed,              !- Wind Exposure
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
     autocalculate,            !- View Factor to Ground
     autocalculate,            !- Number of Vertices
     5,                        !- Vertex 1 Xcoordinate
@@ -416,10 +423,10 @@ BUILDINGSURFACE:DETAILED,
 BUILDINGSURFACE:DETAILED,
     Block West Storey 0 Roof 0001,    !- Name
     roof,                     !- Surface Type
-    ,                         !- Construction Name
+    Project Flat Roof,        !- Construction Name
     Block West Storey 0,      !- Zone Name
     ,                         !- Space Name
-    ,                         !- Outside Boundary Condition
+    outdoors,                 !- Outside Boundary Condition
     ,                         !- Outside Boundary Condition Object
     SunExposed,               !- Sun Exposure
     WindExposed,              !- Wind Exposure
@@ -437,6 +444,91 @@ BUILDINGSURFACE:DETAILED,
     0,                        !- Vertex 4 Xcoordinate
     0,                        !- Vertex 4 Ycoordinate
     3;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block North Storey 0 Wall 0004_1,    !- Name
+    wall,                     !- Surface Type
+    Project Partition,        !- Construction Name
+    Block North Storey 0,     !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block West Storey 0 Wall 0002_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    7,                        !- Vertex 1 Ycoordinate
+    3,                        !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    7,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5,                        !- Vertex 3 Xcoordinate
+    7,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5,                        !- Vertex 4 Xcoordinate
+    7,                        !- Vertex 4 Ycoordinate
+    3;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block North Storey 0 Wall 0004_2,    !- Name
+    wall,                     !- Surface Type
+    Project Wall,             !- Construction Name
+    Block North Storey 0,     !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5,                        !- Vertex 1 Xcoordinate
+    7,                        !- Vertex 1 Ycoordinate
+    3,                        !- Vertex 1 Zcoordinate
+    5,                        !- Vertex 2 Xcoordinate
+    7,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    10,                       !- Vertex 3 Xcoordinate
+    7,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    10,                       !- Vertex 4 Xcoordinate
+    7,                        !- Vertex 4 Ycoordinate
+    3;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block West Storey 0 Wall 0002_1,    !- Name
+    wall,                     !- Surface Type
+    Project Partition,        !- Construction Name
+    Block West Storey 0,      !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block North Storey 0 Wall 0004_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5,                        !- Vertex 1 Xcoordinate
+    7,                        !- Vertex 1 Ycoordinate
+    3,                        !- Vertex 1 Zcoordinate
+    5,                        !- Vertex 2 Xcoordinate
+    7,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    7,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    7,                        !- Vertex 4 Ycoordinate
+    3;                        !- Vertex 4 Zcoordinate
+
+DOOR,
+    Block West Storey 0 Wall 0004 Door,    !- Name
+    Light Furnishings,        !- Construction Name
+    Block West Storey 0 Wall 0004,    !- Building Surface Name
+    1.0,                      !- Multiplier
+    2,                        !- Starting X Coordinate
+    0.02,                     !- Starting Z Coordinate
+    1,                        !- Length
+    1.5;                      !- Height
 
 Output:VariableDictionary,
     Regular;                  !- Key Field
@@ -480,6 +572,21 @@ Output:Variable,
 Output:Variable,
     *,                        !- Key Value
     Site Diffuse Solar Radiation Rate per Area,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    OutputVars.surf_incident_solar_rad,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    OutputVars.surf_net_thermal_rad,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    OutputVars.zone_mean_air_temp,    !- Variable Name
     Timestep;                 !- Reporting Frequency
 
 OUTPUT:SQLITE,
