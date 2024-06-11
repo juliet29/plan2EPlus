@@ -8,6 +8,7 @@ from outputs.sql import SQLReader, create_analysis_period
 
 
 class SiteDataPlots(SQLReader):
+    # TODO update to be using Plotter
     def __init__(self, CASE_NAME) -> None:
         super().__init__(CASE_NAME)
         self.site_data = {}

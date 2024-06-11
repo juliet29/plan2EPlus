@@ -12,13 +12,18 @@ class EneryPlusCaseReader:
     def __init__(self, case_name:str) -> None:
         IDF_PATH = os.path.join("cases", case_name, "out.idf")
         self.idf = IDF(IDF_PATH)
+        self.case_name = case_name
         self.get_geometry()
+
+    def __repr__(self):
+        return f"EPCaseReader({self.case_name})"  
 
     def get_geometry(self):
         self.geometry = GeometryParser(self.idf)  
 
 
 class EneryPlusCaseEditor:
+    # TODO make this inherit the other? to the extent it cane?
     def __init__(self, case_name:str, starting_case:str=None) -> None:
         # make case folder
         self.path = os.path.join("cases", case_name)
@@ -29,6 +34,11 @@ class EneryPlusCaseEditor:
         self.starting_case = starting_case
         self.get_idf()
         self.idf.epw = WEATHER_FILE #TODO this isnt working bc still denver.. 
+
+        self.case_name = case_name
+
+    def __repr__(self):
+        return f"EPCaseEditor({self.case_name})"  
 
     def get_idf(self):
         if not self.starting_case:

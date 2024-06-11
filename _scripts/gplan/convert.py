@@ -2,7 +2,7 @@
 
 class GPLANRoom:
     def __init__(self, block:dict, room_height=10) -> None:
-         #TODO check that is #
+         #TODO check that is label is a #
         index = block["label"]
         self.name = f"0{index}"
         self.room_height = room_height
@@ -45,7 +45,6 @@ class GPLANRoom:
 
 
 class GPLANtoGeomeppyBlock:
-    # takes in a single room in the floor plan for now....
     def __init__(self, plan:list) -> None:
         self.plan = plan
         self.blocks = []

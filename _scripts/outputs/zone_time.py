@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 
 from outputs.plotter import Plotter
-from outputs.sql import SQLReader
+
 
 class TimePlot():
     def __init__(self, PlotterObj:Plotter) -> None:
