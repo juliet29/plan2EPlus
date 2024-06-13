@@ -21,7 +21,7 @@ class Door:
         self.attrs = door_attrs
 
 
-    def set_surface(self, surface:Wall):
+    def set_surface(self, surface):
         # TODO select from epcase idf using epbunch
         self.surface = surface
 
@@ -36,11 +36,11 @@ class Door:
         self.create_door_object()
 
     def create_door_name(self):
-        self.name = f"{self.surface.name} Door"
+        self.name = f"{self.surface.Name} Door"
         # TODO check that no object with this name 
 
     def calculate_door_start_coords(self):
-        center_width = self.surface.data.width/2
+        center_width = self.surface.width/2
 
         self.start_x = center_width - self.attrs.half_length
         self.start_z = DOOR_GAP
@@ -54,7 +54,7 @@ class Door:
         door_obj.Height = self.attrs.height
         door_obj.Length = self.attrs.length
         door_obj.Construction_Name = self.construction
-        door_obj.Building_Surface_Name = self.surface.name
+        door_obj.Building_Surface_Name = self.surface.Name
         door_obj.Name = self.name
 
     # TODO be able to visualize doors in geometry .. 

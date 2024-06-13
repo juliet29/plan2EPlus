@@ -1,8 +1,10 @@
 import plotly.graph_objects as go
 from geomeppy import IDF
+from munch import Munch
 
 from geometry.zone import Zone
 from helpers.plots import get_plotly_colors, plot_polygon, plot_line_string
+from helpers.strings import to_python_format
 
 
 
@@ -14,13 +16,17 @@ class GeometryParser:
 
     def get_zones(self):
         self.check_zone_names_are_unique()
+        self.zones = [Zone(zone, self.idf) for zone in self.idf.idfobjects["ZONE"]]
 
-        all_surfaces = self.idf.idfobjects["BUILDINGSURFACE:DETAILED"]
-        self.zones = [Zone(i, all_surfaces) for i in self.idf.idfobjects["ZONE"]]
+        self.zone_bunch = Munch()
+        for zone in self.zones:
+            name = to_python_format(zone.name)
+            self.zone_bunch.update({name: zone})
+
 
 
     def check_zone_names_are_unique(self):
-        zone_names = [i.Name for i in self.idf.idfobjects["ZONE"]]
+        zone_names = [zone.Name for zone in self.idf.idfobjects["ZONE"]]
         assert len(set(zone_names)) == len(zone_names), f"Zone names are not unique: {zone_names}"
 
 

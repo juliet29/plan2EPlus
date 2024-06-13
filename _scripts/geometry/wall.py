@@ -4,7 +4,7 @@ import re
 import shapely as sp
 from enum import Enum
 
-from helpers.helpers import get_last_word
+from helpers.strings import get_last_word, is_intersecting_surface
 from outputs.classes import GeometryOutputData
 
 class CardinalDirection(Enum):
@@ -17,37 +17,43 @@ class CardinalDirection(Enum):
 
 
 class Wall:
-    def __init__(self, idf_data:EpBunch) -> None:
+    def __init__(self, idf_data:EpBunch, zone) -> None:
         self.data = idf_data
         self.name = idf_data.Name
 
         self.line:sp.LineString = None
         self.boundary_condition = None
         self.output_data = {}
+        self.zone = zone
 
         self.run()
 
 
     def __repr__(self):
-        return f"Wall({self.name2})"  
+        return f"Wall({self.display_name})"  
 
     def run(self):
         self.get_wall_number()
         self.get_direction()
-        self.create_better_wall_name()
+        self.create_display_name()
         self.get_geometry()
 
     def get_wall_number(self):
-        self.number = get_last_word(self.name)
+        if is_intersecting_surface(self.name):
+            self.number = self.name[-4:]
+        else:
+            self.number = self.name[-2:]
 
     def get_direction(self):
         self.direction = CardinalDirection(self.data.azimuth).name
 
-    def create_better_wall_name(self):
-        self.zone = self.name.split()[1]
-        self.name2 = f"Block {self.zone} - {self.direction.title()}"
+    def create_display_name(self):
+        self.display_name = f"Block {self.zone.entry_name} - {self.direction.title()} - W{self.number}"
+
+
 
     def get_geometry(self,):
+        # only care about coordinates 1 - 4 
         z_coords = fnmatch.filter(self.data.fieldnames, "Vertex_[0-4]_Zcoordinate")
 
         # Define the regex pattern to match digits
@@ -55,8 +61,9 @@ class Wall:
 
         vertices = []
         for fieldname in z_coords:
+            # TODO will need to update this if do higher stories 
+            # get the vertex number where z-coord is 0
             if self.data[fieldname] == 0:
-                # get the vertex number where z-coord is 0
                 matches = pattern.findall(fieldname)
                 # TODO some tests needed here..
                 x_field = fnmatch.filter(
