@@ -52,6 +52,7 @@ class EneryPlusCaseEditor:
 
     def save_idf(self):
         # TODO what if there are multiple saves (and runs..) => check if want to overwrite existing file.. 
+        print(os.path.join(self.path, "out.idf"))
         self.idf.save(filename=os.path.join(self.path, "out.idf"))
 
     def create_obj(self):

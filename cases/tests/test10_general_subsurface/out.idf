@@ -114,14 +114,6 @@ MATERIAL,
     0.7,                      !- Solar Absorptance
     0.7;                      !- Visible Absorptance
 
-Material,
-    G05 25mm wood,            !- Name
-    MediumSmooth,             !- Roughness
-    0.0254,                   !- Thickness
-    0.15,                     !- Conductivity
-    608,                      !- Density
-    1630;                     !- Specific Heat
-
 WINDOWMATERIAL:SIMPLEGLAZINGSYSTEM,
     DefaultGlazing,           !- Name
     2.7,                      !- UFactor
@@ -155,10 +147,6 @@ CONSTRUCTION,
 CONSTRUCTION,
     Project External Window,    !- Name
     DefaultGlazing;           !- Outside Layer
-
-Construction,
-    Light Furnishings,        !- Name
-    G05 25mm wood;            !- Outside Layer
 
 GlobalGeometryRules,
     UpperLeftCorner,          !- Starting Vertex Position
@@ -519,28 +507,6 @@ BUILDINGSURFACE:DETAILED,
     0,                        !- Vertex 4 Xcoordinate
     7,                        !- Vertex 4 Ycoordinate
     3;                        !- Vertex 4 Zcoordinate
-
-DOOR:INTERZONE,
-    Block West Storey 0 Wall 0002_1 Door,    !- Name
-    Light Furnishings,        !- Construction Name
-    Block West Storey 0 Wall 0002_1,    !- Building Surface Name
-    Block North Storey 0 Wall 0004_1 Door,    !- Outside Boundary Condition Object
-    1.0,                      !- Multiplier
-    2,                        !- Starting X Coordinate
-    0.02,                     !- Starting Z Coordinate
-    1,                        !- Length
-    2;                        !- Height
-
-DOOR:INTERZONE,
-    Block North Storey 0 Wall 0004_1 Door,    !- Name
-    Light Furnishings,        !- Construction Name
-    Block North Storey 0 Wall 0004_1,    !- Building Surface Name
-    Block West Storey 0 Wall 0002_1 Door,    !- Outside Boundary Condition Object
-    1.0,                      !- Multiplier
-    2,                        !- Starting X Coordinate
-    0.02,                     !- Starting Z Coordinate
-    1,                        !- Length
-    2;                        !- Height
 
 Output:VariableDictionary,
     Regular;                  !- Key Field

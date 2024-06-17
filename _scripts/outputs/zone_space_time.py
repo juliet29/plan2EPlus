@@ -120,7 +120,7 @@ class SpaceTimePlot:
                 )
                 self.dictionaries[ix].append(trace_dict)
 
-                for wall in zone.walls:
+                for wall in zone.wall_list:
                     trace = plot_line_string(
                         wall.line, color="black", label=f"Wall {wall.number}"
                     )

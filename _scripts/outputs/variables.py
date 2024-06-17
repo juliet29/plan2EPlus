@@ -21,5 +21,8 @@ class OutputVars(str, Enum):
         "Surface Outside Face Net Thermal Radiation Heat Gain Rate per Area"
     )
 
+    # inside surface
+    in_surf_temp = "Surface Inside Face Temperature"
+
 
 # access name by value

@@ -11,7 +11,7 @@ class Zone:
     def __init__(self, zone_idf_data: EpBunch, case_idf) -> None:
         self.data = zone_idf_data
         self.name = zone_idf_data.Name
-        self.walls: list[Wall] = []
+        self.wall_list: list[Wall] = []
         self.output_data = {}
         self.extracted_data = {}
 
@@ -20,7 +20,7 @@ class Zone:
         self.run()
 
     def __repr__(self):
-        return f"Zone({self.name})"
+        return f"Zone({self.display_name})"
 
     def run(self):
         self.create_display_name()
@@ -30,24 +30,24 @@ class Zone:
     def create_display_name(self):
         self.entry_name = self.name.split()[1]
         self.display_name = f"Block {self.entry_name}"
+        self.bunch_name = f"B_{self.entry_name}"
 
     def get_walls(self):
-        self.walls = [
+        self.wall_list = [
             Wall(surface, self)
             for surface in self.all_surfaces
             if surface.Zone_Name == self.name and surface.Surface_Type == "wall"
         ]
 
-        self.wall_bunch = Munch()
-        for wall in self.walls:
-            name = to_python_format(wall.name)
-            self.wall_bunch.update({name: wall})
+        self.walls = Munch()
+        for wall in self.wall_list:
+            self.walls.update({wall.bunch_name: wall})
 
-        print(f"Added {len(self.walls)} walls ")
+        print(f"Added {len(self.wall_list)} walls ")
         # assert len(self.walls) == expected_walls, f"For zone {self.name}, added walls != expected walls: {self.walls}"
 
     def create_geometry(self):
-        wall_lines = [self.walls[i].line for i in range(len(self.walls))]
+        wall_lines = [self.wall_list[i].line for i in range(len(self.wall_list))]
         self.polygon = sp.get_geometry(sp.polygonize(wall_lines), 0)
 
         assert (

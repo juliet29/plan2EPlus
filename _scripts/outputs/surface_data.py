@@ -49,17 +49,17 @@ class SurfaceData(SQLReader):
                     try:
                         data = wall.output_data[dataset_name]
                     except:
-                        print(f"No data for {wall.name2}")
+                        print(f"No data for {wall.display_name}")
                         continue
                     dataset = data.dataset
 
-                    color = self.color_map[wall.zone]
+                    color = self.color_map[wall.zone.entry_name]
                     fig.add_trace(
                         go.Scatter(
                             x=dataset.datetimes,
                             y=dataset.values,
-                            legendgroup=wall.zone,
-                            name=f"{wall.zone} Block",
+                            legendgroup=wall.zone.display_name,
+                            name=f"{wall.zone.display_name}",
                             line=dict(color=color),
                         ),
                         row=row,
