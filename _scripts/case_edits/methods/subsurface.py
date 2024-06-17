@@ -17,7 +17,7 @@ class SubsurfaceType(Enum):
     WINDOW = 1
 
 class SubsurfaceAttributes:
-    def __init__(self, type:SubsurfaceType, length:int, height:int, construction:EpBunch=None, surface:Wall=None) -> None:
+    def __init__(self, type:SubsurfaceType, length:int, height:int, construction:EpBunch=None, surface:Wall=None) -> None: # type: ignore
         self.type = type
         self.length = length 
         self.height = height
