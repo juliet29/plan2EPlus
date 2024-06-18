@@ -24,7 +24,7 @@ class EneryPlusCaseReader:
 
 class EneryPlusCaseEditor:
     # TODO make this inherit the other? to the extent it cane?
-    def __init__(self, case_name:str, starting_case:str=None) -> None:
+    def __init__(self, case_name:str, starting_case:str=None) -> None: # type: ignore
         # make case folder
         self.path = os.path.join("cases", case_name)
         if not os.path.exists(self.path):
@@ -64,6 +64,9 @@ class EneryPlusCaseEditor:
         self.idf.intersect_match()
         self.idf.set_default_constructions()
         self.save_idf()
+
+
+
 
     def run_idf(self, run_local=False):
         # TODO not sure why this is here.. 

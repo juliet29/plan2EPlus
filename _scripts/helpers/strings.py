@@ -19,7 +19,5 @@ def to_python_format(text):
 
 
 INTERSECT_SURF_PATTERN = re.compile("000\d_\d")
-
-
 def test_intersecting_surface(name):
     return bool(INTERSECT_SURF_PATTERN.match(name[-6:]))
