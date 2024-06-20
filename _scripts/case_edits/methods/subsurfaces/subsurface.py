@@ -68,6 +68,7 @@ class Subsurface:
 
 
     def initialize_object(self):
+        # TODO can fix this => can take the object directly without the [-1] thing .. see airflow network.. 
         if self.attrs.surface.is_interior_wall:
             self.epcase.idf.newidfobject(self.type_interzone)
             self.obj0 = self.epcase.idf.idfobjects[self.type_interzone][-1]

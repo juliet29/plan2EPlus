@@ -22,7 +22,7 @@ class Wall:
         self.data = idf_data
         self.name = idf_data.Name
 
-        self.line: sp.LineString = None
+        self.line: sp.LineString
         self.boundary_condition = None
         self.output_data = {}
         self.zone = zone

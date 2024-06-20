@@ -1,7 +1,7 @@
 import re
 
 from case_edits.epcase import EneryPlusCaseEditor
-from case_edits.methods.subsurface import SubsurfaceType
+from case_edits.methods.subsurfaces.subsurface import SubsurfaceType
 
 class Getter:
     def __init__(self, epcase:EneryPlusCaseEditor) -> None:
