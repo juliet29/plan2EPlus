@@ -4,6 +4,9 @@ from enum import Enum
 class OutputVars(str, Enum):
     # zone
     zone_mean_air_temp = "Zone Mean Air Temperature"
+    zone_vent_vol = "AFN Zone Ventilation Volume"
+    zone_ach = "AFN Zone Ventilation Air Change Rate"
+    zone_vent_heat_gain = "AFN Zone Ventilation Sensible Heat Gain Rate"
 
     # site
     site_db_temp = "Site Outdoor Air Drybulb Temperature"

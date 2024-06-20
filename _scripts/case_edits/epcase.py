@@ -24,7 +24,7 @@ class EneryPlusCaseReader:
 
 class EneryPlusCaseEditor:
     # TODO make this inherit the other? to the extent it cane?
-    def __init__(self, case_name:str, starting_case:str=None) -> None: # type: ignore
+    def __init__(self, case_name:str, starting_case:str="") -> None: # type: ignore
         # make case folder
         self.path = os.path.join("cases", case_name)
         if not os.path.exists(self.path):
@@ -58,6 +58,9 @@ class EneryPlusCaseEditor:
     def create_obj(self):
         # this is for 3d objects!
         self.idf.to_obj(fname=os.path.join(self.path, "out.obj"))
+
+    # def update_outputs_names(self, output_names:list[str]):
+    #     self.output_names = output_names
 
 
     def prepare_to_run(self):

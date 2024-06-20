@@ -23,3 +23,13 @@ class Getter:
                     for item in v:
                         if "Building_Surface_Name" in item.fieldnames:
                             self.subsurfaces.append(item)
+
+    # TODO repetitive.. 
+    def get_afn_objects(self):
+        self.afn_objects = []
+        pattern = re.compile("AIRFLOWNETWORK")
+        for k,v in self.epcase.idf.idfobjects.items():
+            if bool(pattern.match(k)):
+                if len(v) > 0:
+                    for item in v:
+                        self.afn_objects.append(item)

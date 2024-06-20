@@ -83,7 +83,11 @@ class SQLReader:
 
         for dataset in collection:
             self.header = dataset.header.to_dict()
-            self.geom_name = self.header["metadata"][self.geom_type]
+            try:
+                self.geom_name = self.header["metadata"][self.geom_type]
+            except: # TODO quick hack...
+                self.geom_name = self.header["metadata"]["System"]
+
 
             if "ROOF" in self.geom_name:
                 continue
@@ -120,7 +124,7 @@ class SQLReader:
     def validate_request(self):
         assert (
             self.curr_output.value in self.sqld.available_outputs
-        ), f"{self.curr_output.value} not in {self.sqld.available_outputs}"
+        ), f"{self.curr_output.value} not in {self.sqld.available_outputs}"  # type: ignore
 
     def update_dataset_names(self, dataset_name):
         name = to_python_format(dataset_name)
