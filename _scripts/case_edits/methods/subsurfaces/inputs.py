@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from munch import Munch
-from typing import List, Tuple
+from typing import List, Sequence
 from geomeppy import IDF
 from geomeppy.patches import EpBunch
 from enum import Enum
@@ -25,7 +25,7 @@ class SubsurfaceAttributes:
 @dataclass
 class SubsurfaceInputs:
     zones: Munch
-    ssurface_pairs: List[PairType]
+    ssurface_pairs: Sequence[PairType]
     case_idf: IDF
     attributes: (
         SubsurfaceAttributes  # TODO -> make into list of attributes corresponding to pair..

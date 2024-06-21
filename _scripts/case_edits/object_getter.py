@@ -1,7 +1,7 @@
 import re
 
 from case_edits.epcase import EneryPlusCaseEditor
-from case_edits.methods.subsurfaces.subsurface import SubsurfaceType
+from case_edits.methods.subsurfaces.inputs import SubsurfaceObjects
 
 class Getter:
     def __init__(self, epcase:EneryPlusCaseEditor) -> None:
@@ -10,7 +10,7 @@ class Getter:
 
     # TODO move elsewhere .. 
     def get_subsurfaces(self):
-        types = [SubsurfaceType(i).name for i in range(2)]
+        types = [SubsurfaceObjects(i).name for i in range(2)]
         for type in types:
             pattern = re.compile(type)
             self.get_subsurface_by_type(pattern)

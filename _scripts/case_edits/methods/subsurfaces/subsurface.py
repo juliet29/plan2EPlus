@@ -1,13 +1,3 @@
-from icecream import ic
-from typing import Union
-
-
-from geomeppy import IDF
-
-
-from case_edits.epcase import EneryPlusCaseEditor
-from geometry.wall import Wall
-
 from case_edits.methods.subsurfaces.surface_getter import SurfaceGetter
 from case_edits.methods.subsurfaces.inputs import (
     SubsurfaceInputs,
@@ -22,8 +12,6 @@ class Subsurface:
         self.attrs = self.inputs.attributes
 
     # TODO check attrs width and height attrs.less than wall width and (height + DOOR_GAP)
-
-    # TODO will this be in charge of all the pairs? or a higher fx?
 
     def create_all_ssurface(self):
         for pair in self.inputs.ssurface_pairs:
@@ -41,7 +29,6 @@ class Subsurface:
             self.make_partner_object()
 
     def get_case_surface(self):
-        # TODO iterate..
         input = SurfaceGetterInputs(self.inputs.zones, self.curr_pair)
         self.sg = SurfaceGetter(input)
         self.surface = self.sg.goal_surface
@@ -62,13 +49,10 @@ class Subsurface:
         self.start_z = DOOR_GAP  # TODO adjust for windeows  !
 
     def initialize_object(self):
-        # TODO can fix this => can take the object directly without the [-1] thing .. see airflow network..
         if self.surface.is_interior_wall:
-            self.inputs.case_idf.newidfobject(self.type_interzone)
-            self.obj0 = self.inputs.case_idf.idfobjects[self.type_interzone][-1]
+            self.obj0 = self.inputs.case_idf.newidfobject(self.type_interzone)
         else:
-            self.inputs.case_idf.newidfobject(self.type)
-            self.obj0 = self.inputs.case_idf.idfobjects[self.type][-1]
+            self.obj0 = self.inputs.case_idf.newidfobject(self.type)
 
     def update_attributes(self):
         self.obj0.Starting_X_Coordinate = self.start_x
@@ -80,14 +64,12 @@ class Subsurface:
         self.obj0.Name = self.name
 
     def make_partner_object(self):
-        self.inputs.case_idf.copyidfobject(self.obj0)
-        self.obj1 = self.inputs.case_idf.idfobjects[self.type_interzone][-1]
+        self.obj1 = self.inputs.case_idf.copyidfobject(self.obj0)
+        # self.inputs.case_idf.idfobjects[self.type_interzone][-1]
         self.obj1.Name = f"{self.surface.partner_wall_name} {self.type_title}"
         self.obj1.Building_Surface_Name = self.surface.partner_wall_name
 
         self.obj1.Outside_Boundary_Condition_Object = self.obj0.Name
         self.obj0.Outside_Boundary_Condition_Object = self.obj1.Name
 
-    # TODO get all objects of this type..
 
-    # TODO be able to visualize doors in geometry ..

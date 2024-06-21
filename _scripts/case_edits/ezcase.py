@@ -1,31 +1,29 @@
 from dataclasses import dataclass
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Sequence
 
 from outputs.variables import OutputVars 
-from case_edits.epcase import EneryPlusCaseEditor
-from case_edits.special_types import PairType, GeometryType
 
+
+from gplan.room_class import GPLANRoomAccess
 from gplan.convert import GPLANtoGeomeppy
 
+
+from case_edits.epcase import EneryPlusCaseEditor
+from case_edits.special_types import PairType, GeometryType
 from case_edits.methods.subsurfaces.inputs import SubsurfaceInputs, SubsurfaceAttributes, SubsurfaceObjects
 from case_edits.methods.subsurfaces.subsurface import Subsurface
-from gplan.room_class import GPLANRoomAccess
-
-
-
-
+from case_edits.methods.airflownetwork import AirflowNetwork
+from case_edits.methods.outputs import OutputRequests
 
 
 @dataclass
 class EzCaseInput:
     case_name:str
-    door_pairs: List[PairType]
-    window_pairs: List[PairType]
+    door_pairs: Sequence[PairType]
+    window_pairs: Sequence[PairType]
+    output_variables:List[OutputVars]
     geometry:GeometryType = GPLANRoomAccess("",0)
     starting_case:str=""
-    
-   
-    # outputs:List[OutputVars]
 
 class EzCase():
     def __init__(self, input:EzCaseInput) -> None:
@@ -39,6 +37,8 @@ class EzCase():
         self.get_geometry()
         self.add_doors()
         self.add_windows()
+        self.add_airflownetwork()
+        self.add_output_variables()
 
     def add_rooms(self):
         self.gplan_convert = GPLANtoGeomeppy(self.case, self.input.geometry)
@@ -66,6 +66,15 @@ class EzCase():
         inputs = SubsurfaceInputs(self.zones, self.input.window_pairs, self.case.idf, standard_window)
         self.ss = Subsurface(inputs)
         self.ss.create_all_ssurface()
+
+    def add_airflownetwork(self):
+        self.afn = AirflowNetwork(self.case)
+
+    def add_output_variables(self):
+        self.out_reqs = OutputRequests(self.case)
+        for var in self.input.output_variables:
+            self.out_reqs.add_output_variable(name=var.value)
+        # TODO not sure if need to request sql? depends on starting case.. 
 
 
 

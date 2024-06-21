@@ -5,6 +5,13 @@ from case_edits.object_getter import Getter
 class AirflowNetwork:
     def __init__(self, epcase:EneryPlusCaseEditor) -> None:
         self.epcase = epcase
+        self.run()
+
+    def run(self):
+        self.create_simulation_control()
+        self.create_zone_objects()
+        self.create_zone_surfaces()
+        self.get_afn_objects()
 
     def create_simulation_control(self):
         self.sim_control = self.epcase.idf.newidfobject("AirflowNetwork:SimulationControl".upper())
@@ -17,8 +24,6 @@ class AirflowNetwork:
             self.zone = self.epcase.idf.newidfobject("AirflowNetwork:MultiZone:Zone".upper())
             self.zone.Ventilation_Control_Mode = "Constant"
             self.zone.Zone_Name = thermal_zone.name
-            # self.zone.Venting_Availability_Schedule_Name = 0
-            # Venting Availability Schedule Name is left blank, signifying always open, when 0 => doors are closed.. 
 
 
     def create_zone_surfaces(self):
@@ -29,11 +34,11 @@ class AirflowNetwork:
             if self.is_examined_subsurface(subsurface):
                 continue
 
-            self.surface =  self.epcase.idf.newidfobject("AirflowNetwork:MultiZone:Surface".upper())
-            self.surface.Surface_Name = subsurface.Name
+            self.afn_surface =  self.epcase.idf.newidfobject("AirflowNetwork:MultiZone:Surface".upper())
+            self.afn_surface.Surface_Name = subsurface.Name
 
             self.create_simple_opening(subsurface)
-            self.surface.Leakage_Component_Name = self.opening.Name
+            self.afn_surface.Leakage_Component_Name = self.opening.Name
 
 
     def create_simple_opening(self, subsurface):
@@ -63,4 +68,9 @@ class AirflowNetwork:
         g = Getter(self.epcase)
         g.get_subsurfaces()
         self.subsurfaces = g.subsurfaces
+
+    def get_afn_objects(self):
+        g = Getter(self.epcase)
+        g.get_afn_objects()
+        self.afn_objects = g.afn_objects
     
