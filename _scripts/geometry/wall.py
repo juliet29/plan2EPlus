@@ -8,7 +8,7 @@ from helpers.strings import get_last_word, test_intersecting_surface
 from outputs.classes import GeometryOutputData
 
 
-class CardinalDirection(Enum):
+class WallNormal(Enum):
     # direction of outward normal of the wall..
     # https://eppy.readthedocs.io/en/latest/eppy.geometry.html#eppy.geometry.surface.azimuth
     NORTH = 0.0
@@ -50,8 +50,6 @@ class Wall:
                 self.is_interior_wall = True
                 self.partner_wall_name = self.data.Outside_Boundary_Condition_Object
 
-
-
     def get_wall_number(self):
         if self.is_intersecting_wall:
             self.number = self.name[-4:]
@@ -59,7 +57,7 @@ class Wall:
             self.number = self.name[-2:]
 
     def get_direction(self):
-        self.direction = CardinalDirection(self.data.azimuth).name
+        self.direction = WallNormal(self.data.azimuth).name
 
     def create_display_name(self):
         self.display_name = (

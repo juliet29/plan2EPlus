@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from helpers.plots import get_plotly_colors
-from geometry.wall import CardinalDirection
+from geometry.wall import WallNormal
 from outputs.plotter import Plotter
 from outputs.sql import SQLReader
 
@@ -13,7 +13,7 @@ class SurfaceData(SQLReader):
         self.plotter = PlotterObj
 
     def prepare_titles(self):
-        self.direction_names = [CardinalDirection(i).name for i in [0, 90, 180, 270]]
+        self.direction_names = [WallNormal(i).name for i in [0, 90, 180, 270]]
         self.direction_titles = [f"{i.title()} Walls" for i in self.direction_names]
 
     def create_color_map(self):
