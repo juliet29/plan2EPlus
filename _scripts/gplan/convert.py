@@ -1,7 +1,7 @@
 # assuming meters?
 import json
 from typing import List, Union
-from gplan.room_type import GPLANRoomType, GPLANRoomAccess
+from gplan.room_class import GPLANRoomType, GPLANRoomAccess
 from gplan.room import GPLANRoom
 
 

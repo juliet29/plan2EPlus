@@ -12,17 +12,15 @@ class SurfaceGetter:
     def run(self):
         self.curr_zone = self.get_zone(self.curr_pair[0])
         if type(self.curr_pair[1]) == WallNormal:
-            print(self.curr_pair)
-            print("getting surface by direction babe")
             self.dir = self.curr_pair[1]
             self.find_surface_by_direction()
-        else:
+        elif type(self.curr_pair[1]) == int:
             self.nb_zone = self.get_zone(self.curr_pair[1])
             self.find_surface_by_partner()
 
     def find_surface_by_direction(self):
         self.dir = self.curr_pair[1]
-        candidates = [w for w in self.curr_zone.walls.values() if w.direction == self.dir.name]
+        candidates = [w for w in self.curr_zone.walls.values() if w.direction == self.dir.name] #type:ignore
         self.check_if_unique(candidates)
         self.goal_surface = candidates[0]
 

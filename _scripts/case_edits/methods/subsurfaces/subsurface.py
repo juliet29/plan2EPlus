@@ -47,7 +47,7 @@ class Subsurface:
         self.surface = self.sg.goal_surface
 
     def determine_ssurface_type(self):
-        self.type = self.attrs.type.name
+        self.type = self.attrs.object_type.name
         self.type_interzone = f"{self.type}:INTERZONE"
         self.type_title = self.type.title()
 

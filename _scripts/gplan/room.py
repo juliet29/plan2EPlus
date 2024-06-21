@@ -1,4 +1,4 @@
-from gplan.room_type import GPLANRoomType
+from gplan.room_class import GPLANRoomType
 from icecream import ic
 
 class GPLANRoom:
