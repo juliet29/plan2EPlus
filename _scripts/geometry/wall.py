@@ -4,8 +4,9 @@ import re
 import shapely as sp
 from enum import Enum
 
-from helpers.strings import get_last_word, test_intersecting_surface
+from helpers.strings import test_intersecting_surface
 from outputs.classes import GeometryOutputData
+from geometry.surface_geom import SurfaceGeometryExtractor
 
 
 class WallNormal(Enum):
@@ -67,36 +68,18 @@ class Wall:
             f"B_{self.zone.entry_name}_{self.direction.title()}_W{self.number}"
         )
 
-    def get_geometry(
-        self,
-    ):
-        # only care about coordinates 1 - 4
-        z_coords = fnmatch.filter(self.data.fieldnames, "Vertex_[0-4]_Zcoordinate")
-
-        # Define the regex pattern to match digits
-        pattern = re.compile(r"\d+")
-
+    def get_geometry(self):
+        sg = SurfaceGeometryExtractor(self)
+        # getting the line that defines the base of this wall..
         vertices = []
-        for fieldname in z_coords:
-            # TODO will need to update this if do higher stories
-            # get the vertex number where z-coord is 0
-            if self.data[fieldname] == 0:
-                # TODO figure out what is going on here / clean this up ..
-                matches = pattern.findall(fieldname)
-                # TODO some tests needed here..
-                x_field = fnmatch.filter(
-                    self.data.fieldnames, f"Vertex_{matches[0]}_Xcoordinate"
-                )[0]
-                x_val = self.data[x_field]
+        for coord in sg.surface_geom.values():
+            if coord.Z == 0:
+                vertices.append([coord.X, coord.Y])
 
-                y_field = fnmatch.filter(
-                    self.data.fieldnames, f"Vertex_{matches[0]}_Ycoordinate"
-                )[0]
-                y_val = self.data[y_field]
-
-                vertices.append([x_val, y_val])
+        assert len(vertices) == 2, f"Line defining surface {self.display_name} ! have 2 vertices: {vertices}"
 
         self.line = sp.LineString(vertices)
+
 
     # dealing with outputs
     def create_output_data(self, data: GeometryOutputData):

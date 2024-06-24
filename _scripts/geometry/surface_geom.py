@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from munch import Munch
 from pprint import pprint, pformat
-from geometry.wall import Wall
+# from geometry.wall import Wall
 import re
 
 
@@ -13,7 +13,7 @@ class Coordinate:
 
 
 class SurfaceGeometryExtractor:
-    def __init__(self, surface:Wall) -> None:
+    def __init__(self, surface) -> None:
         # TODO specify that the type of the surrface is wall-like ..
         self.name = surface.display_name
         self.surface = surface.data
@@ -50,7 +50,7 @@ class SurfaceGeometryExtractor:
 
     def is_valid_fieldname(self, fieldname):
         if "coordinate" in fieldname:
-            if self.surface[fieldname]:
+            if self.surface[fieldname] != str():
                 return True
 
     def update_geom_structure(self):
