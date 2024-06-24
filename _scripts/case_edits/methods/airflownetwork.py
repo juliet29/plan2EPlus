@@ -31,9 +31,8 @@ class AirflowNetwork:
         self.get_subsurfaces()
 
         for subsurface in self.subsurfaces:
-            if self.is_examined_subsurface(subsurface):
-                continue
-
+            # if self.is_original_subsurface(subsurface):
+                # continue
             self.afn_surface =  self.epcase.idf.newidfobject("AirflowNetwork:MultiZone:Surface".upper())
             self.afn_surface.Surface_Name = subsurface.Name
 
@@ -52,22 +51,21 @@ class AirflowNetwork:
         
 
             
-    def is_examined_subsurface(self, subsurface):
-        try:  # only count interzones once...
-            if subsurface.Outside_Boundary_Condition_Object in self.examined_subsurfaces:
-                print(f"skipping {subsurface.Name}")
-                return True
-        except:
-            pass # not an interzone object.. 
+    def is_original_subsurface(self, subsurface):
+        if "Partner" not in subsurface.Name:
+            # print(f"skipping {subsurface.Name}")
+            return True
+        # except:
+        #     pass # not an interzone object.. 
     
-        self.examined_subsurfaces.append(subsurface.Name)
-        return False
+        # self.examined_subsurfaces.append(subsurface.Name)
+        # return False
 
 
     def get_subsurfaces(self):
         g = Getter(self.epcase)
-        g.get_subsurfaces()
-        self.subsurfaces = g.subsurfaces
+        self.subsurfaces  = g.get_original_subsurfaces()
+        # = g.subsurfaces
 
     def get_afn_objects(self):
         g = Getter(self.epcase)

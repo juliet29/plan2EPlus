@@ -11,7 +11,7 @@ from gplan.convert import GPLANtoGeomeppy
 from case_edits.epcase import EneryPlusCaseEditor
 from case_edits.special_types import PairType, GeometryType
 from case_edits.methods.subsurfaces.inputs import SubsurfaceInputs, SubsurfaceAttributes, SubsurfaceObjects
-from case_edits.methods.subsurfaces.subsurface import Subsurface
+from case_edits.methods.subsurfaces.creator import SubsurfaceCreator
 from case_edits.methods.airflownetwork import AirflowNetwork
 from case_edits.methods.outputs import OutputRequests
 
@@ -58,13 +58,13 @@ class EzCase():
     def add_doors(self):
         standard_door = SubsurfaceAttributes(SubsurfaceObjects.DOOR, 1, 2, self.door_const) #type:ignore
         inputs = SubsurfaceInputs(self.zones, self.input.door_pairs, self.case.idf, standard_door)
-        self.ss = Subsurface(inputs)
+        self.ss = SubsurfaceCreator(inputs)
         self.ss.create_all_ssurface()
 
     def add_windows(self):
         standard_window = SubsurfaceAttributes(SubsurfaceObjects.WINDOW, 0.5, 0.5, self.window_const) #type:ignore
         inputs = SubsurfaceInputs(self.zones, self.input.window_pairs, self.case.idf, standard_window)
-        self.ss = Subsurface(inputs)
+        self.ss = SubsurfaceCreator(inputs)
         self.ss.create_all_ssurface()
 
     def add_airflownetwork(self):

@@ -4,18 +4,20 @@ import shapely as sp
 
 from geometry.wall import Wall
 from outputs.classes import GeometryOutputData, TimeExtractData
-from helpers.strings import to_python_format
+
+from case_edits.object_getter import Getter
 
 
 class Zone:
     def __init__(self, zone_idf_data: EpBunch, case_idf) -> None:
         self.data = zone_idf_data
         self.name = zone_idf_data.Name
+        self.case_idf = case_idf
         self.wall_list: list[Wall] = []
         self.output_data = {}
         self.extracted_data = {}
 
-        self.all_surfaces = case_idf.idfobjects["BUILDINGSURFACE:DETAILED"]
+        self.all_surfaces = self.case_idf.idfobjects["BUILDINGSURFACE:DETAILED"]
 
         self.run()
 
@@ -44,7 +46,7 @@ class Zone:
             self.walls.update({wall.bunch_name: wall})
 
         print(f"Added {len(self.wall_list)} walls ")
-        # assert len(self.walls) == expected_walls, f"For zone {self.name}, added walls != expected walls: {self.walls}"
+
 
     def create_geometry(self):
         wall_lines = [self.wall_list[i].line for i in range(len(self.wall_list))]
@@ -53,6 +55,24 @@ class Zone:
         assert (
             type(self.polygon) == sp.Polygon
         ), "When creating zone geometry, zone was not polygonal "
+
+
+
+
+
+
+    # get subsurfaces
+    def get_subsurfaces(self):
+        g = Getter(self.case_idf)
+        self.case_subsurfaces = g.get_original_subsurfaces()
+        self.zone_subsurfaces = []
+        for wall in self.wall_list:
+            wall.get_subsurfaces(self.case_subsurfaces)
+            self.zone_subsurfaces.extend(wall.ssurface_list)
+
+
+
+
 
     # dealing with outputs..
 

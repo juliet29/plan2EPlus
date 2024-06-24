@@ -2,7 +2,9 @@ from case_edits.methods.subsurfaces.inputs import SurfaceGetterInputs
 from geometry.wall import WallNormal
 
 
+
 class SurfaceGetter:
+    """Automatially gets surfaces based on zones that are being connected, or direction cbeing connected to.. """
     def __init__(self, inputs: SurfaceGetterInputs) -> None:
         self.inputs = inputs
         self.curr_pair = self.inputs.ssurface_pair

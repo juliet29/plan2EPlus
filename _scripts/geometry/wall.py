@@ -7,6 +7,7 @@ from enum import Enum
 from helpers.strings import test_intersecting_surface
 from outputs.classes import GeometryOutputData
 from geometry.surface_geom import SurfaceGeometryExtractor
+from geometry.subsurface import Subsurface
 
 
 class WallNormal(Enum):
@@ -84,3 +85,9 @@ class Wall:
     # dealing with outputs
     def create_output_data(self, data: GeometryOutputData):
         self.output_data[data.short_name] = data
+
+
+    # get subsurfaces 
+    def get_subsurfaces(self, subsurfaces):
+        self.ssurface_list = [Subsurface(s, self) for s in subsurfaces if s.Building_Surface_Name == self.name]
+

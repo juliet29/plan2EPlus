@@ -6,7 +6,7 @@ from case_edits.methods.subsurfaces.inputs import (
 )
 
 
-class Subsurface:
+class SubsurfaceCreator:
     def __init__(self, inputs: SubsurfaceInputs) -> None:
         self.inputs = inputs
         self.attrs = self.inputs.attributes
@@ -66,7 +66,7 @@ class Subsurface:
     def make_partner_object(self):
         self.obj1 = self.inputs.case_idf.copyidfobject(self.obj0)
         # self.inputs.case_idf.idfobjects[self.type_interzone][-1]
-        self.obj1.Name = f"{self.surface.partner_wall_name} {self.type_title}"
+        self.obj1.Name = f"{self.obj0.Name} Partner"
         self.obj1.Building_Surface_Name = self.surface.partner_wall_name
 
         self.obj1.Outside_Boundary_Condition_Object = self.obj0.Name
