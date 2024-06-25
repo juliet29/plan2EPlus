@@ -5,10 +5,17 @@ from case_edits.methods.subsurfaces.inputs import SubsurfaceObjects
 
 class Getter:
     def __init__(self, epcase) -> None:
+        # TODO epcase will be actual case or idf.. 
         self.epcase = epcase
+        try:
+            self.idfobjects = self.epcase.idf.idfobjects
+        except:
+            self.idfobjects = self.epcase.idfobjects
         self.subsurfaces = []
 
     def get_original_subsurfaces(self):
+        if not self.subsurfaces:
+            self.get_subsurfaces()
         self.original_subsurfaces = [s for s in self.subsurfaces if "Partner" not in s.Name]
         return self.original_subsurfaces
 
@@ -22,7 +29,7 @@ class Getter:
 
 
     def get_subsurface_by_type(self, pattern):
-        for k,v in self.epcase.idf.idfobjects.items():
+        for k,v in self.idfobjects.items():
             if bool(pattern.match(k)):
                 if len(v) > 0:
                     for item in v:
@@ -33,7 +40,7 @@ class Getter:
     def get_afn_objects(self):
         self.afn_objects = []
         pattern = re.compile("AIRFLOWNETWORK")
-        for k,v in self.epcase.idf.idfobjects.items():
+        for k,v in self.idfobjects.items():
             if bool(pattern.match(k)):
                 if len(v) > 0:
                     for item in v:
