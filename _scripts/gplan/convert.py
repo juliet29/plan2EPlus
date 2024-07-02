@@ -49,7 +49,7 @@ class GPLANtoGeomeppy:
 
 
     def adjust_blocks_y(self):
-        # get the most negative y value 
+        # get absoulute largest y  
         ys = []
         for block in self.blocks:
             for coord in block["coordinates"]:

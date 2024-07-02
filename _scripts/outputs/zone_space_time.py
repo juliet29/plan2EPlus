@@ -115,6 +115,7 @@ class SpaceTimePlot:
                 trace_dict = plot_rectangle_shape(
                     zone.polygon,
                     color=data.color,
+                    # TODO edit for units.. 
                     label=f"{zone.display_name}: {data.value}ºC",
                 )
                 self.dictionaries[ix].append(trace_dict)

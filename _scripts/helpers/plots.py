@@ -7,10 +7,11 @@ import numpy as np
 class RectFromCoords:
     # ref: https://plotly.com/python/reference/layout/shapes/#layout-shapes-items-shape-x0
     def __init__(self, coords: sp.coords.CoordinateSequence) -> None:
-        self.x0 = coords[0][0]
-        self.x1 = coords[2][0]
-        self.y0 = coords[0][1]
-        self.y1 = coords[1][1]
+        x, y = get_plottable_coords(coords)
+        self.x0 = min(x)
+        self.x1 = max(x)
+        self.y0 = min(y)
+        self.y1 = max(y)
 
     def __repr__(self):
         return f"Rect(({self.x0}, {self.y0}), ({self.x1}, {self.y1}))"
@@ -70,6 +71,7 @@ def plot_rectangle_shape(polygon: sp.Polygon, color="blue", label=None):
     x1=r.x1,
     y1=r.y1,
     label=dict(text=label))
+    # fig.add_shape
 
     return d 
 
