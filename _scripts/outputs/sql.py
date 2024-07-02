@@ -2,16 +2,27 @@ import os
 from enum import Enum
 from icecream import ic
 from munch import Munch
+from typing import List
 
 from ladybug.sql import SQLiteResult
 from ladybug.analysisperiod import AnalysisPeriod
 
-from case_edits.epcase import EneryPlusCaseReader
 from geometry.geometry_parser import GeometryParser
 from helpers.strings import to_python_format
 
 from outputs.variables import OutputVars
 from outputs.classes import GeometryOutputData
+
+from dataclasses import dataclass
+from geometry.geometry_parser import GeometryParser
+from outputs.variables import OutputVars 
+
+
+@dataclass
+class SQLInputs:
+    case_name: str
+    geometry: GeometryParser
+    output_variables:List[OutputVars]
 
 
 def create_analysis_period(ap_dict):
@@ -27,35 +38,39 @@ class GeomType(Enum):
 
 
 class SQLReader:
-    def __init__(self, CASE_NAME) -> None:
-        self.case_name = CASE_NAME
-        self._get_sql_outputs()
-        self._get_geometry()
+    def __init__(self, inputs: SQLInputs) -> None:
+        self.inputs = inputs
+        self.get_sql_results()
+        self.get_geometry()
+        
 
         self.curr_output = None
         self.requested_outputs = []
-
         self.dataset_names = Munch()
+        self.request_output_variables()
 
-    def _get_sql_outputs(
-        self,
-    ):
-        SQL_PATH = os.path.join("cases", self.case_name, "results", "eplusout.sql")
+
+    def request_output_variables(self):
+        # TODO move down!
+        for output in self.inputs.output_variables:
+            self.request_output(output)
+
+    def get_sql_results(self):
+        SQL_PATH = os.path.join(
+            "cases", self.inputs.case_name, "results", "eplusout.sql"
+        )
         self.sqld = SQLiteResult(SQL_PATH)
 
-    def _get_geometry(self):
-        self.epcase = EneryPlusCaseReader(self.case_name)
-        self.geo = GeometryParser(self.epcase.idf)
-        self.geo.get_zones()
+    def get_geometry(self):
         self.create_zone_data_structure()
         self.create_wall_data_structure()
 
     def create_zone_data_structure(self):
-        self.zone_list = self.geo.zone_list
-        self.zone_dict = {i.name.upper(): i for i in self.geo.zone_list}
+        self.zone_list = self.inputs.geometry.zone_list
+        self.zone_dict = {i.name.upper(): i for i in self.inputs.geometry.zone_list}
 
     def create_wall_data_structure(self):
-        # TODO is this repetitive? i guess trying to make a master list .. 
+        # TODO is this repetitive? i guess trying to make a master list ..
         self.wall_list = []
         self.wall_dict = {}
         for zone in self.zone_list:
@@ -76,18 +91,17 @@ class SQLReader:
             self.geom_type = GeomType.Surface.name
             self.data_structure = self.wall_dict
 
-        self._match_geom_sql()
+        self.match_geom_sql()
 
-    def _match_geom_sql(self):
+    def match_geom_sql(self):
         collection = self.sqld.data_collections_by_output_name(self.curr_output.value)
 
         for dataset in collection:
             self.header = dataset.header.to_dict()
             try:
                 self.geom_name = self.header["metadata"][self.geom_type]
-            except: # TODO quick hack...
+            except:  # TODO quick hack...
                 self.geom_name = self.header["metadata"]["System"]
-
 
             if "ROOF" in self.geom_name:
                 continue
@@ -106,15 +120,14 @@ class SQLReader:
         try:
             self.data_structure[self.geom_name].create_output_data(self.output_object)
         except:
-            print(f"No match in data structure for {self.geom_name}, trying to fit.. ")
+            # print(f"No match in data structure for {self.geom_name}, trying to fit.. ")
             key = self.find_matching_key()
             if key:
-                print("success!")
+                # print("success!")
                 self.data_structure[key].create_output_data(self.output_object)
             else:
-                print("Stil no match")
-                pass
-                # raise Exception("Stil no match")
+                print(f"No match for {self.geom_name}")
+
 
     def find_matching_key(self):
         for key in self.data_structure.keys():

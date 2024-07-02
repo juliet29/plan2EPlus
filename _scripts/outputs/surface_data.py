@@ -4,12 +4,12 @@ import plotly.express as px
 
 from helpers.plots import get_plotly_colors
 from geometry.wall import WallNormal
-from outputs.plotter import Plotter
+# from outputs.plotter import Plotter
 from outputs.sql import SQLReader
 
 
 class SurfaceData(SQLReader):
-    def __init__(self, PlotterObj: Plotter) -> None:
+    def __init__(self, PlotterObj) -> None:
         self.plotter = PlotterObj
 
     def prepare_titles(self):

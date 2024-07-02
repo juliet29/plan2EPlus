@@ -1,11 +1,12 @@
 import plotly.graph_objects as go
 
-from outputs.plotter import Plotter
+# from outputs.plotter import Plotter
 
 
 class TimePlot:
-    def __init__(self, PlotterObj: Plotter) -> None:
-        self.plotter = PlotterObj
+    def __init__(self, Plotter) -> None:
+        self.plotter = Plotter
+    
 
     def make_time_plot(self, dataset_name):
         self.dataset_name = dataset_name

@@ -40,7 +40,9 @@ class SubsurfaceCreator:
 
     def create_ssurface_name(self):
         self.name = f"{self.surface.name} {self.type_title}"
-        # TODO check that no other object with this name
+        # TODO check that no other object with this name, 
+        # TODO what if its an interzone ssurface?
+        # i think this is redundant..
 
     def calculate_start_coords(self):
         surface_center = int(self.surface.data.width) / 2

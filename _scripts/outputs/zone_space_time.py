@@ -2,7 +2,6 @@ from plotly.subplots import make_subplots
 import plotly.express as px
 
 
-from outputs.plotter import Plotter
 from outputs.classes import TimeExtractData
 
 
@@ -17,7 +16,7 @@ from helpers.plots import (
 
 
 class SpaceTimePlot:
-    def __init__(self, PlotterObj: Plotter) -> None:
+    def __init__(self, PlotterObj) -> None:
         self.plotter = PlotterObj
         self.color_scheme = px.colors.sequential.RdBu_r
 
@@ -81,7 +80,7 @@ class SpaceTimePlot:
             for trace in v:
                 self.fig.add_trace(trace, row=k + 1, col=1)
 
-        self.fig["layout"]["showlegend"] = False
+        self.fig["layout"]["showlegend"] = False # type: ignore
         self.fig.add_trace(self.colorbar_trace)
         self.fig.update_layout(title_text=self.dataset_name)
 
@@ -96,12 +95,12 @@ class SpaceTimePlot:
                 val = data.value
                 norm_val = min_max_norm(val, min_val, max_val)
                 color = get_norm_plotly_colors(
-                    norm_val, min_val, max_val, color_scheme=self.color_scheme
+                    norm_val, min_val, max_val, color_scheme=self.color_scheme # type: ignore
                 )[0]
                 zone.color_extracted_data(self.dataset_name, ix, color)
 
         self.colorbar_trace = create_colorbar(
-            min_val, max_val, color_scheme=self.color_scheme
+            min_val, max_val, color_scheme=self.color_scheme # type: ignore
         )
 
     def prepare_spatial_plots(self):

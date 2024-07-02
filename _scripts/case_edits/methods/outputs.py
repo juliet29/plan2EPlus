@@ -16,13 +16,15 @@ class OutputRequests:
 
 
     def request_sql(self):
-        obj = self.epcase.idf.newidfobject("OUTPUT:SQLITE")
-        obj.Option_Type = "Simple" 
+        if not self.epcase.idf.idfobjects["OUTPUT:SQLITE"]:
+            obj = self.epcase.idf.newidfobject("OUTPUT:SQLITE")
+            obj.Option_Type = "Simple" 
 
 
     def request_json(self):
-        obj = self.epcase.idf.newidfobject("OUTPUT:JSON")
-        obj.Option_Type = "TimeSeries" 
+        if not self.epcase.idf.idfobjects["OUTPUT:JSON"]:
+            obj = self.epcase.idf.newidfobject("OUTPUT:JSON")
+            obj.Option_Type = "TimeSeries" 
 
 
     def check_existing_variable(self, new_var_name):
