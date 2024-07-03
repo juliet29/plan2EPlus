@@ -67,6 +67,7 @@ class SQLReader:
 
     def create_zone_data_structure(self):
         self.zone_list = self.inputs.geometry.zone_list
+        # TODO isnt this now a bunch? 
         self.zone_dict = {i.name.upper(): i for i in self.inputs.geometry.zone_list}
 
     def create_wall_data_structure(self):

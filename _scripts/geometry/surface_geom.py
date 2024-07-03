@@ -4,6 +4,7 @@ from pprint import pprint, pformat
 # from geometry.wall import Wall
 import re
 
+"""this is a helper for wall.py"""
 
 @dataclass
 class Coordinate:
