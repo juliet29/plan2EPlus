@@ -12,6 +12,7 @@ class GeometryParser:
     def __init__(self, idf: IDF) -> None:
         self.idf = idf
         self.get_zones()
+        self.subsurfaces = Munch()
 
     def get_zones(self):
         self.check_zone_names_are_unique()

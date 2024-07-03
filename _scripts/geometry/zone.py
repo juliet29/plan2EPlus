@@ -69,6 +69,7 @@ class Zone:
         for wall in self.wall_list:
             wall.get_subsurfaces(self.case_subsurfaces)
             self.zone_subsurfaces.extend(wall.ssurface_list)
+        return self.zone_subsurfaces
 
 
 

@@ -18,8 +18,9 @@ class Subsurface:
 
     def create_display_name(self):
         self.name = self.data.Name
-        self.object_type = self.data.key.title()
-        self.display_name = f"{self.object_type} on {self.wall.display_name}"
+        self.get_simple_object()
+        self.display_name = f"{self.simple_object_type} on {self.wall.display_name}"
+        self.bunch_name = f"{self.simple_object_type}_{self.wall.bunch_name}"
         pass
 
     def get_geometry(self):
@@ -29,3 +30,11 @@ class Subsurface:
         start =line.line_interpolate_point(self.start_x)
         end = line.line_interpolate_point(self.start_x+self.length)
         self.line = LineString([start, end])
+
+    def get_simple_object(self):
+        self.object_type = self.data.key.title()
+        if "interzone" in self.object_type.lower():
+            self.simple_object_type = self.object_type.split(":")[0]
+        else:
+            self.simple_object_type = self.object_type
+

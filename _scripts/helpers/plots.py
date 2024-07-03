@@ -1,12 +1,13 @@
-import shapely as sp
+from shapely import LineString, Polygon 
+from shapely.coords import CoordinateSequence
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 
 
-class RectFromCoords:
+class PlotCoords:
     # ref: https://plotly.com/python/reference/layout/shapes/#layout-shapes-items-shape-x0
-    def __init__(self, coords: sp.coords.CoordinateSequence) -> None:
+    def __init__(self, coords: CoordinateSequence) -> None:
         x, y = get_plottable_coords(coords)
         self.x0 = min(x)
         self.x1 = max(x)
@@ -14,10 +15,10 @@ class RectFromCoords:
         self.y1 = max(y)
 
     def __repr__(self):
-        return f"Rect(({self.x0}, {self.y0}), ({self.x1}, {self.y1}))"
+        return f"PlotCoords(({self.x0}, {self.y0}), ({self.x1}, {self.y1}))"
 
 
-def get_plottable_coords(coords: sp.coords.CoordinateSequence):
+def get_plottable_coords(coords: CoordinateSequence):
     x = [c[0] for c in coords]
     y = [c[1] for c in coords]
     return x, y
@@ -33,7 +34,7 @@ def get_norm_plotly_colors(sample_pts, min, max, color_scheme="turbo"):
 
 
 
-def plot_line_string(line: sp.LineString, color="yellow", label=None, width=3):
+def plot_line_string(line: LineString, color="yellow", label=None, width=3):
     x, y = get_plottable_coords(line.coords)
     trace = go.Scatter(
         x=x,
@@ -45,7 +46,7 @@ def plot_line_string(line: sp.LineString, color="yellow", label=None, width=3):
     )
     return trace
 
-def plot_polygon(polygon: sp.Polygon, color="blue", label=None):
+def plot_polygon(polygon: Polygon, color="blue", label=None):
     x, y = get_plottable_coords(polygon.exterior.coords)
     trace = go.Scatter(
         x=x,
@@ -61,8 +62,8 @@ def plot_polygon(polygon: sp.Polygon, color="blue", label=None):
     return trace
 
 
-def plot_rectangle_shape(polygon: sp.Polygon, color="blue", label=None):
-    r = RectFromCoords(polygon.exterior.coords)
+def plot_rectangle_shape(polygon: Polygon, color="blue", label=None):
+    r = PlotCoords(polygon.exterior.coords)
     d = dict(type="rect",
     xref="x", yref="y",
     fillcolor=color,

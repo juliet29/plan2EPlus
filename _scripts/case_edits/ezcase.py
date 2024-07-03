@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Tuple, Union, Sequence
+from munch import Munch
 
 from gplan.room_class import GPLANRoomAccess
 from gplan.convert import GPLANtoGeomeppy
@@ -14,6 +15,7 @@ from case_edits.methods.outputs import OutputRequests
 from outputs.variables import OutputVars 
 from outputs.plotter import Plotter
 from outputs.sql import SQLInputs
+
 
 
 @dataclass
@@ -37,6 +39,7 @@ class EzCase():
         self.get_geometry()
         self.add_doors()
         self.add_windows()
+        self.update_geometry_subsurfaces()
         self.add_airflownetwork()
         self.add_output_variables()
         self.case.save_idf()
@@ -69,6 +72,14 @@ class EzCase():
         inputs = SubsurfaceInputs(self.zones, self.input.window_pairs, self.case.idf, standard_window)
         self.ss = SubsurfaceCreator(inputs)
         self.ss.create_all_ssurface()
+
+    def update_geometry_subsurfaces(self):
+        subsurfaces  = []
+        for zone in self.case.geometry.zones.values():
+            subsurfaces.extend(zone.get_subsurfaces())
+        for subsurface in subsurfaces:
+            self.case.geometry.subsurfaces.update({subsurface.bunch_name: subsurface})
+
 
     def add_airflownetwork(self):
         self.afn = AirflowNetwork(self.case)
