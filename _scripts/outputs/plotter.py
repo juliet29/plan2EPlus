@@ -2,6 +2,7 @@ from outputs.sql import SQLReader, SQLInputs
 from outputs.zone_space_time import SpaceTimePlot
 from outputs.zone_time import TimePlot
 from outputs.surface_data import SurfaceData
+from outputs.base_2d import Base2DPlot
 from datetime import time
 from typing import List
 
@@ -23,8 +24,15 @@ class Plotter(SQLReader):
     def check_dataset_is_surface(self, dataset_name):
         if "surf" not in dataset_name:
             raise Exception(f"Dataset `{dataset_name}` is not for surfaces!")
+
+        
         
     # types of plots..
+    def plot_geometry(self):
+        b = Base2DPlot(self)
+        return b.run()
+
+
     def plot_zone_over_time(self, dataset):
         s = TimePlot(self)
         return s.make_time_plot(dataset)
