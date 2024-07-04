@@ -11,7 +11,7 @@ from helpers.plots import (
     create_colorbar,
     plot_polygon,
     plot_line_string,
-    plot_rectangle_shape,
+    plot_shape,
 )
 
 
@@ -80,7 +80,7 @@ class SpaceTimePlot:
             for trace in v:
                 self.fig.add_trace(trace, row=k + 1, col=1)
 
-        self.fig["layout"]["showlegend"] = False # type: ignore
+        self.fig["layout"]["showlegend"] = False  # type: ignore
         self.fig.add_trace(self.colorbar_trace)
         self.fig.update_layout(title_text=self.dataset_name)
 
@@ -95,12 +95,12 @@ class SpaceTimePlot:
                 val = data.value
                 norm_val = min_max_norm(val, min_val, max_val)
                 color = get_norm_plotly_colors(
-                    norm_val, min_val, max_val, color_scheme=self.color_scheme # type: ignore
+                    norm_val, min_val, max_val, color_scheme=self.color_scheme  # type: ignore
                 )[0]
                 zone.color_extracted_data(self.dataset_name, ix, color)
 
         self.colorbar_trace = create_colorbar(
-            min_val, max_val, color_scheme=self.color_scheme # type: ignore
+            min_val, max_val, color_scheme=self.color_scheme  # type: ignore
         )
 
     def prepare_spatial_plots(self):
@@ -112,10 +112,10 @@ class SpaceTimePlot:
             self.traces[ix] = []
             for zone in self.plotter.zone_list:
                 data = zone.extracted_data[self.dataset_name][ix]
-                trace_dict = plot_rectangle_shape(
+                trace_dict = plot_shape(
                     zone.polygon,
                     color=data.color,
-                    # TODO edit for units.. 
+                    # TODO edit for units..
                     label=f"{zone.display_name}: {data.value}ºC",
                 )
                 self.dictionaries[ix].append(trace_dict)
