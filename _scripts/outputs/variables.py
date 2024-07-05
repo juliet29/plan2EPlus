@@ -10,6 +10,7 @@ class OutputVars(str, Enum):
     # AFN ~ node 
     node_temp = "AFN Node Temperature"
     node_total_pressure = "AFN Node Total Pressure"
+    node_wind_pressure = "AFN Node Wind Pressure"
     
     # AFN ~ linkage 
     linkage_flow = "AFN Linkage Node 1 to Node 2 Volume Flow Rate"
@@ -21,12 +22,15 @@ class OutputVars(str, Enum):
     zone_mean_air_temp = "Zone Mean Air Temperature"
 
     # site
+    # https://bigladdersoftware.com/epx/docs/22-2/input-output-reference/group-location-climate-weather-file-access.html#outputs-3-011
     site_db_temp = "Site Outdoor Air Drybulb Temperature"
     site_wb_temp = "Site Outdoor Air Wetbulb Temperature"
     site_dp_temp = "Site Outdoor Air Dewpoint Temperature"
     site_direct_solar_rad = "Site Direct Solar Radiation Rate per Area"
     site_diffuse_solar_rad = "Site Diffuse Solar Radiation Rate per Area"
     site_solar_angle = "Site Solar Azimuth Angle"
+    site_wind_speed = "Site Wind Speed"
+    site_wind_direction = "Site Wind Direction"
 
     # outside surface
     surf_incident_solar_rad = (

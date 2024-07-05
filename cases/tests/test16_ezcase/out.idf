@@ -738,12 +738,27 @@ OUTPUT:VARIABLE,
 
 OUTPUT:VARIABLE,
     *,                        !- Key Value
+    AFN Node Wind Pressure,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
     AFN Linkage Node 1 to Node 2 Volume Flow Rate,    !- Variable Name
     Timestep;                 !- Reporting Frequency
 
 OUTPUT:VARIABLE,
     *,                        !- Key Value
     AFN Surface Venting Window or Door Opening Factor,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Site Wind Speed,          !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Site Wind Direction,      !- Variable Name
     Timestep;                 !- Reporting Frequency
 
 OUTPUT:SQLITE,
