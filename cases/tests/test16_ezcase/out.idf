@@ -726,6 +726,26 @@ OUTPUT:VARIABLE,
     Surface Outside Face Net Thermal Radiation Heat Gain Rate per Area,    !- Variable Name
     Timestep;                 !- Reporting Frequency
 
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Node Temperature,     !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Node Total Pressure,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Linkage Node 1 to Node 2 Volume Flow Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Surface Venting Window or Door Opening Factor,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
 OUTPUT:SQLITE,
     Simple,                   !- Option Type
     UseOutputControlTableStyle;    !- Unit Conversion for Tabular Data

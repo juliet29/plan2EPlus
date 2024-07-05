@@ -2,11 +2,23 @@ from enum import Enum
 
 
 class OutputVars(str, Enum):
-    # zone
-    zone_mean_air_temp = "Zone Mean Air Temperature"
+    # AFN ~ system 
     zone_vent_vol = "AFN Zone Ventilation Volume"
     zone_ach = "AFN Zone Ventilation Air Change Rate"
     zone_vent_heat_gain = "AFN Zone Ventilation Sensible Heat Gain Rate"
+
+    # AFN ~ node 
+    node_temp = "AFN Node Temperature"
+    node_total_pressure = "AFN Node Total Pressure"
+    
+    # AFN ~ linkage 
+    linkage_flow = "AFN Linkage Node 1 to Node 2 Volume Flow Rate"
+    
+    # AFN ~ surface 
+    surface_venting = "AFN Surface Venting Window or Door Opening Factor"
+
+    # zone
+    zone_mean_air_temp = "Zone Mean Air Temperature"
 
     # site
     site_db_temp = "Site Outdoor Air Drybulb Temperature"

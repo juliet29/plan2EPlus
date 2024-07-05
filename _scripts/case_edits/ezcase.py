@@ -28,9 +28,10 @@ class EzCaseInput:
     starting_case:str=""
 
 class EzCase():
-    def __init__(self, input:EzCaseInput) -> None:
+    def __init__(self, input:EzCaseInput, RUN_CASE=False) -> None:
         self.input = input
         self.case = EneryPlusCaseEditor(self.input.case_name, self.input.starting_case)
+        self.RUN_CASE = RUN_CASE
         self.run()
 
     def run(self):
@@ -43,6 +44,8 @@ class EzCase():
         self.add_airflownetwork()
         self.add_output_variables()
         self.case.save_idf()
+        if self.RUN_CASE:
+            self.case.run_idf()
         self.prepare_plotter()
 
 
