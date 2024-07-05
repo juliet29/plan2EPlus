@@ -1,6 +1,7 @@
 from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.graph_objects as go
+from geometry.geometry_parser import GeometryParser
 
 # from outputs.plotter import Plotter
 from helpers.plots import plot_shape
@@ -11,10 +12,9 @@ SUBSURFACE_COLOR = "#a32c54"
 
 # shoukd explitly make ezcase obj.. or assert that has subsurface info,,
 class Base2DPlot:
-    def __init__(self, PlotterObj) -> None:
-        self.plotter = PlotterObj
-        self.zones = self.plotter.inputs.geometry.zones
-        self.subsurfaces = self.plotter.inputs.geometry.subsurfaces
+    def __init__(self, geometry:GeometryParser) -> None:
+        self.zones = geometry.zones
+        self.subsurfaces = geometry.subsurfaces
 
     def run(self):
         self.make_traces()
@@ -22,7 +22,7 @@ class Base2DPlot:
         self.determine_figure_size()
         self.create_figure()
         self.update_figure_layout()
-        self.fig.show()
+        # self.fig.show()
 
     def make_traces(self):
         self.traces = {}

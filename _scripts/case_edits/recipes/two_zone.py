@@ -19,8 +19,8 @@ output_reqs = [ov.zone_ach,
                ov.node_wind_pressure,
                ov.linkage_flow,
                ov.surface_venting,
-               ov.site_wind_speed, 
-               ov.site_wind_direction
+            #    ov.site_wind_speed, 
+            #    ov.site_wind_direction
                ]
 
 input = EzCaseInput(case_name=TEST_CASE, geometry=GPLANRoomAccess(PLAN_PATH, PLAN_INDEX), door_pairs=door_pairs, window_pairs=window_pairs, output_variables=output_reqs)
