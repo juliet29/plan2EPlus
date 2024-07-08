@@ -1,18 +1,23 @@
-from plotly.subplots import make_subplots
-import plotly.express as px
 import plotly.graph_objects as go
 from geometry.geometry_parser import GeometryParser
+from dataclasses import dataclass
 
-# from outputs.plotter import Plotter
-from helpers.plots import plot_shape
+from helpers.plots import prepare_shape_dict, plot_shape
 
 
 LIGHT_BLUE = "#9dd1eb"
 SUBSURFACE_COLOR = "#a32c54"
 
-# shoukd explitly make ezcase obj.. or assert that has subsurface info,,
+@dataclass
+class Base2DPlotLimits:
+    x_range: list
+    y_range: list
+    fig_width: int
+    fig_height: int
+
+
 class Base2DPlot:
-    def __init__(self, geometry:GeometryParser) -> None:
+    def __init__(self, geometry: GeometryParser) -> None:
         self.zones = geometry.zones
         self.subsurfaces = geometry.subsurfaces
 
@@ -21,37 +26,29 @@ class Base2DPlot:
         self.determine_plot_range()
         self.determine_figure_size()
         self.create_figure()
-        self.update_figure_layout()
-        # self.fig.show()
 
     def make_traces(self):
         self.traces = {}
 
         for zone in self.zones.values():
-            self.traces[zone.bunch_name] = plot_shape(zone.polygon.exterior.coords, color=LIGHT_BLUE, label=zone.display_name, fontweight="bold")
+            self.traces[zone.bunch_name] = prepare_shape_dict(
+                zone.polygon.exterior.coords,
+                color=LIGHT_BLUE,
+                label=zone.display_name,
+            )
 
         for subsurface in self.subsurfaces.values():
-            self.traces[subsurface.bunch_name] = plot_shape(coords=subsurface.line.coords, type="line", color=SUBSURFACE_COLOR, label=subsurface.simple_object_type)
-
+            self.traces[subsurface.bunch_name] = prepare_shape_dict(
+                coords=subsurface.line.coords,
+                type="line",
+                color=SUBSURFACE_COLOR,
+                label=subsurface.simple_object_type,
+            )
 
     def create_figure(self):
-        self.fig = go.Figure()
-        for trace in self.traces.values():
-            self.fig.add_shape(**trace)
-        self.fig.update_xaxes(range=self.x_range)
-        self.fig.update_yaxes(range=self.y_range)
+        self.limits = Base2DPlotLimits(self.x_range, self.y_range, self.fig_width, self.fig_height)
+        self.fig = plot_shape(self.traces, **self.limits.__dict__)
 
-
-    def update_figure_layout(self, padding=50):
-        self.fig.update_layout(
-            autosize=False,
-            width=self.fig_width,
-            height=self.fig_height,
-            margin=dict(
-                l=padding, r=padding, b=padding, t=padding, pad=4  # TODO what is pad?
-            ),
-        )
-        
 
     def determine_plot_range(self):
         buffer = 20
@@ -71,7 +68,6 @@ class Base2DPlot:
 
         self.fig_height = height
         self.fig_width = height * aspect
-
 
     def get_vals(self, ix_str):
         return [z[ix_str] for z in self.traces.values()]

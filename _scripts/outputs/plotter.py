@@ -1,55 +1,45 @@
-from outputs.sql import SQLReader, SQLInputs
-from outputs.zone_space_time import SpaceTimePlot
-from outputs.zone_time import TimePlot
-from outputs.surface_data import SurfaceData
-from outputs.base_2d import Base2DPlot
-from datetime import time
-from typing import List
-
-
+# from outputs.sql import SQLReader
+from outputs.line_plots import LinePlot
+from outputs.surface_2d import Surface2DPlot
+from outputs.input_classes import LinePlotInputs, PlotTypes, PlotterInputs, Surface2DPlotInputs, SQLInputs
+from outputs.sql import SQLReader
 
 
 class Plotter(SQLReader):
-    def __init__(self, inputs: SQLInputs) -> None:
-        super().__init__(inputs)
+    def __init__(self, inputs: PlotterInputs, sql_inputs: SQLInputs) -> None:
+        super().__init__(sql_inputs)
+        self.pinputs = inputs
+
+    """
+    TO RUN:
+    self.get_collection_for_variable(ez.eligible_vars...)
+    (maybe) self.show_analysis_periods()
+    self.set_analysis_period(1)
+    self.create_plot(plot_type)
+
+    self ~ ez.plt
+    """
 
 
-    def set_color_schemes(self, color_scheme):
-        self.color_scheme = color_scheme
+    def create_plot(self, plot_type=PlotTypes.LINE):
+        self.prepare_for_plot()
 
-    def check_dataset_is_zonal(self, dataset_name):
-        if "zone" not in dataset_name:
-            raise Exception(f"Dataset `{dataset_name}` is not zonal!")
+        if plot_type == PlotTypes.LINE:
+            self.line_plot_obj = LinePlot(
+                LinePlotInputs(self.filtered_collection, self.geom_type)
+            )
+            self.line_plot_obj.create_plot()
+            self.line_plot_obj.fig.show()
 
-    def check_dataset_is_surface(self, dataset_name):
-        if "surf" not in dataset_name:
-            raise Exception(f"Dataset `{dataset_name}` is not for surfaces!")
-
+        elif plot_type == PlotTypes.SURFACE_2D:
+            self.surface_2d_plot_obj = Surface2DPlot(Surface2DPlotInputs(
+                self.filtered_collection,
+                self.inputs.geometry,
+                self.pinputs.time,
+                self.pinputs.base2D
+            ))
+            self.surface_2d_plot_obj.create_figure()
+            self.surface_2d_plot_obj.fig.show()
         
-        
-    # types of plots..
-    def plot_geometry(self):
-        b = Base2DPlot(self)
-        return b.run()
-
-
-    def plot_zone_over_time(self, dataset):
-        s = TimePlot(self)
-        return s.make_time_plot(dataset)
-
-    def plot_zone_at_different_time_2d(self, dataset, times:List[time]):
-        s = SpaceTimePlot(self)
-        s.extract_many_times(times, dataset)
-        return s.create_spatial_plots()
-
-    def plot_surface_over_time(self, dataset):
-        s = SurfaceData(self)
-        return s.create_fig(dataset)
-        # fig.show()
-  
-
-
-    def plot_site_data_over_time(self, dataset):
-        pass
-        
-
+        else: 
+            raise Exception("Invalid plot type needs to be part of PlotTypes")

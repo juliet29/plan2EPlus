@@ -6,12 +6,11 @@ from outputs.classes import TimeExtractData
 
 
 from helpers.helpers import min_max_norm
+from helpers.plot_colors import   get_norm_plotly_colors,create_colorbar
 from helpers.plots import (
-    get_norm_plotly_colors,
-    create_colorbar,
-    plot_polygon,
-    plot_line_string,
-    plot_shape,
+    prepare_polygon_trace,
+    prepare_line_traces,
+    prepare_shape_dict,
 )
 
 
@@ -41,15 +40,15 @@ class SpaceTimePlot:
     def get_time_indices(self):
         self.time_indices = []
         for candidate_time in self.candidate_times:
-            self.check_valid_time(candidate_time)
+            self.return_valid_time(candidate_time)
 
-    def check_valid_time(self, candidate_time):
+    def return_valid_time(self, candidate_time):
         for ix, datetime in enumerate(self.datetimes):
             if candidate_time == datetime.time:
                 self.time_indices.append(ix)
                 return
         raise Exception(
-            f"{candidate_time} is an invalid time. There is a {self.timestep}!!"
+            f"{candidate_time} is an invalid time. Timestep is {self.timestep}!!"
         )
 
     def extract_time_data(self, time_index):
@@ -112,7 +111,7 @@ class SpaceTimePlot:
             self.traces[ix] = []
             for zone in self.plotter.zone_list:
                 data = zone.extracted_data[self.dataset_name][ix]
-                trace_dict = plot_shape(
+                trace_dict = prepare_shape_dict(
                     zone.polygon,
                     color=data.color,
                     # TODO edit for units..
@@ -121,7 +120,7 @@ class SpaceTimePlot:
                 self.dictionaries[ix].append(trace_dict)
 
                 for wall in zone.wall_list:
-                    trace = plot_line_string(
+                    trace = prepare_line_traces(
                         wall.line, color="black", label=f"Wall {wall.number}"
                     )
                     self.traces[ix].append(trace)

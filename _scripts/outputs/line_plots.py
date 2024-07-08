@@ -1,11 +1,11 @@
 
 from outputs.helpers import create_plot_title
-from outputs.input_classes import PlotInputs
+from outputs.input_classes import LinePlotInputs
 import plotly.graph_objects as go
 
 
 class LinePlot:
-    def __init__(self, inputs:PlotInputs) -> None:
+    def __init__(self, inputs:LinePlotInputs) -> None:
         self.inputs = inputs
         
 

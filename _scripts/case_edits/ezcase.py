@@ -13,8 +13,9 @@ from case_edits.methods.airflownetwork import AirflowNetwork
 from case_edits.methods.outputs import OutputRequests
 
 from outputs.variables import OutputVars 
-from outputs.input_classes import SQLInputs
-from outputs.sql2 import SQLReader
+from outputs.input_classes import SQLInputs, PlotterInputs
+from outputs.sql import SQLReader
+from outputs.plotter import Plotter
 from outputs.base_2d import Base2DPlot
 
 from pprint import pprint
@@ -104,17 +105,15 @@ class EzCase():
         self.out_reqs.request_sql()
 
     def make_base_plot(self):
-        base = Base2DPlot(self.case.geometry)
-        base.run()
-        self.base_plot = base.fig
-
-    
+        self.base_plot = Base2DPlot(self.case.geometry)
+        self.base_plot.run()
+     
 
     def prepare_plotter(self):
         sql_input = SQLInputs(self.inputs.case_name, self.case.geometry, self.inputs.output_variables)
-        self.sql = SQLReader(sql_input)
-        # self.plotter = Plotter(self.p)
-        # self.outputs = self.plotter.dataset_names
+        plotter_input = PlotterInputs(self.base_plot)
+        self.plt = Plotter(plotter_input, sql_input)
+
         # TODO => handle no sql file exception (havent run the case yet.. )
         # TODO make sure sql file and idf match up somehow.. 
   
@@ -123,7 +122,7 @@ class EzCase():
         pprint({k:v.value for k,v in self.eligible_vars.items()})
 
     def show_base_plot(self):
-        self.base_plot.show()
+        self.base_plot.fig.show()
 
 
 
