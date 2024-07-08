@@ -19,7 +19,7 @@ class LinePlotInputs:
 class Surface2DPlotInputs:
     collection_by_ap: List 
     geometry: GeometryParser
-    time: time
+    plot_time: time
     base2D: Base2DPlot 
 
 

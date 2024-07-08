@@ -21,7 +21,7 @@ class Subsurface:
         self.get_simple_object()
         self.display_name = f"{self.simple_object_type} on {self.wall.display_name}"
         self.bunch_name = f"{self.simple_object_type}_{self.wall.bunch_name}"
-        pass
+        self.short_name = f"{self.simple_object_type}-W{self.wall.number}"
 
     def get_geometry(self):
         self.start_x = self.data.Starting_X_Coordinate

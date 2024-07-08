@@ -761,6 +761,11 @@ OUTPUT:VARIABLE,
     Site Wind Direction,      !- Variable Name
     Timestep;                 !- Reporting Frequency
 
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Surface Inside Face Temperature,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
 OUTPUT:SQLITE,
     Simple,                   !- Option Type
     UseOutputControlTableStyle;    !- Unit Conversion for Tabular Data

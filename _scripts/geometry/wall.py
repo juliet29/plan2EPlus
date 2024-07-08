@@ -68,6 +68,7 @@ class Wall:
         self.bunch_name = (
             f"B_{self.zone.entry_name}_{self.direction.title()}_W{self.number}"
         )
+        self.short_name = f"B{self.zone.entry_name}-W{self.number}"
 
     def get_geometry(self):
         sg = SurfaceGeometryExtractor(self)
