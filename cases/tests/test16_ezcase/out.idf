@@ -751,6 +751,16 @@ OUTPUT:VARIABLE,
     AFN Surface Venting Window or Door Opening Factor,    !- Variable Name
     Timestep;                 !- Reporting Frequency
 
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Site Wind Speed,          !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Site Wind Direction,      !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
 OUTPUT:SQLITE,
     Simple,                   !- Option Type
     UseOutputControlTableStyle;    !- Unit Conversion for Tabular Data

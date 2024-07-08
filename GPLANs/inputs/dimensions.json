@@ -1,0 +1,44 @@
+[
+    {
+        "index": 0,
+        "name": "Bedroom01",
+        "width": 88,
+        "height": 88
+    },
+    {
+        "index": 1,
+        "name": "Bedroom02",
+        "width": 86,
+        "height": 88
+    },
+    {
+        "index": 2,
+        "name": "Bath01",
+        "width": 55,
+        "height": 71
+    },
+    {
+        "index": 3,
+        "name": "Bath02",
+        "width": 55,
+        "height": 63
+    },
+    {
+        "index": 4,
+        "name": "Living",
+        "width": 229,
+        "height": 96
+    },
+    {
+        "index": 5,
+        "name": "Closet",
+        "width": 88,
+        "height": 46
+    },
+    {
+        "index": 6,
+        "name": "Laundry",
+        "width": 86,
+        "height": 46
+    }
+]
