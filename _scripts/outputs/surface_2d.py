@@ -4,14 +4,14 @@ import plotly.express as px
 from outputs.input_classes import Surface2DPlotInputs
 from outputs.helpers import create_plot_title
 from helpers.helpers import min_max_norm
-from helpers.plot_colors import get_norm_plotly_colors, create_colorbar
-from helpers.plots import prepare_shape_dict, plot_shape
+from helpers.plot_colors import get_norm_plotly_colors
+from helpers.plots import prepare_shape_dict, plot_shape, create_colorbar
 
 
 class Surface2DPlot:
     def __init__(self, inputs: Surface2DPlotInputs) -> None:
         self.inputs = inputs
-        self.color_scheme = px.colors.sequential.RdBu_r
+        self.color_scheme = px.colors.diverging.Portland
         self.used_walls = []
 
     def create_figure(self):
@@ -77,7 +77,7 @@ class Surface2DPlot:
     def get_value_by_time(self, collection, plot_time):
         for ix, t in enumerate(collection.datetimes):
             if t.time == plot_time:
-                return collection.values[ix]
+                return round(collection.values[ix], 2)
         raise Exception(
             f"{plot_time} is an invalid time. Timestep is every {60/collection.header.analysis_period.timestep} mins!!"
         )

@@ -3,6 +3,7 @@ from outputs.line_plots import LinePlot
 from outputs.surface_2d import Surface2DPlot
 from outputs.input_classes import LinePlotInputs, PlotTypes, PlotterInputs, Surface2DPlotInputs, SQLInputs
 from outputs.sql import SQLReader
+from datetime import time
 
 
 class Plotter(SQLReader):
@@ -21,7 +22,7 @@ class Plotter(SQLReader):
     """
 
 
-    def create_plot(self, plot_type=PlotTypes.LINE):
+    def create_plot(self, plot_type=PlotTypes.LINE, time:time=time(0,0)):
         self.prepare_for_plot()
 
         if plot_type == PlotTypes.LINE:
@@ -35,7 +36,7 @@ class Plotter(SQLReader):
             self.surface_2d_plot_obj = Surface2DPlot(Surface2DPlotInputs(
                 self.filtered_collection,
                 self.inputs.geometry,
-                self.pinputs.time,
+                time,
                 self.pinputs.base2D
             ))
             self.surface_2d_plot_obj.create_figure()

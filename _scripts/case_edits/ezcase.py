@@ -12,7 +12,7 @@ from case_edits.methods.subsurfaces.creator import SubsurfaceCreator
 from case_edits.methods.airflownetwork import AirflowNetwork
 from case_edits.methods.outputs import OutputRequests
 
-from outputs.variables import OutputVars 
+from outputs.variables import OutputVars as OV
 from outputs.input_classes import SQLInputs, PlotterInputs
 from outputs.sql import SQLReader
 from outputs.plotter import Plotter
@@ -27,7 +27,7 @@ class EzCaseInput:
     case_name:str
     door_pairs: Sequence[PairType]
     window_pairs: Sequence[PairType]
-    output_variables:List[OutputVars]
+    output_variables:List[OV]
     geometry:GeometryType = GPLANRoomAccess("",0)
     starting_case:str=""
 
@@ -97,10 +97,14 @@ class EzCase():
         self.out_reqs = OutputRequests(self.case)
         for var in self.inputs.output_variables:
             self.out_reqs.add_output_variable(name=var.value)
+        
+        default_site_vars = [OV.site_db_temp, OV.site_diffuse_solar_rad, OV.site_direct_solar_rad,]
+        all_vars = self.inputs.output_variables + default_site_vars
             
         self.eligible_vars = Munch()
-        for var in self.inputs.output_variables:
+        for var in all_vars:
             self.eligible_vars.update({var.name: var})
+    
 
         self.out_reqs.request_sql()
 
@@ -112,7 +116,11 @@ class EzCase():
     def prepare_plotter(self):
         sql_input = SQLInputs(self.inputs.case_name, self.case.geometry, self.inputs.output_variables)
         plotter_input = PlotterInputs(self.base_plot)
-        self.plt = Plotter(plotter_input, sql_input)
+
+        try:
+            self.plt = Plotter(plotter_input, sql_input)
+        except AssertionError:
+            print("No SQL file for this case")
 
         # TODO => handle no sql file exception (havent run the case yet.. )
         # TODO make sure sql file and idf match up somehow.. 

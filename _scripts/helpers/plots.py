@@ -1,6 +1,7 @@
 from shapely import LineString, Polygon
 from shapely.coords import CoordinateSequence
 import plotly.graph_objects as go
+import numpy as np
 
 
 class PlotCoords:
@@ -103,3 +104,30 @@ def plot_shape(
             margin=dict(l=padding, r=padding, b=padding, t=padding, pad=4),
         )
     return fig
+
+
+def create_colorbar(
+    min,
+    max,
+    color_scheme="turbo",
+):
+    # TODO make ticks dynamic..
+    trace = go.Scatter(
+        # hoverinfo='none'
+        x=[None],
+        y=[None],
+        mode="markers",
+        marker=dict(
+            colorscale=color_scheme,
+            showscale=True,
+            cmin=min,
+            cmax=max,
+            colorbar=dict(
+                thickness=5,
+                tickvals=[round(i, 2) for i in np.linspace(min, max, 5)],
+                ticktext=[round(min, 2), round(max, 2)],
+                outlinewidth=0,
+            ),
+        ),
+    )
+    return trace

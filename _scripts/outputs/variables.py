@@ -2,20 +2,22 @@ from enum import Enum
 
 
 class OutputVars(str, Enum):
-    # AFN ~ system 
+    # AFN ~ system
     zone_vent_vol = "AFN Zone Ventilation Volume"
     zone_ach = "AFN Zone Ventilation Air Change Rate"
     zone_vent_heat_gain = "AFN Zone Ventilation Sensible Heat Gain Rate"
+    zone_vent_heat_loss = "AFN Zone Ventilation Sensible Heat Loss Rate"
 
-    # AFN ~ node 
+    # AFN ~ node
     node_temp = "AFN Node Temperature"
     node_total_pressure = "AFN Node Total Pressure"
     node_wind_pressure = "AFN Node Wind Pressure"
-    
-    # AFN ~ linkage 
-    linkage_flow = "AFN Linkage Node 1 to Node 2 Volume Flow Rate"
-    
-    # AFN ~ surface 
+
+    # AFN ~ linkage
+    linkage_flow12 = "AFN Linkage Node 1 to Node 2 Volume Flow Rate"
+    linkage_flow21 = "AFN Linkage Node 2 to Node 1 Volume Flow Rate"
+
+    # AFN ~ surface
     surface_venting = "AFN Surface Venting Window or Door Opening Factor"
 
     # zone
@@ -39,9 +41,11 @@ class OutputVars(str, Enum):
     surf_net_thermal_rad = (
         "Surface Outside Face Net Thermal Radiation Heat Gain Rate per Area"
     )
+    surf_outside_temp = "Surface Outside Face Temperature"
 
     # inside surface
-    in_surf_temp = "Surface Inside Face Temperature"
+    surf_inside_temp = "Surface Inside Face Temperature"
+    
 
 
 # access name by value

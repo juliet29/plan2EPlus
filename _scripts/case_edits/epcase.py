@@ -2,6 +2,8 @@ import os
 from geomeppy import IDF
 from geometry.geometry_parser import GeometryParser
 
+from ladybug.epw import EPW
+
 from case_edits.defaults import IDF_PATH, IDD_PATH, WEATHER_FILE
 
 
@@ -34,6 +36,7 @@ class EneryPlusCaseEditor:
         self.starting_case = starting_case
         self.get_idf()
         self.idf.epw = WEATHER_FILE #TODO this isnt working bc still denver.. 
+        self.update_weather_and_run_period()
 
         self.case_name = case_name
 
@@ -48,7 +51,24 @@ class EneryPlusCaseEditor:
             self.idf = IDF(self.starting_idf_path)  
 
     def get_geometry(self):
-        self.geometry = GeometryParser(self.idf)  
+        self.geometry = GeometryParser(self.idf) 
+
+    def update_weather_and_run_period(self):
+        epw = EPW(self.idf.epw)
+        loc = self.idf.newidfobject("SITE:LOCATION")
+        loc.Name = epw.location.city
+        loc.Latitude = epw.location.latitude
+        loc.Longitude = epw.location.longitude
+        loc.Time_Zone = epw.location.time_zone
+        loc.Elevation = epw.location.elevation
+
+        ap1 = self.idf.newidfobject("RUNPERIOD")
+        ap1.Name = "SummerDay"
+        ap1.Begin_Month = 7
+        ap1.Begin_Day_of_Month = 1
+        ap1.End_Month = 7
+        ap1.End_Day_of_Month = 1
+
 
     def save_idf(self):
         # TODO what if there are multiple saves (and runs..) => check if want to overwrite existing file.. 

@@ -39,20 +39,3 @@ class SQLInputs:
 @dataclass
 class PlotterInputs:
     base2D: Base2DPlot 
-    time = time(0,0)
-    # plot_type:PlotTypes=PlotTypes.LINE
-
-    # collection: list
-    # geom_type: str
-    
-    # geometry: GeometryParser
-
-
-
-
-
-
-
-# @dataclass
-# class Base2DPlotInputs:
-#     zones:
