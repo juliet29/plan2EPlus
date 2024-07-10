@@ -1,17 +1,22 @@
-from case_edits.defaults import WEATHER_FILE
+import pandas as pd
+import numpy as np
 
 from epw import epw
 
 import seaborn as sns
 
-import pandas as pd
-import numpy as np
+from case_edits.defaults import WEATHER_FILE
+from weather.irrelevant_quantities import irrelevant_qois
+
+# y, month, day, hour minute
+N_DATETIME_COLS = 5
 
 
 class JointAnalysis:
     def __init__(self) -> None:
         self.qois = []
         self.retrieve_data()
+        sns.set_theme()
         pass
 
     def retrieve_data(self):
@@ -29,14 +34,19 @@ class JointAnalysis:
         epobj = epw()
         epobj.read(WEATHER_FILE)
         self.df = epobj.dataframe
+        self.filter_irrelevant_columns()
+        
 
     def filter_to_summer_data(self):
-        mask = (self.df["Month"] > 6) & (self.df["Month"] < 9)
-        self.summer_df = self.df.loc[mask].reset_index(drop=True)
+        df = self.filtered_df
+        mask = (df["Month"] > 6) & (df["Month"] < 9)
+        self.summer_df = df.loc[mask].reset_index(drop=True)
 
         self.summer_df["Datetime"] = pd.to_datetime(
             self.summer_df[["Year", "Month", "Day", "Hour"]]
         )
+        self.summer_qoi_df = self.summer_df[self.potential_qois]
+
 
     def update_qois(self, qois: list):
         self.qois = qois
@@ -83,7 +93,31 @@ class JointAnalysis:
         names = self.qois + ["Occurences"]
         self.freqs_df = pd.DataFrame(self.bins_holder, index=multi_index, columns=names)
 
-    def plot(self):
+    
+    def filter_irrelevant_columns(self):
+        df = self.df.drop(irrelevant_qois, axis=1)
+        df = df.dropna(axis=1, how="all")
+
+        # drop columns with only one unique value, except for the year
+        nunique = df.nunique()
+        cols_to_drop = list(nunique[nunique == 1].index)
+        if "Year" in cols_to_drop:
+            cols_to_drop.remove("Year")
+        self.filtered_df = df.drop(cols_to_drop, axis=1)
+
+        self.potential_qois = list(self.filtered_df.columns[N_DATETIME_COLS-1:])
+
+
+    def jointplot(self):
+        if not self.qois:
+            self.qois = ["Dry Bulb Temperature", "Wind Speed"]
         return sns.jointplot(
             data=self.summer_df, x=self.qois[0], y=self.qois[1], kind="kde"
         )
+    
+    def corrplot(self, df=None):
+        if not df:
+            df = self.summer_qoi_df
+        mask = np.triu(np.ones_like(df.corr()))
+        heatmap = sns.heatmap(df.corr(), mask=mask, vmin=-1, vmax=1, annot=True, cmap='BrBG')
+        return heatmap
