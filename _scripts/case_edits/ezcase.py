@@ -42,6 +42,7 @@ class EzCase():
         self.add_rooms()
         self.get_subsurface_constructions()
         self.get_geometry()
+        self.update_geometry_walls()
         self.add_doors()
         self.add_windows()
         self.update_geometry_subsurfaces()
@@ -64,10 +65,15 @@ class EzCase():
         self.case.get_geometry()
         self.zones = self.case.geometry.zones
 
+    def update_geometry_walls(self):
+        for zone in self.case.geometry.zones.values():
+            self.case.geometry.walls.update(zone.walls)
+
+
+    # TODO: this should probably go elsewhere.. 
     def get_subsurface_constructions(self):
         self.door_const = self.case.idf.getobject("CONSTRUCTION", "Project Door")
         self.window_const = self.case.idf.getobject("CONSTRUCTION", "Project External Window")
-
 
     def add_doors(self):
         standard_door = SubsurfaceAttributes(SubsurfaceObjects.DOOR, 1, 2, self.door_const) #type:ignore
@@ -80,6 +86,8 @@ class EzCase():
         inputs = SubsurfaceInputs(self.zones, self.inputs.window_pairs, self.case.idf, standard_window)
         self.ss = SubsurfaceCreator(inputs)
         self.ss.create_all_ssurface()
+
+    
 
     def update_geometry_subsurfaces(self):
         subsurfaces  = []

@@ -57,10 +57,6 @@ class Zone:
         ), "When creating zone geometry, zone was not polygonal "
 
 
-
-
-
-
     # get subsurfaces
     def get_subsurfaces(self):
         g = Getter(self.case_idf)
