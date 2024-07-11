@@ -1,5 +1,9 @@
-from geometry.wall import Wall, WallNormal
 from shapely import Point, Polygon
+
+from geometry.wall import Wall, WallNormal
+from helpers.shapely_helpers import get_coords_as_points
+from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
+
 
 
 class WallRecreation:
@@ -13,7 +17,7 @@ class WallRecreation:
         self.create_wall()
 
     def get_coords(self):
-        self.coords =  [Point(c) for c in self.wall.line.coords]
+        self.coords = get_coords_as_points(self.wall.line.coords)
         assert len(self.coords) == 2
 
     def create_wall(self):
@@ -35,7 +39,10 @@ class WallRecreation:
         c3 = (self.coords[1].x, self.coords[1].y + self.room_height)
         c4 = (self.coords[0].x, self.coords[0].y + self.room_height)
 
-        self.polygon = Polygon([c1, c2, c3, c4, c1])
+        polygon = Polygon([c1, c2, c3, c4, c1])
+
+        self.polygon = SurfacePolygon(polygon)
+
 
 
     def transform_y_coords(self):

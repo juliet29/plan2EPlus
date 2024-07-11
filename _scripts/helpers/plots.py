@@ -1,5 +1,6 @@
 from shapely import LineString, Polygon
 from shapely.coords import CoordinateSequence
+from helpers.shapely_helpers import get_coords_as_seprate_xy
 import plotly.graph_objects as go
 import numpy as np
 
@@ -7,7 +8,7 @@ import numpy as np
 class PlotCoords:
     # ref: https://plotly.com/python/reference/layout/shapes/#layout-shapes-items-shape-x0
     def __init__(self, coords: CoordinateSequence) -> None:
-        x, y = get_plottable_coords(coords)
+        x, y = get_coords_as_seprate_xy(coords)
         self.x0 = min(x)
         self.x1 = max(x)
         self.y0 = min(y)
@@ -17,14 +18,11 @@ class PlotCoords:
         return f"PlotCoords(({self.x0}, {self.y0}), ({self.x1}, {self.y1}))"
 
 
-def get_plottable_coords(coords: CoordinateSequence):
-    x = [c[0] for c in coords]
-    y = [c[1] for c in coords]
-    return x, y
+
 
 
 def prepare_line_traces(line: LineString, color="yellow", label=None, width=3):
-    x, y = get_plottable_coords(line.coords)
+    x, y = get_coords_as_seprate_xy(line.coords)
     trace = go.Scatter(
         x=x,
         y=y,
@@ -37,7 +35,7 @@ def prepare_line_traces(line: LineString, color="yellow", label=None, width=3):
 
 
 def prepare_polygon_trace(polygon: Polygon, color="blue", label=None):
-    x, y = get_plottable_coords(polygon.exterior.coords)
+    x, y = get_coords_as_seprate_xy(polygon.exterior.coords)
     trace = go.Scatter(
         x=x,
         y=y,
