@@ -1,14 +1,9 @@
 from shapely import Point, Polygon
-from dataclasses import dataclass
 import numpy as np
-
+from case_edits.methods.dynamic_subsurfaces.inputs import Dimensions
 from helpers.shapely_helpers import get_coords_as_points, CoordOrganizer
 
 
-@dataclass
-class Dimensions:
-    width: float
-    height: float
 
 
 class SurfacePolygon:

@@ -1,5 +1,6 @@
-from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
 from shapely import Point, Polygon
+
+from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
 from case_edits.methods.dynamic_subsurfaces.nine_points import NinePointsCreator
 
 
@@ -30,7 +31,9 @@ class Buffer:
         self.polygon = SurfacePolygon(polygon)
 
     def assign_nine_points(self):
-        self.nine_points = NinePointsCreator(self.polygon)
+        self.npc = NinePointsCreator(self.polygon)
+        self.nine_points = self.npc.points
+
 
 
 

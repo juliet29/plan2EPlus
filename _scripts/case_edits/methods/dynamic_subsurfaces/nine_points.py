@@ -1,20 +1,9 @@
 from dataclasses import dataclass
 from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
 from shapely import Point, Polygon
+from case_edits.methods.dynamic_subsurfaces.inputs import NinePoints, MutablePoint
 
-@dataclass
-class NinePoints:
-    top_left: Point
-    top_middle: Point
-    top_right: Point
 
-    middle_left: Point
-    middle_middle: Point
-    middle_right: Point
-
-    bottom_left: Point
-    bottom_middle: Point
-    bottom_right: Point
 
 # takes the bufferered_surface 
 class NinePointsCreator:
