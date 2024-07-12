@@ -2,7 +2,7 @@ from shapely import Point, Polygon
 from dataclasses import dataclass
 import numpy as np
 
-from helpers.shapely_helpers import get_coords_as_points
+from helpers.shapely_helpers import get_coords_as_points, CoordOrganizer
 
 
 @dataclass
@@ -15,15 +15,15 @@ class SurfacePolygon:
     def __init__(self, polygon:Polygon) -> None:
         self.polygon = polygon
         self.coords = get_coords_as_points(self.polygon.exterior.coords)
+        self.organized_coords = CoordOrganizer(self.polygon.exterior.coords)
         
         self.dimensions = Dimensions(0,0)
         self.auto_dimension()
         
 
     def auto_dimension(self):
-        # TODO CHECK THAT GOING CCW..
-        self.dimensions.width  = self.coords[1].x - self.coords[0].x
-        self.dimensions.height  =  self.coords[2].y - self.coords[0].y
+        self.dimensions.width  = self.organized_coords.x1 - self.organized_coords.x0
+        self.dimensions.height  =  self.organized_coords.y1 - self.organized_coords.y0
 
         # check 
         area_height = self.polygon.area / self.dimensions.width

@@ -1,24 +1,8 @@
 from shapely import LineString, Polygon
 from shapely.coords import CoordinateSequence
-from helpers.shapely_helpers import get_coords_as_seprate_xy
+from helpers.shapely_helpers import get_coords_as_seprate_xy, CoordOrganizer
 import plotly.graph_objects as go
 import numpy as np
-
-
-class PlotCoords:
-    # ref: https://plotly.com/python/reference/layout/shapes/#layout-shapes-items-shape-x0
-    def __init__(self, coords: CoordinateSequence) -> None:
-        x, y = get_coords_as_seprate_xy(coords)
-        self.x0 = min(x)
-        self.x1 = max(x)
-        self.y0 = min(y)
-        self.y1 = max(y)
-
-    def __repr__(self):
-        return f"PlotCoords(({self.x0}, {self.y0}), ({self.x1}, {self.y1}))"
-
-
-
 
 
 def prepare_line_traces(line: LineString, color="yellow", label=None, width=3):
@@ -56,7 +40,7 @@ def prepare_shape_dict(
     label="",
     width=3,
 ):
-    r = PlotCoords(coords)
+    r = CoordOrganizer(coords)
     d = dict(
         type=type,
         xref="x",
@@ -81,8 +65,8 @@ def plot_shape(
     trace_dict: dict,
     x_range: list,
     y_range: list,
-    fig_width: float=0,
-    fig_height: float=0,
+    fig_width: float = 0,
+    fig_height: float = 0,
     padding: int = 50,
 ):
     fig = go.Figure()

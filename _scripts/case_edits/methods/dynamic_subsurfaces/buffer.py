@@ -3,11 +3,6 @@ from shapely import Point, Polygon
 from case_edits.methods.dynamic_subsurfaces.nine_points import NinePointsCreator
 
 
-
-
-
-
-
 class Buffer:
     def __init__(self, surface:SurfacePolygon) -> None:
         self.surface = surface
