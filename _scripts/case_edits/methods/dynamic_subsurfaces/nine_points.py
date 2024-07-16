@@ -28,17 +28,19 @@ class NinePointsCreator:
         self.points.top_right = self.coords.top_right
 
     def assign_middles(self):
-        self.half_width = self.dimensions.width / 2
-        self.half_height = self.dimensions.height / 2
+        half_width = self.dimensions.width / 2
+        half_height = self.dimensions.height / 2
+        x0 = self.points.bottom_left.x
+        y0 = self.points.bottom_left.y
 
-        self.points.middle_middle = Point(self.half_width, self.half_height, )
+        self.points.middle_middle = Point(x0 + half_width, y0 + half_height)
 
-        self.points.bottom_middle = Point(self.half_width, self.points.bottom_left.y)
+        self.points.bottom_middle = Point(self.points.middle_middle.x, self.points.bottom_left.y)
 
-        self.points.top_middle = Point(self.half_width, self.points.top_left.y)
+        self.points.top_middle = Point(self.points.middle_middle.x, self.points.top_left.y)
 
-        self.points.middle_left = Point(self.points.bottom_left.x, self.half_height)
+        self.points.middle_left = Point(self.points.bottom_left.x, self.points.middle_middle.y)
 
-        self.points.middle_right = Point(self.points.bottom_right.x, self.half_height)
+        self.points.middle_right = Point(self.points.bottom_right.x, self.points.middle_middle.y)
 
     

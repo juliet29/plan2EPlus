@@ -9,6 +9,7 @@ from helpers.shapely_helpers import get_coords_as_points, CoordOrganizer
 class SurfacePolygon:
     def __init__(self, polygon:Polygon) -> None:
         self.polygon = polygon
+        self.coord_sequence = self.polygon.exterior.coords
         self.coords = get_coords_as_points(self.polygon.exterior.coords)
         self.organized_coords = CoordOrganizer(self.polygon.exterior.coords)
         

@@ -68,8 +68,10 @@ def plot_shape(
     fig_width: float = 0,
     fig_height: float = 0,
     padding: int = 50,
+    fig = None
 ):
-    fig = go.Figure()
+    if not fig:
+        fig = go.Figure()
     for trace in trace_dict.values():
         fig.add_shape(**trace)
 
@@ -113,3 +115,9 @@ def create_colorbar(
         ),
     )
     return trace
+
+def create_range_limits(trace_dict:dict, buffer=10):
+        xrange = [trace_dict["x0"] - buffer ,trace_dict["x1"] + buffer ]
+        yrange = [trace_dict["y0"] - buffer ,trace_dict["y1"] + buffer]
+
+        return xrange, yrange

@@ -1,10 +1,13 @@
-from shapely import Point
+from shapely import Point, Polygon
 from case_edits.methods.dynamic_subsurfaces.buffer import Buffer
 from case_edits.methods.dynamic_subsurfaces.inputs import (
     Dimensions,
     NinePointsLocator,
     MutablePoint,
 )
+
+from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
+from helpers.plots import prepare_shape_dict, plot_shape, create_range_limits
 
 """
 From EP 22.2 Docs: Starting corner is the lower left of the surface 
@@ -18,20 +21,55 @@ class Placement:
         buffer_surface: Buffer,
         subsurface_dims: Dimensions,
         location: NinePointsLocator,
+        FRACTION:bool = False
     ) -> None:
         # self.buffer_surface = buffer_surface
-        self.surface_dims = buffer_surface.surface.dimensions
-        self.pts = buffer_surface.nine_points
+        self.buffer_surface = buffer_surface
+        self.bpts = buffer_surface.nine_points
         self.dims = subsurface_dims
         self.loc = location
         self.starting_corner = MutablePoint(x=0, y=0)
+        self.FRACTION = FRACTION
 
+        self.process_fraction()
         self.run_prelim_checks()
         self.find_starting_corner()
+        self.create_test_polygon()
+
+    def process_fraction(self):
+        if self.FRACTION:
+            self.dims.height = self.dims.height * self.buffer_surface.polygon.dimensions.height
+            self.dims.width = self.dims.width * self.buffer_surface.polygon.dimensions.width
+
 
     def run_prelim_checks(self):
-        assert self.dims.height < self.surface_dims.height
-        assert self.dims.width < self.surface_dims.width
+        assert self.dims.height < self.buffer_surface.polygon.dimensions.height
+        assert self.dims.width < self.buffer_surface.polygon.dimensions.width
+
+    def create_test_polygon(self):
+        x0 = self.starting_corner.x
+        y0 = self.starting_corner.y
+        bottom_left = (x0, y0)
+        bottom_right = (x0 + self.dims.width, y0)
+        top_right = (x0 + self.dims.width, y0 + self.dims.height)
+        print(top_right)
+        top_left = (x0, y0 + self.dims.height)
+
+        polygon = Polygon([bottom_left, bottom_right, top_right, top_left, bottom_left])
+        self.polygon = SurfacePolygon(polygon)
+
+    def plot_test(self):
+        self.buffer_trace = prepare_shape_dict(self.buffer_surface.polygon.coord_sequence )
+        self.window_trace = prepare_shape_dict(self.polygon.coord_sequence, color="yellow")
+
+        traces = {i:v for i,v in enumerate([self.buffer_trace, self.window_trace])}
+
+        xrange, yrange = create_range_limits(self.buffer_trace)
+
+        fig = plot_shape(traces, xrange, yrange)
+        fig.show()
+
+
 
     def find_starting_corner(self):
         match self.loc.value:
@@ -59,51 +97,47 @@ class Placement:
 
         
     def place_top_left(self):
-        self.starting_corner = MutablePoint(self.pts.top_left)
+        self.starting_corner = MutablePoint(self.bpts.top_left)
+        print(self.starting_corner)
         self.extend_down()
 
     def place_top_middle(self):
-        self.starting_corner = MutablePoint(self.pts.top_middle)
+        self.starting_corner = MutablePoint(self.bpts.top_middle)
+        print(self.starting_corner)
         self.extend_down()
         self.extend_left_half()
 
     def place_top_right(self):
-        self.starting_corner = MutablePoint(self.pts.top_right)
+        self.starting_corner = MutablePoint(self.bpts.top_right)
         self.extend_down()
         self.extend_left()
 
 
     def place_middle_left(self):
-        self.starting_corner = MutablePoint(self.pts.middle_left)
+        self.starting_corner = MutablePoint(self.bpts.middle_left)
         self.extend_down_half()
 
     def place_middle_middle(self):
-        self.starting_corner = MutablePoint(self.pts.middle_middle)
+        self.starting_corner = MutablePoint(self.bpts.middle_middle)
         self.extend_down_half()
-        self.extend_down()
+        self.extend_left_half()
 
     def place_middle_right(self):
-        self.starting_corner = MutablePoint(self.pts.middle_right)
+        self.starting_corner = MutablePoint(self.bpts.middle_right)
         self.extend_down_half()
         self.extend_left()
 
 
     def place_bottom_left(self):
-        self.starting_corner = MutablePoint(self.pts.bottom_left)
+        self.starting_corner = MutablePoint(self.bpts.bottom_left)
 
     def place_bottom_middle(self):
-        self.starting_corner = MutablePoint(self.pts.bottom_middle)
+        self.starting_corner = MutablePoint(self.bpts.bottom_middle)
         self.extend_left_half()
 
     def place_bottom_right(self):
-        self.starting_corner = MutablePoint(self.pts.bottom_right)
+        self.starting_corner = MutablePoint(self.bpts.bottom_right)
         self.extend_left()
-
-
-
-    # TODO => check that extending does not break.. 
-    
-
 
 
     def extend_down(self):

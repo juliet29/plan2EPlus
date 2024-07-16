@@ -21,9 +21,9 @@ class Buffer:
 
 
     def create_buffer_polygon(self):
-        p1, p2, p3, p4, _ = self.surface.coords #ccw starting from bottom left 
-        p2n = (p2.x - self.buffer_dist, p2.y + self.buffer_dist)
+        p1, p2, p3, p4, _ = self.surface.organized_coords.coords_list #ccw starting from bottom left 
         p1n = (p1.x + self.buffer_dist, p1.y + self.buffer_dist)
+        p2n = (p2.x - self.buffer_dist, p2.y + self.buffer_dist)
         p3n = (p3.x - self.buffer_dist, p3.y - self.buffer_dist)
         p4n = (p4.x + self.buffer_dist, p4.y - self.buffer_dist)
 

@@ -21,8 +21,10 @@ class CoordOrganizer:
         if len(self.coords) >= 4:
             self.bottom_left = Point(self.x0, self.y0)
             self.bottom_right = Point(self.x1, self.y0)
-            self.top_left = Point(self.x0, self.y1)
             self.top_right = Point(self.x1, self.y1)
+            self.top_left = Point(self.x0, self.y1)
+
+            self.coords_list = [self.bottom_left, self.bottom_right, self.top_right, self.top_left, self.bottom_left]
 
 
 def get_coords_as_seprate_xy(coords: CoordinateSequence):
