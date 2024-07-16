@@ -1,10 +1,14 @@
 from dataclasses import dataclass
 from munch import Munch
-from typing import List, Sequence
+from typing import List, Sequence, Union
 from geomeppy import IDF
 from geomeppy.patches import EpBunch
 from enum import Enum
 from case_edits.special_types import PairType
+from case_edits.methods.dynamic_subsurfaces.inputs import (
+    Dimensions,
+    NinePointsLocator,
+)
 
 DOOR_GAP = 2 / 100  # m
 
@@ -17,9 +21,10 @@ class SubsurfaceObjects(Enum):
 @dataclass
 class SubsurfaceAttributes:
     object_type: SubsurfaceObjects
-    length: int
-    height: int
-    construction: EpBunch
+    construction: Union[EpBunch, None]
+    dimensions: Dimensions
+    location_in_wall: NinePointsLocator
+    FRACTIONAL: bool = False
 
 
 @dataclass

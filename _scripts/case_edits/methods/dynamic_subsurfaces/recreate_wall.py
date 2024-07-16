@@ -40,7 +40,6 @@ class WallRecreation:
         c4 = (self.coords[0].x, self.coords[0].y + self.room_height)
 
         polygon = Polygon([c1, c2, c3, c4, c1])
-
         self.polygon = SurfacePolygon(polygon)
 
 

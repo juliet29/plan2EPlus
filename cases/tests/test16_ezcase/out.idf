@@ -460,20 +460,20 @@ WINDOW,
     Block 01 Storey 0 Wall 0004,    !- Building Surface Name
     ,                         !- Frame and Divider Name
     1.0,                      !- Multiplier
-    24.75,                    !- Starting X Coordinate
-    0.02,                     !- Starting Z Coordinate
-    0.5,                      !- Length
-    0.5;                      !- Height
+    17.8,                     !- Starting X Coordinate
+    3.8,                      !- Starting Z Coordinate
+    14.399999999999999,       !- Length
+    2.4;                      !- Height
 
 DOOR,
     Block 00 Storey 0 Wall 0002 Door,    !- Name
     Project Door,             !- Construction Name
     Block 00 Storey 0 Wall 0002,    !- Building Surface Name
     1.0,                      !- Multiplier
-    49.5,                     !- Starting X Coordinate
-    0.02,                     !- Starting Z Coordinate
-    1,                        !- Length
-    2;                        !- Height
+    35.3,                     !- Starting X Coordinate
+    101,                      !- Starting Z Coordinate
+    29.4,                     !- Length
+    7.2;                      !- Height
 
 DOOR:INTERZONE,
     Block 00 Storey 0 Wall 0004_1 Door,    !- Name
@@ -481,10 +481,10 @@ DOOR:INTERZONE,
     Block 00 Storey 0 Wall 0004_1,    !- Building Surface Name
     Block 00 Storey 0 Wall 0004_1 Door Partner,    !- Outside Boundary Condition Object
     1.0,                      !- Multiplier
-    24.5,                     !- Starting X Coordinate
-    0.02,                     !- Starting Z Coordinate
-    1,                        !- Length
-    2;                        !- Height
+    17.8,                     !- Starting X Coordinate
+    71,                       !- Starting Z Coordinate
+    14.399999999999999,       !- Length
+    7.2;                      !- Height
 
 DOOR:INTERZONE,
     Block 00 Storey 0 Wall 0004_1 Door Partner,    !- Name
@@ -492,10 +492,10 @@ DOOR:INTERZONE,
     Block 01 Storey 0 Wall 0002_1,    !- Building Surface Name
     Block 00 Storey 0 Wall 0004_1 Door,    !- Outside Boundary Condition Object
     1.0,                      !- Multiplier
-    24.5,                     !- Starting X Coordinate
-    0.02,                     !- Starting Z Coordinate
-    1,                        !- Length
-    2;                        !- Height
+    17.8,                     !- Starting X Coordinate
+    71,                       !- Starting Z Coordinate
+    14.399999999999999,       !- Length
+    7.2;                      !- Height
 
 AIRFLOWNETWORK:SIMULATIONCONTROL,
     AFN_SIM_CONTROL,          !- Name

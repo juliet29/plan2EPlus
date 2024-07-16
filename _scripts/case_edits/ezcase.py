@@ -7,14 +7,15 @@ from gplan.convert import GPLANtoGeomeppy
 
 from case_edits.epcase import EneryPlusCaseEditor
 from case_edits.special_types import PairType, GeometryType
-from case_edits.methods.subsurfaces.inputs import SubsurfaceInputs, SubsurfaceAttributes, SubsurfaceObjects
+from case_edits.methods.subsurfaces.inputs import SubsurfaceInputs
+from case_edits.recipes.subsurface_defaults import DEFAULT_DOOR, DEFAULT_WINDOW
 from case_edits.methods.subsurfaces.creator import SubsurfaceCreator
+
 from case_edits.methods.airflownetwork import AirflowNetwork
 from case_edits.methods.outputs import OutputRequests
 
 from outputs.variables import OutputVars as OV
 from outputs.input_classes import SQLInputs, PlotterInputs
-from outputs.sql import SQLReader
 from outputs.plotter import Plotter
 from outputs.base_2d import Base2DPlot
 
@@ -76,14 +77,14 @@ class EzCase():
         self.window_const = self.case.idf.getobject("CONSTRUCTION", "Project External Window")
 
     def add_doors(self):
-        standard_door = SubsurfaceAttributes(SubsurfaceObjects.DOOR, 1, 2, self.door_const) #type:ignore
-        inputs = SubsurfaceInputs(self.zones, self.inputs.door_pairs, self.case.idf, standard_door)
+        DEFAULT_DOOR.construction = self.door_const
+        inputs = SubsurfaceInputs(self.zones, self.inputs.door_pairs, self.case.idf, DEFAULT_DOOR)
         self.ss = SubsurfaceCreator(inputs)
         self.ss.create_all_ssurface()
 
     def add_windows(self):
-        standard_window = SubsurfaceAttributes(SubsurfaceObjects.WINDOW, 0.5, 0.5, self.window_const) #type:ignore
-        inputs = SubsurfaceInputs(self.zones, self.inputs.window_pairs, self.case.idf, standard_window)
+        DEFAULT_WINDOW.construction = self.window_const
+        inputs = SubsurfaceInputs(self.zones, self.inputs.window_pairs, self.case.idf, DEFAULT_WINDOW)
         self.ss = SubsurfaceCreator(inputs)
         self.ss.create_all_ssurface()
 

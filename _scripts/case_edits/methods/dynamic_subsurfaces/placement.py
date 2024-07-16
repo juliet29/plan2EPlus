@@ -9,6 +9,11 @@ from case_edits.methods.dynamic_subsurfaces.inputs import (
 from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
 from helpers.plots import prepare_shape_dict, plot_shape, create_range_limits
 
+from icecream import ic
+
+from case_edits.methods.dynamic_subsurfaces.inputs import  Dimensions
+
+
 """
 From EP 22.2 Docs: Starting corner is the lower left of the surface 
 https://bigladdersoftware.com/epx/docs/23-2/input-output-reference/group-thermal-zone-description-geometry.html#windowsdoors
@@ -23,14 +28,17 @@ class Placement:
         location: NinePointsLocator,
         FRACTION:bool = False
     ) -> None:
-        # self.buffer_surface = buffer_surface
         self.buffer_surface = buffer_surface
         self.bpts = buffer_surface.nine_points
-        self.dims = subsurface_dims
+        self.entered_dims = subsurface_dims
         self.loc = location
-        self.starting_corner = MutablePoint(x=0, y=0)
         self.FRACTION = FRACTION
+        self.starting_corner = MutablePoint(x=0, y=0)
 
+        self.run()
+
+
+    def run(self):
         self.process_fraction()
         self.run_prelim_checks()
         self.find_starting_corner()
@@ -38,8 +46,11 @@ class Placement:
 
     def process_fraction(self):
         if self.FRACTION:
-            self.dims.height = self.dims.height * self.buffer_surface.polygon.dimensions.height
-            self.dims.width = self.dims.width * self.buffer_surface.polygon.dimensions.width
+            self.dims = Dimensions(0,0)
+            self.dims.width = self.entered_dims.width * self.buffer_surface.polygon.dimensions.width
+            self.dims.height = self.entered_dims.height * self.buffer_surface.polygon.dimensions.height
+        else:
+            self.dims = self.entered_dims
 
 
     def run_prelim_checks(self):
@@ -52,11 +63,12 @@ class Placement:
         bottom_left = (x0, y0)
         bottom_right = (x0 + self.dims.width, y0)
         top_right = (x0 + self.dims.width, y0 + self.dims.height)
-        print(top_right)
         top_left = (x0, y0 + self.dims.height)
 
         polygon = Polygon([bottom_left, bottom_right, top_right, top_left, bottom_left])
         self.polygon = SurfacePolygon(polygon)
+
+        assert self.buffer_surface.polygon.polygon.crosses(self.polygon.polygon) == False
 
     def plot_test(self):
         self.buffer_trace = prepare_shape_dict(self.buffer_surface.polygon.coord_sequence )
@@ -98,12 +110,10 @@ class Placement:
         
     def place_top_left(self):
         self.starting_corner = MutablePoint(self.bpts.top_left)
-        print(self.starting_corner)
         self.extend_down()
 
     def place_top_middle(self):
         self.starting_corner = MutablePoint(self.bpts.top_middle)
-        print(self.starting_corner)
         self.extend_down()
         self.extend_left_half()
 

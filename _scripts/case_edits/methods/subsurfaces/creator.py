@@ -4,7 +4,10 @@ from case_edits.methods.subsurfaces.inputs import (
     SurfaceGetterInputs,
     DOOR_GAP,
 )
+from case_edits.methods.dynamic_subsurfaces.recreate_wall import WallRecreation
 
+from case_edits.methods.dynamic_subsurfaces.buffer import Buffer
+from case_edits.methods.dynamic_subsurfaces.placement import Placement
 
 class SubsurfaceCreator:
     def __init__(self, inputs: SubsurfaceInputs) -> None:
@@ -33,6 +36,16 @@ class SubsurfaceCreator:
         self.sg = SurfaceGetter(input)
         self.surface = self.sg.goal_surface
 
+    def calculate_start_coords(self):
+        recreated_surface = WallRecreation(self.surface)
+        buffered_surface = Buffer(recreated_surface.polygon)
+        placement_object = Placement(buffered_surface, self.attrs.dimensions, self.attrs.location_in_wall, self.attrs.FRACTIONAL)
+        self.start_x = placement_object.starting_corner.x
+        self.start_z = placement_object.starting_corner.y
+        self.height = placement_object.dims.height
+        self.width = placement_object.dims.width
+
+
     def determine_ssurface_type(self):
         self.type = self.attrs.object_type.name
         self.type_interzone = f"{self.type}:INTERZONE"
@@ -44,11 +57,6 @@ class SubsurfaceCreator:
         # TODO what if its an interzone ssurface?
         # i think this is redundant..
 
-    def calculate_start_coords(self):
-        surface_center = int(self.surface.data.width) / 2
-        half_length = self.attrs.length / 2
-        self.start_x = surface_center - half_length
-        self.start_z = DOOR_GAP  # TODO adjust for windeows  !
 
     def initialize_object(self):
         if self.surface.is_interior_wall:
@@ -59,8 +67,8 @@ class SubsurfaceCreator:
     def update_attributes(self):
         self.obj0.Starting_X_Coordinate = self.start_x
         self.obj0.Starting_Z_Coordinate = self.start_z
-        self.obj0.Height = self.attrs.height
-        self.obj0.Length = self.attrs.length
+        self.obj0.Height = self.height
+        self.obj0.Length = self.width
         self.obj0.Construction_Name = self.attrs.construction.Name
         self.obj0.Building_Surface_Name = self.surface.name
         self.obj0.Name = self.name
