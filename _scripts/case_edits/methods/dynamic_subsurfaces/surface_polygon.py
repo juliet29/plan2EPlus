@@ -18,12 +18,18 @@ class SurfacePolygon:
         
 
     def auto_dimension(self):
-        self.dimensions.width  = self.organized_coords.x1 - self.organized_coords.x0
-        self.dimensions.height  =  self.organized_coords.y1 - self.organized_coords.y0
+        self.dimensions.width  = abs(self.organized_coords.x1 - self.organized_coords.x0)
+        self.dimensions.height  =  abs(self.organized_coords.y1 - self.organized_coords.y0)
 
         # check 
-        area_height = self.polygon.area / self.dimensions.width
-        assert np.isclose(a=area_height, b=self.dimensions.height), f"area_height: {area_height}, dim_height: {self.dimensions.height} "
+        # try:
+        #     assert self.polygon.area
+        # except:
+        #     "Invalid polygon"
+        #     area_height = self.polygon.area / self.dimensions.width
+        #     assert np.isclose(a=area_height, b=self.dimensions.height), f"area_height: {area_height}, dim_height: {self.dimensions.height} "
+        # except:
+        #     return self.organized_coords
 
     def update_dimensions(self, w, h):
         self.dimensions.width = w

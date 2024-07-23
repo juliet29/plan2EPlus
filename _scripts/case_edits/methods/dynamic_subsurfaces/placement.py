@@ -43,6 +43,7 @@ class Placement:
         self.run_prelim_checks()
         self.find_starting_corner()
         self.create_test_polygon()
+        self.get_relative_starting_point()
 
     def process_fraction(self):
         if self.FRACTION:
@@ -56,6 +57,16 @@ class Placement:
     def run_prelim_checks(self):
         assert self.dims.height < self.buffer_surface.polygon.dimensions.height
         assert self.dims.width < self.buffer_surface.polygon.dimensions.width
+
+    def get_relative_starting_point(self):
+        org_coords = self.buffer_surface.original_surface.organized_coords
+        self.relative_x = abs(org_coords.x0- self.starting_corner.x)
+        self.relative_y = abs(org_coords.y0 - self.starting_corner.y)
+
+        if self.relative_x != self.starting_corner.x or self.relative_y != self.starting_corner.y:
+            self.old_starting_corner = self.starting_corner
+            self.starting_corner = MutablePoint(x=self.relative_x, y=self.relative_y)
+
 
     def create_test_polygon(self):
         x0 = self.starting_corner.x

@@ -29,6 +29,7 @@ class Subsurface:
         line = self.wall.line
         start =line.line_interpolate_point(self.start_x)
         end = line.line_interpolate_point(self.start_x+self.length)
+        # assert start  != end 
         self.line = LineString([start, end])
 
     def get_simple_object(self):

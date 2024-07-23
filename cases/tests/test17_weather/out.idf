@@ -471,7 +471,7 @@ WINDOW,
     Block 01 Storey 0 Wall 0001,    !- Building Surface Name
     ,                         !- Frame and Divider Name
     1.0,                      !- Multiplier
-    74.8,                     !- Starting X Coordinate
+    24.8,                     !- Starting X Coordinate
     3.8,                      !- Starting Z Coordinate
     20.4,                     !- Length
     2.4;                      !- Height
@@ -482,7 +482,7 @@ DOOR,
     Block 00 Storey 0 Wall 0002,    !- Building Surface Name
     1.0,                      !- Multiplier
     35.3,                     !- Starting X Coordinate
-    101,                      !- Starting Z Coordinate
+    1,                        !- Starting Z Coordinate
     29.4,                     !- Length
     7.2;                      !- Height
 
@@ -493,7 +493,7 @@ DOOR:INTERZONE,
     Block 00 Storey 0 Wall 0004_1 Door Partner,    !- Outside Boundary Condition Object
     1.0,                      !- Multiplier
     17.8,                     !- Starting X Coordinate
-    71,                       !- Starting Z Coordinate
+    1,                        !- Starting Z Coordinate
     14.399999999999999,       !- Length
     7.2;                      !- Height
 
@@ -504,7 +504,7 @@ DOOR:INTERZONE,
     Block 00 Storey 0 Wall 0004_1 Door,    !- Outside Boundary Condition Object
     1.0,                      !- Multiplier
     17.8,                     !- Starting X Coordinate
-    71,                       !- Starting Z Coordinate
+    1,                        !- Starting Z Coordinate
     14.399999999999999,       !- Length
     7.2;                      !- Height
 
