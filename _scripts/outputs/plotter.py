@@ -22,15 +22,18 @@ class Plotter(SQLReader):
     """
 
 
-    def create_plot(self, plot_type=PlotTypes.LINE, time:time=time(0,0)):
+    def create_plot(self, plot_type=PlotTypes.LINE, time:time=time(0,0), SHOW_FIG=True):
         self.prepare_for_plot()
 
         if plot_type == PlotTypes.LINE:
             self.line_plot_obj = LinePlot(
                 LinePlotInputs(self.filtered_collection, self.geom_type)
             )
-            self.line_plot_obj.create_plot()
-            self.line_plot_obj.fig.show()
+            self.handle_plotting(self.line_plot_obj, SHOW_FIG)
+            # self.line_plot_obj.create_plot()
+            # if SHOW_FIG:
+            #     self.line_plot_obj.fig.show()
+            # self.fig = self.line_plot_obj.fig
 
         elif plot_type == PlotTypes.SURFACE_2D:
             self.surface_2d_plot_obj = Surface2DPlot(Surface2DPlotInputs(
@@ -39,8 +42,22 @@ class Plotter(SQLReader):
                 time,
                 self.pinputs.base2D
             ))
-            self.surface_2d_plot_obj.create_figure()
-            self.surface_2d_plot_obj.fig.show()
+            self.handle_plotting(self.surface_2d_plot_obj, SHOW_FIG)
+            # self.surface_2d_plot_obj.create_figure()
+            # self.surface_2d_plot_obj.fig.show()
+            # self.fig = self.surface_2d_plot_obj.fig
+
+        
+
         
         else: 
             raise Exception("Invalid plot type needs to be part of PlotTypes")
+        
+        return self.fig
+        
+    def handle_plotting(self, obj, SHOW_FIG):
+        obj.create_plot()
+        if SHOW_FIG:
+            obj.fig.show()
+        self.fig = obj.fig
+

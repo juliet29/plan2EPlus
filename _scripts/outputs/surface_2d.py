@@ -14,7 +14,7 @@ class Surface2DPlot:
         self.color_scheme = px.colors.diverging.Portland
         self.used_walls = []
 
-    def create_figure(self):
+    def create_plot(self):
         self.create_traces()
         self.fig = plot_shape(
             self.trace_dict,

@@ -8,7 +8,7 @@ from gplan.convert import GPLANtoGeomeppy
 from case_edits.epcase import EneryPlusCaseEditor
 from case_edits.special_types import PairType, GeometryType
 from case_edits.methods.subsurfaces.inputs import SubsurfaceInputs
-from case_edits.recipes.subsurface_defaults import DEFAULT_DOOR, DEFAULT_WINDOW
+from recipes.subsurface_defaults import DEFAULT_DOOR, DEFAULT_WINDOW
 from case_edits.methods.subsurfaces.creator import SubsurfaceCreator
 
 from case_edits.methods.airflownetwork import AirflowNetwork
@@ -18,6 +18,8 @@ from outputs.variables import OutputVars as OV
 from outputs.input_classes import SQLInputs, PlotterInputs
 from outputs.plotter import Plotter
 from outputs.base_2d import Base2DPlot
+
+from workflow.auto_analysis import AutoAnalysis, AutoAnalysisInputs
 
 from pprint import pprint
 
@@ -54,6 +56,8 @@ class EzCase():
             self.case.run_idf()
         self.make_base_plot()
         self.prepare_plotter()
+        if self.RUN_CASE:
+            self.run_analysis()
 
 
     def add_rooms(self):
@@ -134,6 +138,11 @@ class EzCase():
         # TODO => handle no sql file exception (havent run the case yet.. )
         # TODO make sure sql file and idf match up somehow.. 
   
+
+    def run_analysis(self):
+        inputs = AutoAnalysisInputs(self.eligible_vars, self.plt, self.base_plot, self.inputs.case_name, self.case.path)
+        self.analysis = AutoAnalysis(inputs)
+    
 
     def show_eligible_outputs(self):
         pprint({k:v.value for k,v in self.eligible_vars.items()})
