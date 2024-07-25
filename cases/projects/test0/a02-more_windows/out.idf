@@ -508,6 +508,28 @@ DOOR,
     29.4,                     !- Length
     7.2;                      !- Height
 
+WINDOW:INTERZONE,
+    Block 00 Storey 0 Wall 0004_1 Window,    !- Name
+    Project External Window,    !- Construction Name
+    Block 00 Storey 0 Wall 0004_1,    !- Building Surface Name
+    Block 00 Storey 0 Wall 0004_1 Window Partner,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    17.8,                     !- Starting X Coordinate
+    3.8,                      !- Starting Z Coordinate
+    14.399999999999999,       !- Length
+    2.4;                      !- Height
+
+WINDOW:INTERZONE,
+    Block 00 Storey 0 Wall 0004_1 Window Partner,    !- Name
+    Project External Window,    !- Construction Name
+    Block 01 Storey 0 Wall 0002_1,    !- Building Surface Name
+    Block 00 Storey 0 Wall 0004_1 Window,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    17.8,                     !- Starting X Coordinate
+    3.8,                      !- Starting Z Coordinate
+    14.399999999999999,       !- Length
+    2.4;                      !- Height
+
 DOOR:INTERZONE,
     Block 00 Storey 0 Wall 0004_1 Door,    !- Name
     Project Door,             !- Construction Name
@@ -676,6 +698,23 @@ AIRFLOWNETWORK:MULTIZONE:SURFACE,
     PolygonHeight,            !- Equivalent Rectangle Method
     1;                        !- Equivalent Rectangle Aspect Ratio
 
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 00 Storey 0 Wall 0004_1 Window,    !- Surface Name
+    Block 00 Storey 0 Wall 0004_1 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
 AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
     Block 00 Storey 0 Wall 0002 Door SimpleOpening,    !- Name
     0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
@@ -713,6 +752,13 @@ AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
 
 AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
     Block 00 Storey 0 Wall 0001 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 00 Storey 0 Wall 0004_1 Window SimpleOpening,    !- Name
     0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
     0.65,                     !- Air Mass Flow Exponent When Opening is Closed
     0.0001,                   !- Minimum Density Difference for TwoWay Flow

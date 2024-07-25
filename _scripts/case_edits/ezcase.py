@@ -1,7 +1,8 @@
 from dataclasses import dataclass
+import dataclasses
+from operator import attrgetter
 from typing import List, Tuple, Union, Sequence
-from munch import Munch
-
+from munch import Munch  
 from gplan.room_class import GPLANRoomAccess
 from gplan.convert import GPLANtoGeomeppy
 
@@ -21,7 +22,7 @@ from outputs.base_2d import Base2DPlot
 
 from workflow.auto_analysis import AutoAnalysis, AutoAnalysisInputs
 
-from pprint import pprint
+from pprint import pprint, pformat
 
 
 
@@ -33,13 +34,26 @@ class EzCaseInput:
     output_variables:List[OV]
     geometry:GeometryType = GPLANRoomAccess("",0)
     starting_case:str=""
+    project_name:str=""
+
 
 class EzCase():
     def __init__(self, input:EzCaseInput, RUN_CASE=False) -> None:
         self.inputs = input
-        self.case = EneryPlusCaseEditor(self.inputs.case_name, self.inputs.starting_case)
+        self.case = EneryPlusCaseEditor(self.inputs.case_name, self.inputs.starting_case, project_name=self.inputs.project_name)
         self.RUN_CASE = RUN_CASE
+        self.rep_inputs()
         self.run()
+
+
+    def rep_inputs(self):
+        self.input_vals = {field.name:attrgetter(field.name)(self.inputs) for field in dataclasses.fields(self.inputs) if field.name != "output_variables"}
+        self.sinput_vals = pformat(self.input_vals, sort_dicts=False)
+
+    def __repr__(self):
+        return self.sinput_vals
+    
+
 
     def run(self):
         self.add_rooms()

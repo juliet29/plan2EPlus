@@ -14,8 +14,9 @@ TEST_CASE = "tests/test18_many_windows"
 
 window_pairs.append((1, WallNormal.EAST))
 window_pairs.append((1, WallNormal.WEST))
-window_pairs.append((0, WallNormal.WEST))
+# window_pairs.append((0, WallNormal.WEST))
 window_pairs.append((0, WallNormal.EAST))
+# window_pairs.append((0, WallNormal.SOUTH)) # cant do because there are many south surfaces => future work .. 
 
 input = EzCaseInput(
     case_name=TEST_CASE,

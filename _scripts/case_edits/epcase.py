@@ -26,9 +26,12 @@ class EneryPlusCaseReader:
 
 class EneryPlusCaseEditor:
     # TODO make this inherit the other? to the extent it cane?
-    def __init__(self, case_name:str, starting_case:str="") -> None: # type: ignore
+    def __init__(self, case_name:str, starting_case:str="", project_name="",) -> None: # type: ignore
         # make case folder
-        self.path = os.path.join("cases", case_name)
+        if project_name:
+            self.path = os.path.join("cases", "projects", project_name, case_name)
+        else:
+            self.path = os.path.join("cases", case_name)
         if not os.path.exists(self.path):
             os.makedirs(self.path)
 

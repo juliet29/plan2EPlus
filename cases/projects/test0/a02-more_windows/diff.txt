@@ -1,0 +1,1 @@
+{'iterable_item_added': {'root.window_pairs[4]': (0, 1)}}
