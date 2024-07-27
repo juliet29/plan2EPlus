@@ -1,6 +1,0 @@
-{'case_name': 'a01-base_case',
- 'door_pairs': [(0, <WallNormal.NORTH: 0.0>), (0, 1)],
- 'window_pairs': [(1, <WallNormal.SOUTH: 180.0>)],
- 'geometry': GPLANRoomAccess(path='GPLANs/test.json', index=0),
- 'starting_case': '',
- 'project_name': 'test0'}

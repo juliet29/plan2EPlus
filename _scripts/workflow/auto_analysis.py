@@ -9,7 +9,7 @@ from outputs.base_2d import Base2DPlot
 from outputs.input_classes import PlotTypes
 
 
-INPUT_TEMPLATE_PATH = "/Users/julietnwagwuume-ezeoke/_UILCode/gqe-phd/geomeppy/_scripts/workflow/template.html.j2"
+INPUT_TEMPLATE_PATH = "/Users/julietnwagwuume-ezeoke/_UILCode/gqe-phd/geomeppy/_scripts/workflow/auto_analysis.html.j2"
 
 
 @dataclass

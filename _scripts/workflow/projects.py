@@ -28,10 +28,11 @@ class ProjectManager:
         # TODO check and automatically run the case? 
         self.save_input_pkl(self.base_case_input, self.base_ezcase.case.path)
         self.save_input_txt()
+        self.save_fig(self.base_ezcase, self.base_ezcase.case.path)
 
 
 
-    def generate_new_case(self, mod_fx, name="",  prefix=False, letter=""):
+    def generate_new_case(self, mod_fx, name="",  prefix="", letter=""):
         # todo type ~ fx signature? 
         self.new_input = deepcopy(self.base_case_input)
         self.new_input:EzCaseInput = mod_fx(self.new_input)
@@ -39,15 +40,16 @@ class ProjectManager:
         assert prefix or name, "Need a prefix or a name for the case"
 
         # generate new name 
-        if prefix:
+        if not prefix:
             prefix = self.generate_prefix(letter)
 
-        case_name = f"{prefix}_{name}"
+        case_name = f"{prefix}-{name}"
         self.new_input.case_name = case_name
 
         self.new_ezcase = EzCase(self.new_input, RUN_CASE=True)
         self.save_input_pkl(self.new_input, self.new_ezcase.case.path)
         self.save_diff_input_txt()
+        self.save_fig(self.new_ezcase, self.new_ezcase.case.path)
         # TODO check and automatically run the case? 
 
 
@@ -66,6 +68,11 @@ class ProjectManager:
 
         with open(path, "wb") as file:
             pickle.dump(input, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+    def save_fig(self, case, fpath):
+        fig = case.base_plot.fig
+        path = os.path.join(fpath, "plot2D.png")
+        fig.write_image(path)
 
 
     def save_input_txt(self):
