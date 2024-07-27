@@ -1,0 +1,1 @@
+{'iterable_item_added': {'root.window_pairs[1]': (1, <WallNormal.EAST: 90.0>)}}

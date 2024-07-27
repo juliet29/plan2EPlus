@@ -10,6 +10,8 @@ class ProjectManager:
     def __init__(self, name, base_case_input: EzCaseInput) -> None:
         self.project_name = name
         self.base_case_input  = base_case_input
+        self.create_project_directory()
+        self.create_base_case()
 
     def create_project_directory(self):
         self.path = os.path.join("cases/projects", self.project_name)
@@ -19,27 +21,31 @@ class ProjectManager:
     def create_base_case(self):
         # base_case_name = self.base_case_input.case_name
         # overwriting so that labeled base case
-        self.base_case_input.case_name =  "a01-base_case"
+        self.base_case_input.case_name =  "a00-base_case"
         self.base_case_input.project_name = self.project_name
 
-        self.base_ezcase = EzCase(self.base_case_input)
+        self.base_ezcase = EzCase(self.base_case_input, RUN_CASE=True)
         # TODO check and automatically run the case? 
         self.save_input_pkl(self.base_case_input, self.base_ezcase.case.path)
         self.save_input_txt()
 
 
 
-    def generate_new_case(self, mod_fx, name="", letter="a"):
+    def generate_new_case(self, mod_fx, name="",  prefix=False, letter=""):
         # todo type ~ fx signature? 
         self.new_input = deepcopy(self.base_case_input)
         self.new_input:EzCaseInput = mod_fx(self.new_input)
 
+        assert prefix or name, "Need a prefix or a name for the case"
+
         # generate new name 
-        prefix = self.generate_prefix(letter)
-        case_name = f"{prefix}-{name}"
+        if prefix:
+            prefix = self.generate_prefix(letter)
+
+        case_name = f"{prefix}_{name}"
         self.new_input.case_name = case_name
 
-        self.new_ezcase = EzCase(self.new_input)
+        self.new_ezcase = EzCase(self.new_input, RUN_CASE=True)
         self.save_input_pkl(self.new_input, self.new_ezcase.case.path)
         self.save_diff_input_txt()
         # TODO check and automatically run the case? 
@@ -47,10 +53,13 @@ class ProjectManager:
 
     def generate_prefix(self, letter="a"): 
         # calc number of folders..
-        n_cases = len(next(os.walk("cases/projects"))[1])
+        n_cases = len(next(os.walk(self.path))[1])
 
         curr_n = str(n_cases+1).zfill(2)
-        return f"{letter}{curr_n}"
+        return f"{letter}_{curr_n}"
+    
+
+
     
     def save_input_pkl(self, input, fpath):
         path = os.path.join(fpath, "input.pkl")

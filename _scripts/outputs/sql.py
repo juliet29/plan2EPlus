@@ -4,18 +4,30 @@ from ladybug.sql import SQLiteResult
 from munch import Munch
 
 
+class SQLReader:
 
-class SQLReader():
     def __init__(self, inputs: SQLInputs) -> None:
         self.inputs = inputs
+        self.analysis_period = None
         self.get_sql_results()
 
     def get_sql_results(self):
         # TODO most of this path should come from EZCase or EPCase..
-        SQL_PATH = os.path.join(
-            "cases", self.inputs.case_name, "results", "eplusout.sql"
-        )
-        self.sqld = SQLiteResult(SQL_PATH)
+        try:
+            SQL_PATH = os.path.join(
+                "cases", self.inputs.case_name, "results", "eplusout.sql"
+            )
+            self.sqld = SQLiteResult(SQL_PATH)
+        except:
+            SQL_PATH = os.path.join(
+                "cases",
+                "projects",
+                self.inputs.project_name,
+                self.inputs.case_name,
+                "results",
+                "eplusout.sql",
+            )
+            self.sqld = SQLiteResult(SQL_PATH)
 
     def get_collection_for_variable(self, output_var):
         self.curr_output = output_var
@@ -25,19 +37,16 @@ class SQLReader():
         )
         self.split_collection_by_ap()
 
-    def set_analysis_period(self, ix):
+    def set_analysis_period(self, ix=0):
         possible_ap = list(self.collection_by_ap.keys())
+        assert possible_ap, "No analysis periods"
         self.analysis_period = possible_ap[ix]
 
-
-    def prepare_for_plot(self, ):
-        assert self.analysis_period, "Call `set_analysis_period`"
+    def filter_collections(self):
+        if self.analysis_period == None:
+            self.set_analysis_period()
         self.filtered_collection = self.collection_by_ap[self.analysis_period]
         self.get_collection_geometry_type(self.filtered_collection[0])
-
-        # self.plotter = Plotter(PlotterInputs(collection, self.geom_type, plot_type, self.inputs.geometry, self.inputs.base2D))
-        # self.plotter.create_plot()
-
 
     def split_collection_by_ap(self):
         self.collection_by_ap = Munch()
@@ -47,7 +56,7 @@ class SQLReader():
             if ap not in self.collection_by_ap.keys():
                 self.collection_by_ap.update({ap: []})
             self.collection_by_ap[ap].append(dataset)
-        # self.show_analysis_periods()
+
 
     def get_collection_geometry_type(self, dataset):
         metadata = dataset.header.metadata

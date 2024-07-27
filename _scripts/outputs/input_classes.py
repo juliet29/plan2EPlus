@@ -33,6 +33,7 @@ class SQLInputs:
     case_name: str
     geometry: GeometryParser
     output_variables: List[OutputVars]
+    project_name:str = ""
     
 
 

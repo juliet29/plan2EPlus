@@ -1,1 +1,1 @@
-{'iterable_item_added': {'root.window_pairs[4]': (0, 1)}}
+{'iterable_item_added': {'root.window_pairs[1]': (0, <WallNormal.WEST: 270.0>)}}

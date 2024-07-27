@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import os
 import dataclasses
 from operator import attrgetter
 from typing import List, Tuple, Union, Sequence
@@ -65,7 +66,7 @@ class EzCase():
         self.update_geometry_subsurfaces()
         self.add_airflownetwork()
         self.add_output_variables()
-        self.case.save_idf()
+        self.case.compare_and_save()
         if self.RUN_CASE:
             self.case.run_idf()
         self.make_base_plot()
@@ -141,21 +142,32 @@ class EzCase():
      
 
     def prepare_plotter(self):
-        sql_input = SQLInputs(self.inputs.case_name, self.case.geometry, self.inputs.output_variables)
+        sql_input = SQLInputs(self.inputs.case_name, self.case.geometry, self.inputs.output_variables, self.inputs.project_name)
         plotter_input = PlotterInputs(self.base_plot)
 
-        try:
-            self.plt = Plotter(plotter_input, sql_input)
-        except AssertionError:
-            print("No SQL file for this case")
+        if "results" in next(os.walk(self.case.path))[1]:
+            results_path = os.path.join(self.case.path, "results")
+            if "eplusout.sql" in next(os.walk(results_path))[2]:
+                print("looking for sql")
+                self.plt = Plotter(plotter_input, sql_input)
+            else: 
+                print("No SQL file")
+                self.plt = None
+        else: 
+            self.plt = None
 
-        # TODO => handle no sql file exception (havent run the case yet.. )
-        # TODO make sure sql file and idf match up somehow.. 
   
 
     def run_analysis(self):
-        inputs = AutoAnalysisInputs(self.eligible_vars, self.plt, self.base_plot, self.inputs.case_name, self.case.path)
-        self.analysis = AutoAnalysis(inputs)
+        if self.plt:
+            if self.case.is_changed_idf:
+                print("running analysis")
+                inputs = AutoAnalysisInputs(self.eligible_vars, self.plt, self.base_plot, self.inputs.case_name, self.case.path)
+                self.analysis = AutoAnalysis(inputs)
+            else:
+                print("IDF did not change, so not re-running analysis")
+        else:
+            print("Plotter object was not created, so no analysis performed")
     
 
     def show_eligible_outputs(self):
