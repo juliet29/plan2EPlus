@@ -8,13 +8,13 @@ from gplan.room_class import GPLANRoomAccess
 from gplan.convert import GPLANtoGeomeppy
 
 from case_edits.epcase import EneryPlusCaseEditor
-from case_edits.special_types import PairType, GeometryType
-from case_edits.methods.subsurfaces.inputs import SubsurfaceInputs
+from helpers.special_types import PairType, GeometryType
+from methods.subsurfaces.inputs import SubsurfaceInputs
 from recipes.subsurface_defaults import DEFAULT_DOOR, DEFAULT_WINDOW
-from case_edits.methods.subsurfaces.creator import SubsurfaceCreator
+from methods.subsurfaces.creator import SubsurfaceCreator
 
-from case_edits.methods.airflownetwork import AirflowNetwork
-from case_edits.methods.outputs import OutputRequests
+from methods.airflownetwork import AirflowNetwork
+from methods.outputs import OutputRequests
 
 from outputs.variables import OutputVars as OV
 from outputs.input_classes import SQLInputs, PlotterInputs

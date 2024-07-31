@@ -1,7 +1,7 @@
 from shapely import Point, Polygon
 
-from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
-from case_edits.methods.dynamic_subsurfaces.nine_points import NinePointsCreator
+from methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
+from methods.dynamic_subsurfaces.nine_points import NinePointsCreator
 
 
 class Buffer:

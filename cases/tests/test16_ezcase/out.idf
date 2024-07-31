@@ -497,6 +497,15 @@ DOOR:INTERZONE,
     14.399999999999999,       !- Length
     7.2;                      !- Height
 
+SHADING:OVERHANG,
+    Block 01 Storey 0 Wall 0004 Window Shading,    !- Name
+    Block 01 Storey 0 Wall 0004 Window,    !- Window or Door Name
+    0.01,                     !- Height above Window or Door
+    90,                       !- Tilt Angle from WindowDoor
+    0,                        !- Left extension from WindowDoor Width
+    0,                        !- Right extension from WindowDoor Width
+    0.3;                      !- Depth
+
 AIRFLOWNETWORK:SIMULATIONCONTROL,
     AFN_SIM_CONTROL,          !- Name
     MultizoneWithoutDistribution,    !- AirflowNetwork Control

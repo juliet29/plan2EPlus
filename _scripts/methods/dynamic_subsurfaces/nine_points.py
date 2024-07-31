@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
+from methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
 from shapely import Point, Polygon
-from case_edits.methods.dynamic_subsurfaces.inputs import NinePoints, MutablePoint
+from methods.dynamic_subsurfaces.inputs import NinePoints, MutablePoint
 
 
 

@@ -1,5 +1,5 @@
-from case_edits.methods.subsurfaces.inputs import SubsurfaceInputs, SubsurfaceAttributes, SubsurfaceObjects
-from case_edits.methods.dynamic_subsurfaces.inputs import (
+from methods.subsurfaces.inputs import SubsurfaceInputs, SubsurfaceAttributes, SubsurfaceObjects
+from methods.dynamic_subsurfaces.inputs import (
     Dimensions,
     NinePointsLocator,
 )

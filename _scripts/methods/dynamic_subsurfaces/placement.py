@@ -1,17 +1,17 @@
 from shapely import Point, Polygon
-from case_edits.methods.dynamic_subsurfaces.buffer import Buffer
-from case_edits.methods.dynamic_subsurfaces.inputs import (
+from methods.dynamic_subsurfaces.buffer import Buffer
+from methods.dynamic_subsurfaces.inputs import (
     Dimensions,
     NinePointsLocator,
     MutablePoint,
 )
 
-from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
+from methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
 from helpers.plots import prepare_shape_dict, plot_shape, create_range_limits
 
 from icecream import ic
 
-from case_edits.methods.dynamic_subsurfaces.inputs import  Dimensions
+from methods.dynamic_subsurfaces.inputs import  Dimensions
 
 
 """

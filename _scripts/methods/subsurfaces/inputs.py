@@ -4,8 +4,8 @@ from typing import List, Sequence, Union
 from geomeppy import IDF
 from geomeppy.patches import EpBunch
 from enum import Enum
-from case_edits.special_types import PairType
-from case_edits.methods.dynamic_subsurfaces.inputs import (
+from helpers.special_types import PairType
+from methods.dynamic_subsurfaces.inputs import (
     Dimensions,
     NinePointsLocator,
 )
@@ -25,6 +25,7 @@ class SubsurfaceAttributes:
     dimensions: Dimensions
     location_in_wall: NinePointsLocator
     FRACTIONAL: bool = False
+    SHADING: bool = False
 
 
 @dataclass

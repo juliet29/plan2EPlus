@@ -24,6 +24,8 @@ class BiVariableAnalysis:
         self.qoi1 = None
         self.qoi2 = None
         self.is_post_processed_qois = (False, False)
+        self.is_zonal_data = True
+        self.is_two_by_two = False
 
     def update_qois(self, qoi1: VariableType = None, qoi2: VariableType = None):
         # qoi1 is the indpendent variable ~ site wind speed
@@ -70,7 +72,8 @@ class BiVariableAnalysis:
             self.curr_case = case
             self.pull_data()
             self.long_data.extend(self.get_zone_data(0))
-            self.long_data.extend(self.get_zone_data(1))
+            if self.is_zonal_data:
+                self.long_data.extend(self.get_zone_data(1))
         self.df = pd.DataFrame(self.long_data)
 
     def pull_data(self):
@@ -81,10 +84,13 @@ class BiVariableAnalysis:
             self.var2 = self.get_var_data(self.qoi2, self.is_post_processed_qois[1])
         else:
             raise Exception(f"Invalide QOIs:{self.qoi1}, {self.qoi2}")
-        assert len(self.var1) == 1, f"{self.qoi1} is not a site var"
+        
+        if not self.is_two_by_two:
+            assert len(self.var1) == 1, f"{self.qoi1} is not a site var"
 
     def get_zone_data(self, ix):
         assert self.qoi1 and self.qoi2
+        var1_ix = ix if self.is_two_by_two else 0
         return [
             {
                 "case": self.curr_case,
@@ -92,8 +98,10 @@ class BiVariableAnalysis:
                 self.qoi1.name: v1,
                 self.qoi2.name: v2,
             }
-            for v1, v2 in zip(self.var1[0].values, self.var2[ix].values)
+            for v1, v2 in zip(self.var1[var1_ix].values, self.var2[ix].values)
         ]
+
+            
 
     def get_var_data(self, var: VariableType, POST_PROCESS_DATA=False):
         if POST_PROCESS_DATA:
@@ -126,7 +134,7 @@ class BiVariableAnalysis:
             so.Plot(self.df, x=self.qoi1.name, y=self.qoi2.name, color="zone")
             .facet("case")
             .add(so.Dots())
-            .add(so.Line(), so.PolyFit())
+            # .add(so.Line(), so.PolyFit())
             .scale(color="flare")  # type: ignore
         )
         return self.fig

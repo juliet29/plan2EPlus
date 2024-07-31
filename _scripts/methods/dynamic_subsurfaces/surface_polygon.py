@@ -1,6 +1,6 @@
 from shapely import Point, Polygon
 import numpy as np
-from case_edits.methods.dynamic_subsurfaces.inputs import Dimensions
+from methods.dynamic_subsurfaces.inputs import Dimensions
 from helpers.shapely_helpers import get_coords_as_points, CoordOrganizer
 
 

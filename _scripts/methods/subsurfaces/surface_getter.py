@@ -1,4 +1,4 @@
-from case_edits.methods.subsurfaces.inputs import SurfaceGetterInputs
+from methods.subsurfaces.inputs import SurfaceGetterInputs
 from geometry.wall import WallNormal
 
 

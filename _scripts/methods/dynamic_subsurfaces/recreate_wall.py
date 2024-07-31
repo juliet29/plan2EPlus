@@ -2,7 +2,7 @@ from shapely import Point, Polygon
 
 from geometry.wall import Wall, WallNormal
 from helpers.shapely_helpers import get_coords_as_points, get_point_xy
-from case_edits.methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
+from methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
 
 
 
