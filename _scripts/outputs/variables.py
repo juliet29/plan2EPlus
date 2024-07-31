@@ -49,3 +49,5 @@ class OutputVars(str, Enum):
 
 
 # access name by value
+class PostProcessedOutputVars(str, Enum):
+    zone_vent_net_heat_loss = "Zone Ventilation Net Heat Loss"

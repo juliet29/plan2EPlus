@@ -31,6 +31,7 @@ class PlotTypes(Enum):
 @dataclass
 class SQLInputs:
     case_name: str
+    path: str
     geometry: GeometryParser
     output_variables: List[OutputVars]
     project_name:str = ""

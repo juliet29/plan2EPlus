@@ -36,6 +36,7 @@ class EneryPlusCaseEditor:
             self.path = os.path.join("cases", "projects", self.project_name, self.case_name)
         else:
             self.path = os.path.join("cases", self.case_name)
+            
         if not os.path.exists(self.path):
             os.makedirs(self.path)
 

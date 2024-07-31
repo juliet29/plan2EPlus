@@ -1,8 +1,9 @@
-from outputs.input_classes import SQLInputs, PlotTypes
 import os
-from ladybug.sql import SQLiteResult
 from munch import Munch
+from ladybug.sql import SQLiteResult
 
+from outputs.input_classes import SQLInputs
+from outputs.variables import OutputVars
 
 class SQLReader:
 
@@ -12,24 +13,42 @@ class SQLReader:
         self.get_sql_results()
 
     def get_sql_results(self):
-        # TODO most of this path should come from EZCase or EPCase..
         try:
-            SQL_PATH = os.path.join(
-                "cases", self.inputs.case_name, "results", "eplusout.sql"
-            )
+            SQL_PATH = os.path.join(self.inputs.path, "results", "eplusout.sql")
+            print(SQL_PATH)
             self.sqld = SQLiteResult(SQL_PATH)
         except:
-            SQL_PATH = os.path.join(
-                "cases",
-                "projects",
-                self.inputs.project_name,
-                self.inputs.case_name,
-                "results",
-                "eplusout.sql",
-            )
-            self.sqld = SQLiteResult(SQL_PATH)
+            raise Exception("7/30 SQL modification failed..")
+            
 
-    def get_collection_for_variable(self, output_var):
+        # # TODO most of this path should come from EZCase or EPCase..
+        # try:
+        #     SQL_PATH = os.path.join(
+        #         "cases", self.inputs.case_name, "results", "eplusout.sql"
+        #     )
+        #     self.sqld = SQLiteResult(SQL_PATH)
+        # except:
+        #     try:
+                
+        #         SQL_PATH = os.path.join(self.inputs.path, "results", "eplusout.sql")
+        #         print(SQL_PATH)
+        #         self.sqld = SQLiteResult(SQL_PATH)
+        #     except:
+        #         print("07/29 - epcase path didnt work ")
+
+        #         SQL_PATH = os.path.join(
+        #             "cases",
+        #             "projects",
+        #             self.inputs.project_name,
+        #             self.inputs.case_name,
+        #             "results",
+        #             "eplusout.sql",
+        #         )
+        #         print(SQL_PATH)
+        #         self.sqld = SQLiteResult(SQL_PATH)
+
+
+    def get_collection_for_variable(self, output_var:OutputVars):
         self.curr_output = output_var
         self.validate_request()
         self.collection = self.sqld.data_collections_by_output_name(
@@ -37,16 +56,8 @@ class SQLReader:
         )
         self.split_collection_by_ap()
 
-    def set_analysis_period(self, ix=0):
-        possible_ap = list(self.collection_by_ap.keys())
-        assert possible_ap, "No analysis periods"
-        self.analysis_period = possible_ap[ix]
-
-    def filter_collections(self):
-        if self.analysis_period == None:
-            self.set_analysis_period()
-        self.filtered_collection = self.collection_by_ap[self.analysis_period]
-        self.get_collection_geometry_type(self.filtered_collection[0])
+    def validate_request(self):
+        assert self.curr_output.value in self.sqld.available_outputs, f"{self.curr_output.value} not in {self.sqld.available_outputs}"  # type: ignore
 
     def split_collection_by_ap(self):
         self.collection_by_ap = Munch()
@@ -57,6 +68,28 @@ class SQLReader:
                 self.collection_by_ap.update({ap: []})
             self.collection_by_ap[ap].append(dataset)
 
+    def filter_collections(self):
+        if self.analysis_period == None:
+            self.set_analysis_period()
+        self.filtered_collection = self.collection_by_ap[self.analysis_period]
+        self.get_collection_geometry_type(self.filtered_collection[0])
+
+    
+    def set_analysis_period(self, ix=0):
+        # TODO issue => what if dont have a collection yet.. actually no bc will have called the stuff above.. 
+        possible_ap = list(self.collection_by_ap.keys())
+        assert possible_ap, "No analysis periods"
+        self.analysis_period = possible_ap[ix]
+
+
+    def show_analysis_periods(self):
+        for ix, k in enumerate(self.collection_by_ap.keys()):
+            print(f"{ix} - {k}")
+
+    def get_var_data(self, var:OutputVars):
+        self.get_collection_for_variable(var)
+        self.filter_collections()
+        return self.filtered_collection
 
     def get_collection_geometry_type(self, dataset):
         metadata = dataset.header.metadata
@@ -70,10 +103,3 @@ class SQLReader:
             except:
                 pass
         raise Exception(f"didnt find type {curr_type}")
-
-    def validate_request(self):
-        assert self.curr_output.value in self.sqld.available_outputs, f"{self.curr_output.value} not in {self.sqld.available_outputs}"  # type: ignore
-
-    def show_analysis_periods(self):
-        for ix, k in enumerate(self.collection_by_ap.keys()):
-            print(f"{ix} - {k}")
