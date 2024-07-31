@@ -15,38 +15,10 @@ class SQLReader:
     def get_sql_results(self):
         try:
             SQL_PATH = os.path.join(self.inputs.path, "results", "eplusout.sql")
-            print(SQL_PATH)
             self.sqld = SQLiteResult(SQL_PATH)
         except:
             raise Exception("7/30 SQL modification failed..")
-            
-
-        # # TODO most of this path should come from EZCase or EPCase..
-        # try:
-        #     SQL_PATH = os.path.join(
-        #         "cases", self.inputs.case_name, "results", "eplusout.sql"
-        #     )
-        #     self.sqld = SQLiteResult(SQL_PATH)
-        # except:
-        #     try:
-                
-        #         SQL_PATH = os.path.join(self.inputs.path, "results", "eplusout.sql")
-        #         print(SQL_PATH)
-        #         self.sqld = SQLiteResult(SQL_PATH)
-        #     except:
-        #         print("07/29 - epcase path didnt work ")
-
-        #         SQL_PATH = os.path.join(
-        #             "cases",
-        #             "projects",
-        #             self.inputs.project_name,
-        #             self.inputs.case_name,
-        #             "results",
-        #             "eplusout.sql",
-        #         )
-        #         print(SQL_PATH)
-        #         self.sqld = SQLiteResult(SQL_PATH)
-
+        
 
     def get_collection_for_variable(self, output_var:OutputVars):
         self.curr_output = output_var

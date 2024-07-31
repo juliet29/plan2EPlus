@@ -41,6 +41,7 @@ class BiVariableAnalysis:
         if not self.case_sqls:
             self.prepare_cases()
             self.get_case_sqls()
+            self.get_case_post_processed_data()
         self.create_long_data()
         self.make_bivariable_plot()
         self.fig.show()
@@ -75,7 +76,7 @@ class BiVariableAnalysis:
     def pull_data(self):
         if self.qoi1 and self.qoi2:
             self.sql = self.case_sqls[self.curr_case]
-            self.ppd = self.case_sqls[self.curr_case]
+            self.ppd = self.case_ppd[self.curr_case]
             self.var1 = self.get_var_data(self.qoi1, self.is_post_processed_qois[0])
             self.var2 = self.get_var_data(self.qoi2, self.is_post_processed_qois[1])
         else:
@@ -110,7 +111,6 @@ class BiVariableAnalysis:
         with open(input_path, "rb") as handle:
             ez_input = pickle.load(handle)
 
-        print(case_path)
         sql_input = SQLInputs(
             case_name=ez_input.case_name,
             path=case_path,
