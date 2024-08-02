@@ -11,7 +11,7 @@ from methods.dynamic_subsurfaces.inputs import (
     Dimensions,
     NinePointsLocator,
 )
-from geometry.wall import WallNormal
+from geometry.wall_normal import WallNormal
 
 
 DOOR_GAP = 2 / 100  # m

@@ -2,21 +2,12 @@ from geomeppy.patches import EpBunch
 import fnmatch
 import re
 import shapely as sp
-from enum import Enum
 
+from geometry.wall_normal import WallNormal
 from helpers.strings import test_intersecting_surface
 from outputs.classes import GeometryOutputData
 from geometry.surface_geom import SurfaceGeometryExtractor
 from geometry.subsurface import Subsurface
-
-
-class WallNormal(Enum):
-    # direction of outward normal of the wall..
-    # https://eppy.readthedocs.io/en/latest/eppy.geometry.html#eppy.geometry.surface.azimuth
-    NORTH = 0.0
-    EAST = 90.0
-    SOUTH = 180.0
-    WEST = 270.0
 
 
 class Wall:
@@ -82,13 +73,13 @@ class Wall:
 
         self.line = sp.LineString(vertices)
 
-
-    # dealing with outputs
-    def create_output_data(self, data: GeometryOutputData):
-        self.output_data[data.short_name] = data
-
-
     # get subsurfaces 
     def get_subsurfaces(self, subsurfaces):
         self.ssurface_list = [Subsurface(s, self) for s in subsurfaces if s.Building_Surface_Name == self.name]
 
+
+
+    # TODO remove depreciated 
+    # dealing with outputs
+    def create_output_data(self, data: GeometryOutputData):
+        self.output_data[data.short_name] = data

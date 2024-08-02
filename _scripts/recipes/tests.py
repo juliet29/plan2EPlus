@@ -1,6 +1,6 @@
 from gplan.room_class import GPLANRoomAccess
 from case_edits.ezcase import EzCaseInput
-from geometry.wall import WallNormal
+from geometry.wall_normal import WallNormal
 from outputs.variables import OutputVars as ov
 from recipes.two_zone import (
     PLAN_PATH,
@@ -16,7 +16,7 @@ window_pairs.append((1, WallNormal.EAST))
 window_pairs.append((1, WallNormal.WEST))
 # window_pairs.append((0, WallNormal.WEST))
 window_pairs.append((0, WallNormal.EAST))
-# window_pairs.append((0, WallNormal.SOUTH)) # cant do because there are many south surfaces => future work .. 
+# window_pairs.append((0, WallNormal.SOUTH)) # cant do because there are many south surfaces => future work ..
 
 input = EzCaseInput(
     case_name=TEST_CASE,

@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from gplan.room_class import GPLANRoomAccess
 from case_edits.ezcase import EzCaseInput
-from geometry.wall import WallNormal
+from geometry.wall_normal import WallNormal
 from outputs.variables import OutputVars as ov
 from methods.subsurfaces.inputs import SubsurfacePair as SSP
 from recipes.subsurface_defaults import DEFAULT_DOOR, DEFAULT_WINDOW
@@ -13,11 +13,13 @@ PLAN_INDEX = 0
 
 shade_window = deepcopy(DEFAULT_WINDOW)
 shade_window.SHADING = True
+window_pairs = [SSP(1, WallNormal.SOUTH, shade_window), 
+                SSP(1, WallNormal.EAST, shade_window)
+                ]
 
 door_pairs = [SSP(0, WallNormal.NORTH), SSP(0, 1)]
 for d in door_pairs:
-    d.attrs = DEFAULT_DOOR 
-window_pairs = [SSP(1, WallNormal.SOUTH, shade_window)]
+    d.attrs = DEFAULT_DOOR
 subsurface_pairs = door_pairs + window_pairs
 
 output_reqs = [

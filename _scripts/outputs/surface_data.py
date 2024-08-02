@@ -3,7 +3,8 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from helpers.plots import get_plotly_colors
-from geometry.wall import WallNormal
+from geometry.wall_normal import WallNormal
+
 # from outputs.plotter import Plotter
 from outputs.sql import SQLReader
 

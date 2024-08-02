@@ -1,12 +1,15 @@
 from methods.subsurfaces.inputs import SurfaceGetterInputs
-from geometry.wall import WallNormal
-
+from geometry.wall_normal import WallNormal
 
 
 class SurfaceGetter:
-    """Automatially gets surfaces based on zones that are being connected, or direction cbeing connected to.. """
+    """Automatially gets surfaces based on zones that are being connected, or direction cbeing connected to.."""
+
     def __init__(self, inputs: SurfaceGetterInputs) -> None:
-        self.space_a, self.space_b = (inputs.ssurface_pair.space_a, inputs.ssurface_pair.space_b)
+        self.space_a, self.space_b = (
+            inputs.ssurface_pair.space_a,
+            inputs.ssurface_pair.space_b,
+        )
         self.zones = inputs.zones
         self.zone_names = list(self.zones.keys())
         self.run()
@@ -22,7 +25,9 @@ class SurfaceGetter:
 
     def find_surface_by_direction(self):
         self.dir = self.space_b
-        candidates = [w for w in self.curr_zone.walls.values() if w.direction == self.dir.name] #type:ignore
+        candidates = [
+            w for w in self.curr_zone.walls.values() if w.direction == self.dir.name
+        ]  # type:ignore
         # TODO handle if a zone has multiple walls shared with a partner, or multiple walls in one direction
         self.check_if_unique(candidates)
         self.goal_surface = candidates[0]
@@ -41,7 +46,7 @@ class SurfaceGetter:
         self.check_if_unique(candidates)
         return self.zones[candidates[0]]
 
-    def test_zone_name(self, zone_name:str, zone_num: int):
+    def test_zone_name(self, zone_name: str, zone_num: int):
         test_name = f"0{zone_num}"
         if test_name in zone_name:
             return True

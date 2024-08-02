@@ -42,35 +42,17 @@ class EzCaseInput:
 class EzCase:
     def __init__(self, input: EzCaseInput, RUN_CASE=False) -> None:
         self.inputs = input
-        self.case = EneryPlusCaseEditor(
-            self.inputs.case_name,
-            self.inputs.starting_case,
-            project_name=self.inputs.project_name,
-        )
         self.RUN_CASE = RUN_CASE
-        self.rep_inputs()
+        self.format_inputs()
         self.run()
-
-    def rep_inputs(self):
-        self.input_vals = {
-            field.name: attrgetter(field.name)(self.inputs)
-            for field in dataclasses.fields(self.inputs)
-            if field.name != "output_variables"
-        }
-        self.sinput_vals = pformat(self.input_vals, sort_dicts=False)
 
     def __repr__(self):
         return self.sinput_vals
 
     def run(self):
+        self.create_case()
         self.add_rooms()
-        self.get_subsurface_constructions()
-        self.get_geometry()
-        self.update_geometry_walls()
         self.add_subsurfaces()
-        # self.add_doors()
-        # self.add_windows()
-        self.update_geometry_subsurfaces()
         self.add_airflownetwork()
         self.add_output_variables()
         self.case.compare_and_save()
@@ -82,46 +64,33 @@ class EzCase:
             self.run_analysis()
         self.post_process_variables()
 
+    def create_case(self):
+        self.case = EneryPlusCaseEditor(
+            self.inputs.case_name,
+            self.inputs.starting_case,
+            project_name=self.inputs.project_name,
+        )
+
     def add_rooms(self):
         self.gplan_convert = GPLANtoGeomeppy(self.case, self.inputs.geometry)
         self.case.idf.intersect_match()
         self.case.idf.set_default_constructions()
+        self.get_geometry()
 
     def get_geometry(self):
         self.case.get_geometry()
         self.zones = self.case.geometry.zones
-
-    def update_geometry_walls(self):
-        for zone in self.case.geometry.zones.values():
-            self.case.geometry.walls.update(zone.walls)
-
-    def get_subsurface_constructions(self):
-        self.door_const = self.case.idf.getobject("CONSTRUCTION", "Project Door")
-        self.window_const = self.case.idf.getobject(
-            "CONSTRUCTION", "Project External Window"
-        )
-        # TODO temp - fix when do materials better.. ie make them importable from a default.. 
-        for p in self.inputs.subsurface_pairs:
-            assert p.attrs
-            if p.attrs.object_type == SubsurfaceObjects.DOOR:
-                p.attrs.construction = self.door_const 
-            elif p.attrs.object_type == SubsurfaceObjects.WINDOW:
-                p.attrs.construction = self.window_const 
-
+        self.case.geometry.update_geometry_walls()
 
     def add_subsurfaces(self):
+        self.get_subsurface_constructions()
         inputs = SubsurfaceCreatorInputs(
             self.zones, self.inputs.subsurface_pairs, self.case.idf
         )
         self.ss = SubsurfaceCreator(inputs)
         self.ss.create_all_ssurface()
+        self.case.geometry.update_geometry_subsurfaces()
 
-    def update_geometry_subsurfaces(self):
-        subsurfaces = []
-        for zone in self.case.geometry.zones.values():
-            subsurfaces.extend(zone.get_subsurfaces())
-        for subsurface in subsurfaces:
-            self.case.geometry.subsurfaces.update({subsurface.bunch_name: subsurface})
 
     def add_airflownetwork(self):
         self.afn = AirflowNetwork(self.case)
@@ -150,11 +119,11 @@ class EzCase:
 
     def prepare_plotter(self):
         sql_input = SQLInputs(
-            case_name=self.inputs.case_name,
-            path=self.case.path,
-            geometry=self.case.geometry,
-            output_variables=self.inputs.output_variables,
-            project_name=self.inputs.project_name,
+            self.inputs.case_name,
+            self.case.path,
+            self.case.geometry,
+            self.inputs.output_variables,
+            self.inputs.project_name
         )
         plotter_input = PlotterInputs(self.base_plot)
 
@@ -197,3 +166,27 @@ class EzCase:
 
     def show_base_plot(self):
         self.base_plot.fig.show()
+
+
+    ## helpers 
+    def format_inputs(self):
+        self.input_vals = {
+            field.name: attrgetter(field.name)(self.inputs)
+            for field in dataclasses.fields(self.inputs)
+            if field.name != "output_variables"
+        }
+        self.sinput_vals = pformat(self.input_vals, sort_dicts=False)
+
+
+    def get_subsurface_constructions(self):
+        self.door_const = self.case.idf.getobject("CONSTRUCTION", "Project Door")
+        self.window_const = self.case.idf.getobject(
+            "CONSTRUCTION", "Project External Window"
+        )
+        # TODO temp - fix when do materials better.. ie make them importable from a default.. 
+        for p in self.inputs.subsurface_pairs:
+            assert p.attrs
+            if p.attrs.object_type == SubsurfaceObjects.DOOR:
+                p.attrs.construction = self.door_const 
+            else:
+                p.attrs.construction = self.window_const 

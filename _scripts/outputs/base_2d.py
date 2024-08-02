@@ -5,8 +5,9 @@ from dataclasses import dataclass
 from helpers.plots import prepare_shape_dict, plot_shape
 
 
-LIGHT_BLUE = "#9dd1eb"
+ZONE_COLOR = "#9dd1eb"
 SUBSURFACE_COLOR = "#a32c54"
+SHADINGS_COLOR = "#7bf542"
 
 @dataclass
 class Base2DPlotLimits:
@@ -20,6 +21,7 @@ class Base2DPlot:
     def __init__(self, geometry: GeometryParser) -> None:
         self.zones = geometry.zones
         self.subsurfaces = geometry.subsurfaces
+        self.shadings = geometry.shadings
 
     def run(self):
         self.make_traces()
@@ -33,7 +35,7 @@ class Base2DPlot:
         for zone in self.zones.values():
             self.traces[zone.bunch_name] = prepare_shape_dict(
                 zone.polygon.exterior.coords,
-                color=LIGHT_BLUE,
+                color=ZONE_COLOR,
                 label=zone.display_name,
             )
 
@@ -43,6 +45,13 @@ class Base2DPlot:
                 type="line",
                 color=SUBSURFACE_COLOR,
                 label=subsurface.simple_object_type,
+            )
+
+        for shading in self.shadings.values():
+            self.traces[shading.bunch_name] = prepare_shape_dict(
+                shading.polygon.exterior.coords,
+                color=SHADINGS_COLOR,
+                label="",
             )
 
     def create_figure(self):

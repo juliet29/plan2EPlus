@@ -1,6 +1,7 @@
 from geomeppy.patches import EpBunch
-import shapely as sp
 from shapely import LineString
+
+from geometry.shading import Shading
 
 
 
@@ -29,7 +30,6 @@ class Subsurface:
         line = self.wall.line
         start =line.line_interpolate_point(self.start_x)
         end = line.line_interpolate_point(self.start_x+self.length)
-        # assert start  != end 
         self.line = LineString([start, end])
 
     def get_simple_object(self):
@@ -39,3 +39,6 @@ class Subsurface:
         else:
             self.simple_object_type = self.object_type
 
+    def assign_shading(self, shading_object):
+        self.shading = Shading(shading_object, self)
+        return self.shading
