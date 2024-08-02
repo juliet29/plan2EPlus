@@ -1,14 +1,18 @@
 from dataclasses import dataclass
 from munch import Munch
 from typing import List, Sequence, Union
+from enum import Enum
+
 from geomeppy import IDF
 from geomeppy.patches import EpBunch
-from enum import Enum
+
 from helpers.special_types import PairType
 from methods.dynamic_subsurfaces.inputs import (
     Dimensions,
     NinePointsLocator,
 )
+from geometry.wall import WallNormal
+
 
 DOOR_GAP = 2 / 100  # m
 
@@ -29,16 +33,21 @@ class SubsurfaceAttributes:
 
 
 @dataclass
-class SubsurfaceInputs:
+class SubsurfacePair:
+    space_a: int
+    space_b: Union[int, WallNormal]  # can be an adjoiining zone, or a direction
+    attrs: Union[SubsurfaceAttributes, None] = None
+    # eventually will perhaps read off of a connectivity graph like JPG..
+
+
+@dataclass
+class SubsurfaceCreatorInputs:
     zones: Munch
-    ssurface_pairs: Sequence[PairType]
+    ssurface_pairs: Sequence[SubsurfacePair]
     case_idf: IDF
-    attributes: (
-        SubsurfaceAttributes  # TODO -> make into list of attributes corresponding to pair..
-    )
 
 
 @dataclass
 class SurfaceGetterInputs:
     zones: Munch
-    ssurface_pair: PairType
+    ssurface_pair: SubsurfacePair

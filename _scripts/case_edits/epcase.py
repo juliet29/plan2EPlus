@@ -58,6 +58,7 @@ class EneryPlusCaseEditor:
         if "out.idf" in curr_case_files:
             print("out.idf exists")
             self.is_changed_idf = not filecmp.cmp(self.temp_idf_path, self.idf_path)
+            print(f"IDF has changed: {self.is_changed_idf}")
         else:
             print("out.idf does not exist")
             self.is_changed_idf = True

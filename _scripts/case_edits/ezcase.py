@@ -8,8 +8,8 @@ from gplan.room_class import GPLANRoomAccess
 from gplan.convert import GPLANtoGeomeppy
 
 from case_edits.epcase import EneryPlusCaseEditor
-from helpers.special_types import PairType, GeometryType
-from methods.subsurfaces.inputs import SubsurfaceInputs
+from helpers.special_types import GeometryType
+from methods.subsurfaces.inputs import SubsurfaceCreatorInputs, SubsurfacePair, SubsurfaceObjects
 from recipes.subsurface_defaults import DEFAULT_DOOR, DEFAULT_WINDOW
 from methods.subsurfaces.creator import SubsurfaceCreator
 
@@ -31,8 +31,8 @@ from pprint import pprint, pformat
 @dataclass
 class EzCaseInput:
     case_name: str
-    door_pairs: Sequence[PairType]
-    window_pairs: Sequence[PairType]
+    # door_pairs: Sequence[SubsurfacePair]
+    subsurface_pairs: Sequence[SubsurfacePair]
     output_variables: List[OV]
     geometry: GeometryType = GPLANRoomAccess("", 0)
     starting_case: str = ""
@@ -67,8 +67,9 @@ class EzCase:
         self.get_subsurface_constructions()
         self.get_geometry()
         self.update_geometry_walls()
-        self.add_doors()
-        self.add_windows()
+        self.add_subsurfaces()
+        # self.add_doors()
+        # self.add_windows()
         self.update_geometry_subsurfaces()
         self.add_airflownetwork()
         self.add_output_variables()
@@ -94,25 +95,23 @@ class EzCase:
         for zone in self.case.geometry.zones.values():
             self.case.geometry.walls.update(zone.walls)
 
-    # TODO: this should probably go elsewhere..
     def get_subsurface_constructions(self):
         self.door_const = self.case.idf.getobject("CONSTRUCTION", "Project Door")
         self.window_const = self.case.idf.getobject(
             "CONSTRUCTION", "Project External Window"
         )
+        # TODO temp - fix when do materials better.. ie make them importable from a default.. 
+        for p in self.inputs.subsurface_pairs:
+            assert p.attrs
+            if p.attrs.object_type == SubsurfaceObjects.DOOR:
+                p.attrs.construction = self.door_const 
+            elif p.attrs.object_type == SubsurfaceObjects.WINDOW:
+                p.attrs.construction = self.window_const 
 
-    def add_doors(self):
-        DEFAULT_DOOR.construction = self.door_const
-        inputs = SubsurfaceInputs(
-            self.zones, self.inputs.door_pairs, self.case.idf, DEFAULT_DOOR
-        )
-        self.ss = SubsurfaceCreator(inputs)
-        self.ss.create_all_ssurface()
 
-    def add_windows(self):
-        DEFAULT_WINDOW.construction = self.window_const
-        inputs = SubsurfaceInputs(
-            self.zones, self.inputs.window_pairs, self.case.idf, DEFAULT_WINDOW
+    def add_subsurfaces(self):
+        inputs = SubsurfaceCreatorInputs(
+            self.zones, self.inputs.subsurface_pairs, self.case.idf
         )
         self.ss = SubsurfaceCreator(inputs)
         self.ss.create_all_ssurface()
