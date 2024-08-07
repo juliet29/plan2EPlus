@@ -76,6 +76,8 @@ class EneryPlusCaseEditor:
             except EnergyPlusRunError:
                 self.is_failed_simulation = True
                 print(f"Simulation for case `{self.case_name}` failed - see error logs")
+                err_file = os.path.join(self.path, "results", "eplusout.err")
+                print(err_file)
 
             # self.is_changed_idf = False
         else:
@@ -102,15 +104,6 @@ class EneryPlusCaseEditor:
         ap1.Begin_Day_of_Month = 1
         ap1.End_Month = 7
         ap1.End_Day_of_Month = 1
-
-    # def create_obj(self):
-    #     # this is for 3d objects!
-    #     self.idf.to_obj(self.temp_path=os.path.join(self.path, "out.obj"))
-
-    # def prepare_to_run(self):
-    #     self.idf.intersect_match()
-    #     self.idf.set_default_constructions()
-    #     self.save_idf()
 
 
 class EneryPlusCaseReader:

@@ -5,7 +5,7 @@ import shapely as sp
 from geometry.wall import Wall
 from outputs.classes import GeometryOutputData, TimeExtractData
 
-from case_edits.object_getter import Getter
+from helpers.ep_getter import Getter
 
 
 class Zone:
@@ -47,7 +47,6 @@ class Zone:
 
         print(f"Added {len(self.wall_list)} walls ")
 
-
     def create_geometry(self):
         wall_lines = [self.wall_list[i].line for i in range(len(self.wall_list))]
         self.polygon = sp.get_geometry(sp.polygonize(wall_lines), 0)
@@ -55,7 +54,6 @@ class Zone:
         assert (
             type(self.polygon) == sp.Polygon
         ), "When creating zone geometry, zone was not polygonal "
-
 
     # get subsurfaces
     def get_subsurfaces(self):
@@ -66,10 +64,6 @@ class Zone:
             wall.get_subsurfaces(self.case_subsurfaces)
             self.zone_subsurfaces.extend(wall.ssurface_list)
         return self.zone_subsurfaces
-
-
-
-
 
     # dealing with outputs..
 

@@ -64,7 +64,7 @@ class EzCase:
         self.make_base_plot()
         self.prepare_plotter()
         if self.RUN_CASE:
-            self.run_analysis()
+            # self.run_analysis()
             self.post_process_variables()
 
     def create_case(self):
@@ -152,22 +152,18 @@ class EzCase:
             self.post_processer.calc_defaults()
 
     def run_analysis(self):
-        pass
-        # if self.plt:
-        #     if self.case.is_changed_idf:
-        #         print("running analysis")
-        #         inputs = AutoAnalysisInputs(
-        #             self.eligible_vars,
-        #             self.plt,
-        #             self.base_plot,
-        #             self.inputs.case_name,
-        #             self.case.path,
-        #         )
-        #         self.analysis = AutoAnalysis(inputs)
-        #     else:
-        #         print("IDF did not change, so not re-running analysis")
-        # else:
-        #     print("Plotter object was not created, so no analysis performed")
+        if self.plt:
+            print("running analysis")
+            inputs = AutoAnalysisInputs(
+                self.eligible_vars,
+                self.plt,
+                self.base_plot,
+                self.inputs.case_name,
+                self.case.path,
+            )
+            self.analysis = AutoAnalysis(inputs)
+        else:
+            print("Plotter object was not created, so no analysis performed")
 
     def show_eligible_outputs(self):
         pprint({k: v.value for k, v in self.eligible_vars.items()})

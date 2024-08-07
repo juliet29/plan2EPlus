@@ -36,7 +36,7 @@ class SQLReader:
             assert self.curr_output.value in self.sqld.available_outputs
             return True
         except AssertionError:
-            warn(f"{self.curr_output.value} not in {self.sqld.available_outputs}")  
+            warn(f"{self.curr_output.value} not in available_outputs")  
             return False
 
     def split_collection_by_ap(self):

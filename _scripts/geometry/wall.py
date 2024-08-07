@@ -16,7 +16,6 @@ class Wall:
         self.name = idf_data.Name
 
         self.line: sp.LineString
-        self.boundary_condition = None
         self.output_data = {}
         self.zone = zone
 
@@ -76,10 +75,3 @@ class Wall:
     # get subsurfaces 
     def get_subsurfaces(self, subsurfaces):
         self.ssurface_list = [Subsurface(s, self) for s in subsurfaces if s.Building_Surface_Name == self.name]
-
-
-
-    # TODO remove depreciated 
-    # dealing with outputs
-    def create_output_data(self, data: GeometryOutputData):
-        self.output_data[data.short_name] = data
