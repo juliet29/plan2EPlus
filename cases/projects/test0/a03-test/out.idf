@@ -466,6 +466,17 @@ WINDOW,
     2.4;                      !- Height
 
 WINDOW,
+    Block 01 Storey 0 Wall 0001 Window,    !- Name
+    Project External Window,    !- Construction Name
+    Block 01 Storey 0 Wall 0001,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    24.8,                     !- Starting X Coordinate
+    3.8,                      !- Starting Z Coordinate
+    20.4,                     !- Length
+    2.4;                      !- Height
+
+WINDOW,
     Block 01 Storey 0 Wall 0003 Window,    !- Name
     Project External Window,    !- Construction Name
     Block 01 Storey 0 Wall 0003,    !- Building Surface Name
@@ -507,6 +518,24 @@ DOOR:INTERZONE,
     1,                        !- Starting Z Coordinate
     14.399999999999999,       !- Length
     7.2;                      !- Height
+
+SHADING:OVERHANG,
+    Block 01 Storey 0 Wall 0004 Window Shading,    !- Name
+    Block 01 Storey 0 Wall 0004 Window,    !- Window or Door Name
+    0.01,                     !- Height above Window or Door
+    90,                       !- Tilt Angle from WindowDoor
+    0,                        !- Left extension from WindowDoor Width
+    0,                        !- Right extension from WindowDoor Width
+    0.3;                      !- Depth
+
+SHADING:OVERHANG,
+    Block 01 Storey 0 Wall 0001 Window Shading,    !- Name
+    Block 01 Storey 0 Wall 0001 Window,    !- Window or Door Name
+    0.01,                     !- Height above Window or Door
+    90,                       !- Tilt Angle from WindowDoor
+    0,                        !- Left extension from WindowDoor Width
+    0,                        !- Right extension from WindowDoor Width
+    0.3;                      !- Depth
 
 AIRFLOWNETWORK:SIMULATIONCONTROL,
     AFN_SIM_CONTROL,          !- Name
@@ -604,6 +633,23 @@ AIRFLOWNETWORK:MULTIZONE:SURFACE,
     1;                        !- Equivalent Rectangle Aspect Ratio
 
 AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 01 Storey 0 Wall 0001 Window,    !- Surface Name
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
     Block 01 Storey 0 Wall 0003 Window,    !- Surface Name
     Block 01 Storey 0 Wall 0003 Window SimpleOpening,    !- Leakage Component Name
     ,                         !- External Node Name
@@ -636,6 +682,13 @@ AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
 
 AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
     Block 01 Storey 0 Wall 0004 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Name
     0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
     0.65,                     !- Air Mass Flow Exponent When Opening is Closed
     0.0001,                   !- Minimum Density Difference for TwoWay Flow

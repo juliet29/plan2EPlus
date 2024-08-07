@@ -6,7 +6,7 @@ import numpy as np
 
 
 def prepare_line_traces(line: LineString, color="yellow", label=None, width=3):
-    x, y = get_coords_as_seprate_xy(line.coords)
+    x, y, _ = get_coords_as_seprate_xy(line.coords)
     trace = go.Scatter(
         x=x,
         y=y,
@@ -19,7 +19,7 @@ def prepare_line_traces(line: LineString, color="yellow", label=None, width=3):
 
 
 def prepare_polygon_trace(polygon: Polygon, color="blue", label=None):
-    x, y = get_coords_as_seprate_xy(polygon.exterior.coords)
+    x, y, _ = get_coords_as_seprate_xy(polygon.exterior.coords)
     trace = go.Scatter(
         x=x,
         y=y,
@@ -68,7 +68,8 @@ def plot_shape(
     fig_width: float = 0,
     fig_height: float = 0,
     padding: int = 50,
-    fig = None
+    fig = None,
+    title = None
 ):
     if not fig:
         fig = go.Figure()
@@ -87,6 +88,10 @@ def plot_shape(
             height=fig_height,
             margin=dict(l=padding, r=padding, b=padding, t=padding, pad=4),
         )
+
+    if title:
+        fig.update_layout(title=title)
+        
     return fig
 
 

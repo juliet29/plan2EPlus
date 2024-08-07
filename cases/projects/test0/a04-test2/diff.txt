@@ -1,1 +1,413 @@
-{'iterable_item_added': {'root.window_pairs[1]': (1, <WallNormal.EAST: 90.0>)}}
+{'iterable_item_added': {"root.subsurface_pairs[0].attrs.construction['theidf'].idfobjects['WINDOW'][2]": 
+WINDOW,
+    Block 01 Storey 0 Wall 0001 Window,    !- Name
+    Project External Window,    !- Construction Name
+    Block 01 Storey 0 Wall 0001,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    24.8,                     !- Starting X Coordinate
+    3.8,                      !- Starting Z Coordinate
+    20.4,                     !- Length
+    2.4;                      !- Height
+,
+                         "root.subsurface_pairs[0].attrs.construction['theidf'].idfobjects['AIRFLOWNETWORK:MULTIZONE:SURFACE'][4]": 
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 01 Storey 0 Wall 0001 Window,    !- Surface Name
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+,
+                         "root.subsurface_pairs[0].attrs.construction['theidf'].idfobjects['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING'][4]": 
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+,
+                         "root.subsurface_pairs[0].attrs.construction['theidf'].model.dt['WINDOW'][2]": ['WINDOW',
+                                                                                                         'Block '
+                                                                                                         '01 '
+                                                                                                         'Storey '
+                                                                                                         '0 '
+                                                                                                         'Wall '
+                                                                                                         '0001 '
+                                                                                                         'Window',
+                                                                                                         'Project '
+                                                                                                         'External '
+                                                                                                         'Window',
+                                                                                                         'Block '
+                                                                                                         '01 '
+                                                                                                         'Storey '
+                                                                                                         '0 '
+                                                                                                         'Wall '
+                                                                                                         '0001',
+                                                                                                         '',
+                                                                                                         '1.0',
+                                                                                                         24.8,
+                                                                                                         3.8,
+                                                                                                         20.4,
+                                                                                                         2.4],
+                         "root.subsurface_pairs[0].attrs.construction['theidf'].model.dt['AIRFLOWNETWORK:MULTIZONE:SURFACE'][4]": ['AIRFLOWNETWORK:MULTIZONE:SURFACE',
+                                                                                                                                   'Block '
+                                                                                                                                   '01 '
+                                                                                                                                   'Storey '
+                                                                                                                                   '0 '
+                                                                                                                                   'Wall '
+                                                                                                                                   '0001 '
+                                                                                                                                   'Window',
+                                                                                                                                   'Block '
+                                                                                                                                   '01 '
+                                                                                                                                   'Storey '
+                                                                                                                                   '0 '
+                                                                                                                                   'Wall '
+                                                                                                                                   '0001 '
+                                                                                                                                   'Window '
+                                                                                                                                   'SimpleOpening',
+                                                                                                                                   '',
+                                                                                                                                   1.0,
+                                                                                                                                   'ZoneLevel',
+                                                                                                                                   '',
+                                                                                                                                   0.0,
+                                                                                                                                   0.0,
+                                                                                                                                   100.0,
+                                                                                                                                   0.0,
+                                                                                                                                   300000.0,
+                                                                                                                                   '',
+                                                                                                                                   '',
+                                                                                                                                   'PolygonHeight',
+                                                                                                                                   1.0],
+                         "root.subsurface_pairs[0].attrs.construction['theidf'].model.dt['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING'][4]": ['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING',
+                                                                                                                                                   'Block '
+                                                                                                                                                   '01 '
+                                                                                                                                                   'Storey '
+                                                                                                                                                   '0 '
+                                                                                                                                                   'Wall '
+                                                                                                                                                   '0001 '
+                                                                                                                                                   'Window '
+                                                                                                                                                   'SimpleOpening',
+                                                                                                                                                   0.001,
+                                                                                                                                                   0.65,
+                                                                                                                                                   0.0001,
+                                                                                                                                                   1],
+                         "root.subsurface_pairs[1].attrs.construction['theidf'].idfobjects['WINDOW'][2]": 
+WINDOW,
+    Block 01 Storey 0 Wall 0001 Window,    !- Name
+    Project External Window,    !- Construction Name
+    Block 01 Storey 0 Wall 0001,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    24.8,                     !- Starting X Coordinate
+    3.8,                      !- Starting Z Coordinate
+    20.4,                     !- Length
+    2.4;                      !- Height
+,
+                         "root.subsurface_pairs[1].attrs.construction['theidf'].idfobjects['AIRFLOWNETWORK:MULTIZONE:SURFACE'][4]": 
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 01 Storey 0 Wall 0001 Window,    !- Surface Name
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+,
+                         "root.subsurface_pairs[1].attrs.construction['theidf'].idfobjects['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING'][4]": 
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+,
+                         "root.subsurface_pairs[1].attrs.construction['theidf'].model.dt['WINDOW'][2]": ['WINDOW',
+                                                                                                         'Block '
+                                                                                                         '01 '
+                                                                                                         'Storey '
+                                                                                                         '0 '
+                                                                                                         'Wall '
+                                                                                                         '0001 '
+                                                                                                         'Window',
+                                                                                                         'Project '
+                                                                                                         'External '
+                                                                                                         'Window',
+                                                                                                         'Block '
+                                                                                                         '01 '
+                                                                                                         'Storey '
+                                                                                                         '0 '
+                                                                                                         'Wall '
+                                                                                                         '0001',
+                                                                                                         '',
+                                                                                                         '1.0',
+                                                                                                         24.8,
+                                                                                                         3.8,
+                                                                                                         20.4,
+                                                                                                         2.4],
+                         "root.subsurface_pairs[1].attrs.construction['theidf'].model.dt['AIRFLOWNETWORK:MULTIZONE:SURFACE'][4]": ['AIRFLOWNETWORK:MULTIZONE:SURFACE',
+                                                                                                                                   'Block '
+                                                                                                                                   '01 '
+                                                                                                                                   'Storey '
+                                                                                                                                   '0 '
+                                                                                                                                   'Wall '
+                                                                                                                                   '0001 '
+                                                                                                                                   'Window',
+                                                                                                                                   'Block '
+                                                                                                                                   '01 '
+                                                                                                                                   'Storey '
+                                                                                                                                   '0 '
+                                                                                                                                   'Wall '
+                                                                                                                                   '0001 '
+                                                                                                                                   'Window '
+                                                                                                                                   'SimpleOpening',
+                                                                                                                                   '',
+                                                                                                                                   1.0,
+                                                                                                                                   'ZoneLevel',
+                                                                                                                                   '',
+                                                                                                                                   0.0,
+                                                                                                                                   0.0,
+                                                                                                                                   100.0,
+                                                                                                                                   0.0,
+                                                                                                                                   300000.0,
+                                                                                                                                   '',
+                                                                                                                                   '',
+                                                                                                                                   'PolygonHeight',
+                                                                                                                                   1.0],
+                         "root.subsurface_pairs[1].attrs.construction['theidf'].model.dt['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING'][4]": ['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING',
+                                                                                                                                                   'Block '
+                                                                                                                                                   '01 '
+                                                                                                                                                   'Storey '
+                                                                                                                                                   '0 '
+                                                                                                                                                   'Wall '
+                                                                                                                                                   '0001 '
+                                                                                                                                                   'Window '
+                                                                                                                                                   'SimpleOpening',
+                                                                                                                                                   0.001,
+                                                                                                                                                   0.65,
+                                                                                                                                                   0.0001,
+                                                                                                                                                   1],
+                         "root.subsurface_pairs[2].attrs.construction['theidf'].idfobjects['WINDOW'][2]": 
+WINDOW,
+    Block 01 Storey 0 Wall 0001 Window,    !- Name
+    Project External Window,    !- Construction Name
+    Block 01 Storey 0 Wall 0001,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    24.8,                     !- Starting X Coordinate
+    3.8,                      !- Starting Z Coordinate
+    20.4,                     !- Length
+    2.4;                      !- Height
+,
+                         "root.subsurface_pairs[2].attrs.construction['theidf'].idfobjects['AIRFLOWNETWORK:MULTIZONE:SURFACE'][4]": 
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 01 Storey 0 Wall 0001 Window,    !- Surface Name
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+,
+                         "root.subsurface_pairs[2].attrs.construction['theidf'].idfobjects['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING'][4]": 
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+,
+                         "root.subsurface_pairs[2].attrs.construction['theidf'].model.dt['WINDOW'][2]": ['WINDOW',
+                                                                                                         'Block '
+                                                                                                         '01 '
+                                                                                                         'Storey '
+                                                                                                         '0 '
+                                                                                                         'Wall '
+                                                                                                         '0001 '
+                                                                                                         'Window',
+                                                                                                         'Project '
+                                                                                                         'External '
+                                                                                                         'Window',
+                                                                                                         'Block '
+                                                                                                         '01 '
+                                                                                                         'Storey '
+                                                                                                         '0 '
+                                                                                                         'Wall '
+                                                                                                         '0001',
+                                                                                                         '',
+                                                                                                         '1.0',
+                                                                                                         24.8,
+                                                                                                         3.8,
+                                                                                                         20.4,
+                                                                                                         2.4],
+                         "root.subsurface_pairs[2].attrs.construction['theidf'].model.dt['AIRFLOWNETWORK:MULTIZONE:SURFACE'][4]": ['AIRFLOWNETWORK:MULTIZONE:SURFACE',
+                                                                                                                                   'Block '
+                                                                                                                                   '01 '
+                                                                                                                                   'Storey '
+                                                                                                                                   '0 '
+                                                                                                                                   'Wall '
+                                                                                                                                   '0001 '
+                                                                                                                                   'Window',
+                                                                                                                                   'Block '
+                                                                                                                                   '01 '
+                                                                                                                                   'Storey '
+                                                                                                                                   '0 '
+                                                                                                                                   'Wall '
+                                                                                                                                   '0001 '
+                                                                                                                                   'Window '
+                                                                                                                                   'SimpleOpening',
+                                                                                                                                   '',
+                                                                                                                                   1.0,
+                                                                                                                                   'ZoneLevel',
+                                                                                                                                   '',
+                                                                                                                                   0.0,
+                                                                                                                                   0.0,
+                                                                                                                                   100.0,
+                                                                                                                                   0.0,
+                                                                                                                                   300000.0,
+                                                                                                                                   '',
+                                                                                                                                   '',
+                                                                                                                                   'PolygonHeight',
+                                                                                                                                   1.0],
+                         "root.subsurface_pairs[2].attrs.construction['theidf'].model.dt['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING'][4]": ['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING',
+                                                                                                                                                   'Block '
+                                                                                                                                                   '01 '
+                                                                                                                                                   'Storey '
+                                                                                                                                                   '0 '
+                                                                                                                                                   'Wall '
+                                                                                                                                                   '0001 '
+                                                                                                                                                   'Window '
+                                                                                                                                                   'SimpleOpening',
+                                                                                                                                                   0.001,
+                                                                                                                                                   0.65,
+                                                                                                                                                   0.0001,
+                                                                                                                                                   1],
+                         "root.subsurface_pairs[3].attrs.construction['theidf'].idfobjects['WINDOW'][2]": 
+WINDOW,
+    Block 01 Storey 0 Wall 0001 Window,    !- Name
+    Project External Window,    !- Construction Name
+    Block 01 Storey 0 Wall 0001,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    24.8,                     !- Starting X Coordinate
+    3.8,                      !- Starting Z Coordinate
+    20.4,                     !- Length
+    2.4;                      !- Height
+,
+                         "root.subsurface_pairs[3].attrs.construction['theidf'].idfobjects['AIRFLOWNETWORK:MULTIZONE:SURFACE'][4]": 
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 01 Storey 0 Wall 0001 Window,    !- Surface Name
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+,
+                         "root.subsurface_pairs[3].attrs.construction['theidf'].idfobjects['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING'][4]": 
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 01 Storey 0 Wall 0001 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+,
+                         "root.subsurface_pairs[3].attrs.construction['theidf'].model.dt['WINDOW'][2]": ['WINDOW',
+                                                                                                         'Block '
+                                                                                                         '01 '
+                                                                                                         'Storey '
+                                                                                                         '0 '
+                                                                                                         'Wall '
+                                                                                                         '0001 '
+                                                                                                         'Window',
+                                                                                                         'Project '
+                                                                                                         'External '
+                                                                                                         'Window',
+                                                                                                         'Block '
+                                                                                                         '01 '
+                                                                                                         'Storey '
+                                                                                                         '0 '
+                                                                                                         'Wall '
+                                                                                                         '0001',
+                                                                                                         '',
+                                                                                                         '1.0',
+                                                                                                         24.8,
+                                                                                                         3.8,
+                                                                                                         20.4,
+                                                                                                         2.4],
+                         "root.subsurface_pairs[3].attrs.construction['theidf'].model.dt['AIRFLOWNETWORK:MULTIZONE:SURFACE'][4]": ['AIRFLOWNETWORK:MULTIZONE:SURFACE',
+                                                                                                                                   'Block '
+                                                                                                                                   '01 '
+                                                                                                                                   'Storey '
+                                                                                                                                   '0 '
+                                                                                                                                   'Wall '
+                                                                                                                                   '0001 '
+                                                                                                                                   'Window',
+                                                                                                                                   'Block '
+                                                                                                                                   '01 '
+                                                                                                                                   'Storey '
+                                                                                                                                   '0 '
+                                                                                                                                   'Wall '
+                                                                                                                                   '0001 '
+                                                                                                                                   'Window '
+                                                                                                                                   'SimpleOpening',
+                                                                                                                                   '',
+                                                                                                                                   1.0,
+                                                                                                                                   'ZoneLevel',
+                                                                                                                                   '',
+                                                                                                                                   0.0,
+                                                                                                                                   0.0,
+                                                                                                                                   100.0,
+                                                                                                                                   0.0,
+                                                                                                                                   300000.0,
+                                                                                                                                   '',
+                                                                                                                                   '',
+                                                                                                                                   'PolygonHeight',
+                                                                                                                                   1.0],
+                         "root.subsurface_pairs[3].attrs.construction['theidf'].model.dt['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING'][4]": ['AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING',
+                                                                                                                                                   'Block '
+                                                                                                                                                   '01 '
+                                                                                                                                                   'Storey '
+                                                                                                                                                   '0 '
+                                                                                                                                                   'Wall '
+                                                                                                                                                   '0001 '
+                                                                                                                                                   'Window '
+                                                                                                                                                   'SimpleOpening',
+                                                                                                                                                   0.001,
+                                                                                                                                                   0.65,
+                                                                                                                                                   0.0001,
+                                                                                                                                                   1],
+                         'root.subsurface_pairs[4]': <methods.subsurfaces.pairs.SubsurfacePair object at 0x112aeb580>}}

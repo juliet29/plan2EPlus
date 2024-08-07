@@ -18,10 +18,11 @@ class Base2DPlotLimits:
 
 
 class Base2DPlot:
-    def __init__(self, geometry: GeometryParser) -> None:
+    def __init__(self, geometry: GeometryParser, case_name) -> None:
         self.zones = geometry.zones
         self.subsurfaces = geometry.subsurfaces
         self.shadings = geometry.shadings
+        self.case_name = case_name
 
     def run(self):
         self.make_traces()
@@ -56,7 +57,7 @@ class Base2DPlot:
 
     def create_figure(self):
         self.limits = Base2DPlotLimits(self.x_range, self.y_range, self.fig_width, self.fig_height)
-        self.fig = plot_shape(self.traces, **self.limits.__dict__)
+        self.fig = plot_shape(self.traces, **self.limits.__dict__, title=self.case_name)
 
 
     def determine_plot_range(self):
@@ -70,7 +71,7 @@ class Base2DPlot:
         self.x_range = [min_x - buffer, max_x + buffer]
         self.y_range = [min_y - buffer, max_y + buffer]
 
-    def determine_figure_size(self, height=400):
+    def determine_figure_size(self, height=350):
         x_dif = self.x_range[1] - self.x_range[0]
         y_dif = self.y_range[1] - self.y_range[0]
         aspect = x_dif / y_dif

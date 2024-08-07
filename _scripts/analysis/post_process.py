@@ -1,6 +1,7 @@
 import os
 from copy import deepcopy
 import pickle
+from warnings import warn 
 
 import numpy as np
 
@@ -17,11 +18,15 @@ class PostProcesser:
         self.data = {}
 
     def calc_defaults(self):
-        self.calc_signed_difference_of_qois(
-            OutputVars.zone_vent_heat_loss,
-            OutputVars.zone_vent_heat_gain,
-            "Zone Ventilation Net Heat Loss",
-        )
+        try:
+            self.calc_signed_difference_of_qois(
+                OutputVars.zone_vent_heat_loss,
+                OutputVars.zone_vent_heat_gain,
+                "Zone Ventilation Net Heat Loss",
+            )
+        except AttributeError:
+            warn("Output variables are not appropriate for this case")
+
         self.save_data()
 
     def calc_signed_difference_of_qois(

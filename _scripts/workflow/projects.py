@@ -4,16 +4,20 @@ import pickle
 from pprint import pprint, pformat
 from deepdiff import DeepDiff
 from jinja2 import Template
+from html2image import Html2Image
+
 
 from case_edits.ezcase import EzCase, EzCaseInput
 
 INPUT_TEMPLATE_PATH = "/Users/julietnwagwuume-ezeoke/_UILCode/gqe-phd/geomeppy/_scripts/workflow/project_fig.html.j2"
 
 class ProjectManager:
-    def __init__(self, name, base_case_input: EzCaseInput) -> None:
+    def __init__(self, name, base_case_input: EzCaseInput, RUN_CASE=False) -> None:
         self.project_name = name
         self.base_case_input  = base_case_input
         self.plotly_jinja_data = {"project_name": self.project_name, "cases": [] }
+        self.RUN_CASE = RUN_CASE
+    
 
         self.create_project_directory()
         self.create_base_case()
@@ -29,7 +33,7 @@ class ProjectManager:
         self.base_case_input.case_name =  "a00-base_case"
         self.base_case_input.project_name = self.project_name
 
-        self.base_ezcase = EzCase(self.base_case_input, RUN_CASE=True)
+        self.base_ezcase = EzCase(self.base_case_input, self.RUN_CASE)
         # TODO check and automatically run the case? 
         self.save_input_pkl(self.base_case_input, self.base_ezcase.case.path)
         self.save_input_txt()
@@ -51,7 +55,7 @@ class ProjectManager:
         case_name = f"{prefix}-{name}"
         self.new_input.case_name = case_name
 
-        self.new_ezcase = EzCase(self.new_input, RUN_CASE=True)
+        self.new_ezcase = EzCase(self.new_input, self.RUN_CASE)
         self.save_input_pkl(self.new_input, self.new_ezcase.case.path)
         self.save_diff_input_txt()
         self.plotly_jinja_data["cases"].append({"name": self.new_input.case_name, "fig": self.get_case_fig(self.new_ezcase)})
@@ -95,10 +99,16 @@ class ProjectManager:
 
     def save_project_fig(self):
         output_html_path = os.path.join(self.path, "project_figs.html")
+        output_jpg_path = os.path.join(self.path, "project_figs.jpg")
         with open(output_html_path, "w+", encoding="utf-8") as output_file:
-            with open(INPUT_TEMPLATE_PATH ) as template_file:
+            with open(INPUT_TEMPLATE_PATH) as template_file:
                 j2_template = Template(template_file.read())
                 output_file.write(j2_template.render(self.plotly_jinja_data))
+
+        print(output_html_path)
+        # hti = Html2Image()
+        # hti.screenshot(html_file=output_html_path, save_as="project_figs.jpg")
+
 
     
     def get_case_fig(self, case):

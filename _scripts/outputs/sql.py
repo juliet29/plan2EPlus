@@ -1,9 +1,11 @@
 import os
 from munch import Munch
 from ladybug.sql import SQLiteResult
+from warnings import warn
 
 from outputs.input_classes import SQLInputs
 from outputs.variables import OutputVars
+
 
 class SQLReader:
 
@@ -22,14 +24,20 @@ class SQLReader:
 
     def get_collection_for_variable(self, output_var:OutputVars):
         self.curr_output = output_var
-        self.validate_request()
-        self.collection = self.sqld.data_collections_by_output_name(
-            self.curr_output.value
-        )
-        self.split_collection_by_ap()
+        if self.validate_request():
+            self.collection = self.sqld.data_collections_by_output_name(
+                self.curr_output.value
+            )
+            self.split_collection_by_ap()
 
     def validate_request(self):
-        assert self.curr_output.value in self.sqld.available_outputs, f"{self.curr_output.value} not in {self.sqld.available_outputs}"  # type: ignore
+        assert self.sqld.available_outputs is not None
+        try:
+            assert self.curr_output.value in self.sqld.available_outputs
+            return True
+        except AssertionError:
+            warn(f"{self.curr_output.value} not in {self.sqld.available_outputs}")  
+            return False
 
     def split_collection_by_ap(self):
         self.collection_by_ap = Munch()

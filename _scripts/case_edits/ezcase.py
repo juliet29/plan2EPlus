@@ -9,8 +9,9 @@ from gplan.convert import GPLANtoGeomeppy
 
 from case_edits.epcase import EneryPlusCaseEditor
 from helpers.special_types import GeometryType
-from methods.subsurfaces.inputs import SubsurfaceCreatorInputs, SubsurfacePair, SubsurfaceObjects
-from recipes.subsurface_defaults import DEFAULT_DOOR, DEFAULT_WINDOW
+
+from methods.subsurfaces.inputs import SubsurfaceCreatorInputs
+from methods.subsurfaces.pairs import SubsurfacePair, SubsurfaceObjects, SubsurfaceAttributes
 from methods.subsurfaces.creator import SubsurfaceCreator
 
 from methods.airflownetwork import AirflowNetwork
@@ -31,8 +32,7 @@ from pprint import pprint, pformat
 @dataclass
 class EzCaseInput:
     case_name: str
-    # door_pairs: Sequence[SubsurfacePair]
-    subsurface_pairs: Sequence[SubsurfacePair]
+    subsurface_pairs: Union[List[SubsurfacePair], List]
     output_variables: List[OV]
     geometry: GeometryType = GPLANRoomAccess("", 0)
     starting_case: str = ""
@@ -45,6 +45,9 @@ class EzCase:
         self.RUN_CASE = RUN_CASE
         self.format_inputs()
         self.run()
+
+        self.sql = None
+        self.plt = None
 
     def __repr__(self):
         return self.sinput_vals
@@ -62,7 +65,7 @@ class EzCase:
         self.prepare_plotter()
         if self.RUN_CASE:
             self.run_analysis()
-        self.post_process_variables()
+            self.post_process_variables()
 
     def create_case(self):
         self.case = EneryPlusCaseEditor(
@@ -70,6 +73,8 @@ class EzCase:
             self.inputs.starting_case,
             project_name=self.inputs.project_name,
         )
+        print(self.inputs.case_name)
+
 
     def add_rooms(self):
         self.gplan_convert = GPLANtoGeomeppy(self.case, self.inputs.geometry)
@@ -83,17 +88,19 @@ class EzCase:
         self.case.geometry.update_geometry_walls()
 
     def add_subsurfaces(self):
-        self.get_subsurface_constructions()
-        inputs = SubsurfaceCreatorInputs(
-            self.zones, self.inputs.subsurface_pairs, self.case.idf
-        )
-        self.ss = SubsurfaceCreator(inputs)
-        self.ss.create_all_ssurface()
-        self.case.geometry.update_geometry_subsurfaces()
+        if self.inputs.subsurface_pairs:
+            self.get_subsurface_constructions()
+            inputs = SubsurfaceCreatorInputs(
+                self.zones, self.inputs.subsurface_pairs, self.case.idf
+            )
+            self.ss = SubsurfaceCreator(inputs)
+            self.ss.create_all_ssurface()
+            self.case.geometry.update_geometry_subsurfaces()
 
 
     def add_airflownetwork(self):
-        self.afn = AirflowNetwork(self.case)
+        if self.inputs.subsurface_pairs:
+            self.afn = AirflowNetwork(self.case)
 
     def add_output_variables(self):
         self.out_reqs = OutputRequests(self.case)
@@ -114,7 +121,7 @@ class EzCase:
         self.out_reqs.request_sql()
 
     def make_base_plot(self):
-        self.base_plot = Base2DPlot(self.case.geometry)
+        self.base_plot = Base2DPlot(self.case.geometry, self.case.case_name)
         self.base_plot.run()
 
     def prepare_plotter(self):
@@ -145,21 +152,22 @@ class EzCase:
             self.post_processer.calc_defaults()
 
     def run_analysis(self):
-        if self.plt:
-            if self.case.is_changed_idf:
-                print("running analysis")
-                inputs = AutoAnalysisInputs(
-                    self.eligible_vars,
-                    self.plt,
-                    self.base_plot,
-                    self.inputs.case_name,
-                    self.case.path,
-                )
-                self.analysis = AutoAnalysis(inputs)
-            else:
-                print("IDF did not change, so not re-running analysis")
-        else:
-            print("Plotter object was not created, so no analysis performed")
+        pass
+        # if self.plt:
+        #     if self.case.is_changed_idf:
+        #         print("running analysis")
+        #         inputs = AutoAnalysisInputs(
+        #             self.eligible_vars,
+        #             self.plt,
+        #             self.base_plot,
+        #             self.inputs.case_name,
+        #             self.case.path,
+        #         )
+        #         self.analysis = AutoAnalysis(inputs)
+        #     else:
+        #         print("IDF did not change, so not re-running analysis")
+        # else:
+        #     print("Plotter object was not created, so no analysis performed")
 
     def show_eligible_outputs(self):
         pprint({k: v.value for k, v in self.eligible_vars.items()})
@@ -185,7 +193,7 @@ class EzCase:
         )
         # TODO temp - fix when do materials better.. ie make them importable from a default.. 
         for p in self.inputs.subsurface_pairs:
-            assert p.attrs
+            assert type(p.attrs) == SubsurfaceAttributes
             if p.attrs.object_type == SubsurfaceObjects.DOOR:
                 p.attrs.construction = self.door_const 
             else:
