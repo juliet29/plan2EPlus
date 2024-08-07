@@ -35,11 +35,12 @@ class PostProcesser:
         var1 = self.sql.get_var_data(qoi1)
         var2 = self.sql.get_var_data(qoi2)
 
-        new_header = deepcopy(var1[0].header)
-        new_header.metadata["type"] = qoi_name
+        
 
         new_var = []
         for v1, v2 in zip(var1, var2):
+            new_header = deepcopy(v1.header)
+            new_header.metadata["type"] = qoi_name
             np_val = np.array(v1.values) - np.array(v2.values)
             new_vals = tuple(np_val.tolist())
             new_var.append(HourlyContinuousCollection(new_header, new_vals))

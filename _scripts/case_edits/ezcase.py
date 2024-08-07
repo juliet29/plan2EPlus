@@ -150,6 +150,8 @@ class EzCase:
         if self.sql:
             self.post_processer = PostProcesser(self.sql, self.case.path)
             self.post_processer.calc_defaults()
+        else:
+            print("not post processing")
 
     def run_analysis(self):
         if self.plt:

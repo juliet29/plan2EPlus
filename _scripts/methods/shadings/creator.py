@@ -5,9 +5,9 @@ class ShadingCreator:
     def __init__(self, subsurface_name:str, case_idf:IDF) -> None:
         self.subsurface_name = subsurface_name
         self.case_idf = case_idf
-        self.tilt_angle = 90 # degrees
+        self.tilt_angle = 70 # degrees
         self.shading_height_above_subsurface = 0.01 # m
-        self.depth = 0.3 # m
+        self.depth = 3 # m
 
 
     def run(self):

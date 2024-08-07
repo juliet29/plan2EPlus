@@ -2,17 +2,21 @@ import os
 import pickle
 import pandas as pd
 from typing import Union, Optional
+from warnings import warn
 
 import seaborn as sns
 import seaborn.objects as so
-
 
 from outputs.variables import OutputVars, PostProcessedOutputVars
 from outputs.sql import SQLReader
 from outputs.input_classes import SQLInputs
 
-sns.set_theme(rc={"figure.figsize": (5.5, 4)})
+from helpers.idf_object_rename import zone_rename
 
+
+
+
+sns.set_theme(rc={"figure.figsize": (5.5, 4)})
 VariableType = Optional[Union[OutputVars, PostProcessedOutputVars]]
 
 
@@ -46,7 +50,6 @@ class BiVariableAnalysis:
             self.get_case_post_processed_data()
         self.create_long_data()
         self.make_bivariable_plot()
-        self.fig.show()
         # self.create_tabular_data()
 
     def prepare_cases(self):
@@ -70,10 +73,14 @@ class BiVariableAnalysis:
         self.long_data = []
         for case in self.case_names:
             self.curr_case = case
-            self.pull_data()
-            self.long_data.extend(self.get_zone_data(0))
-            if self.is_zonal_data:
-                self.long_data.extend(self.get_zone_data(1))
+            if self.pull_data():
+                self.long_data.extend(self.get_zone_data(0))
+                if self.is_zonal_data:
+                    assert type(self.var2) == list
+                    for zone_ix, _ in enumerate(self.var2):
+                        if zone_ix==0:
+                            pass
+                        self.long_data.extend(self.get_zone_data(zone_ix))
         self.df = pd.DataFrame(self.long_data)
 
     def pull_data(self):
@@ -82,37 +89,49 @@ class BiVariableAnalysis:
             self.ppd = self.case_ppd[self.curr_case]
             self.var1 = self.get_var_data(self.qoi1, self.is_post_processed_qois[0])
             self.var2 = self.get_var_data(self.qoi2, self.is_post_processed_qois[1])
+            if type(self.var1) == list and type(self.var2) == list:
+                if not self.is_two_by_two:
+                    assert len(self.var1) == 1, f"{self.qoi1} is not a site var"
+                return True
         else:
             raise Exception(f"Invalide QOIs:{self.qoi1}, {self.qoi2}")
-        
-        if not self.is_two_by_two:
-            assert len(self.var1) == 1, f"{self.qoi1} is not a site var"
+
+    def get_var_data(self, var: VariableType, POST_PROCESS_DATA=False):
+        try:
+            if POST_PROCESS_DATA:
+                return self.ppd[var]
+            else:
+                self.sql.get_collection_for_variable(var)
+                self.sql.filter_collections()
+                return self.sql.filtered_collection
+        except:
+            warn(
+                f"Unable to pull data of {var} for {self.curr_case}"
+            )
+            return False
 
     def get_zone_data(self, ix):
         assert self.qoi1 and self.qoi2
+        assert type(self.var1)== list and type(self.var2)== list
+        try:
+            _, _, zone_name = zone_rename(self.var2[ix].header.metadata["System"])
+        except:
+            _, _, zone_name = zone_rename(self.var2[ix].header.metadata["Zone"])
+
+
+
+
         var1_ix = ix if self.is_two_by_two else 0
         return [
             {
                 "case": self.curr_case,
-                "zone": str(ix),
+                "zone": zone_name,
                 self.qoi1.name: v1,
                 self.qoi2.name: v2,
             }
+            
             for v1, v2 in zip(self.var1[var1_ix].values, self.var2[ix].values)
         ]
-
-            
-
-    def get_var_data(self, var: VariableType, POST_PROCESS_DATA=False):
-        if POST_PROCESS_DATA:
-            # assume for now that only one analysis period in post process data, so it is already a "filtered_collection.."
-            return self.ppd[var]
-        else:
-            self.sql.get_collection_for_variable(var)
-            self.sql.filter_collections()
-            # TODO update so that consider different run periods?
-            # TODO replace with function in SQL..
-            return self.sql.filtered_collection
 
     def get_case_sql(self, case_path):
         input_path = os.path.join(case_path, "input.pkl")
@@ -132,9 +151,10 @@ class BiVariableAnalysis:
         assert self.qoi1 and self.qoi2
         self.fig = (
             so.Plot(self.df, x=self.qoi1.name, y=self.qoi2.name, color="zone")
+            .layout(size=(8, 6))
             .facet("case")
             .add(so.Dots())
             # .add(so.Line(), so.PolyFit())
-            .scale(color="flare")  # type: ignore
-        )
-        return self.fig
+            # .scale(color="flare")  # type: ignore
+        );
+        # return self.fig

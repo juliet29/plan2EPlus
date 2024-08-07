@@ -6,6 +6,7 @@ from geometry.wall import Wall
 from outputs.classes import GeometryOutputData, TimeExtractData
 
 from helpers.ep_getter import Getter
+from helpers.idf_object_rename import zone_rename
 
 
 class Zone:
@@ -30,9 +31,10 @@ class Zone:
         self.create_geometry()
 
     def create_display_name(self):
-        self.entry_name = self.name.split()[1]
-        self.display_name = f"Block {self.entry_name}"
-        self.bunch_name = f"B_{self.entry_name}"
+        self.entry_name, self.display_name, self.bunch_name = zone_rename(self.name)
+        # self.entry_name = self.name.split()[1]
+        # self.display_name = f"Block {self.entry_name}"
+        # self.bunch_name = f"B_{self.entry_name}"
 
     def get_walls(self):
         self.wall_list = [

@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import os
 import filecmp
 
 from icecream import ic 
 
+import geometry.geometry_parser as geom
 from geomeppy import IDF
-from geometry.geometry_parser import GeometryParser
 from ladybug.epw import EPW
 from eppy.runner.run_functions import EnergyPlusRunError
 
@@ -43,7 +45,7 @@ class EneryPlusCaseEditor:
 
     def get_idf(self):
         if not self.starting_case:
-            self.idf = IDF(IDF_PATH)
+            self.idf = IDF(IDF_PATH) 
         else:
             self.starting_idf_path = os.path.join("cases", self.starting_case, "out.idf")
             self.idf = IDF(self.starting_idf_path)  
@@ -85,7 +87,7 @@ class EneryPlusCaseEditor:
 
 
     def get_geometry(self):
-        self.geometry = GeometryParser(self.idf) 
+        self.geometry = geom.GeometryParser(self.idf) 
 
 
     def update_weather_and_run_period(self):
@@ -118,4 +120,4 @@ class EneryPlusCaseReader:
         return f"EPCaseReader({self.case_name})"  
 
     def get_geometry(self):
-        self.geometry = GeometryParser(self.idf)  
+        self.geometry = geom.GeometryParser(self.idf)  
