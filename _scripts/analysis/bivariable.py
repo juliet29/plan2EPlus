@@ -21,6 +21,7 @@ VariableType = Optional[Union[OutputVars, PostProcessedOutputVars]]
 
 
 class BiVariableAnalysis:
+    "Compare relationships for all the cases in a projectrm "
     def __init__(self, project_name) -> None:
         self.project_name = project_name
         self.case_sqls = {}
@@ -112,14 +113,11 @@ class BiVariableAnalysis:
 
     def get_zone_data(self, ix):
         assert self.qoi1 and self.qoi2
-        assert type(self.var1)== list and type(self.var2)== list
+        assert type(self.var1) == list and type(self.var2)== list
         try:
             _, _, zone_name = zone_rename(self.var2[ix].header.metadata["System"])
         except:
             _, _, zone_name = zone_rename(self.var2[ix].header.metadata["Zone"])
-
-
-
 
         var1_ix = ix if self.is_two_by_two else 0
         return [

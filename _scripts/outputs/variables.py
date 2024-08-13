@@ -20,11 +20,24 @@ class OutputVars(str, Enum):
     # AFN ~ surface
     surface_venting = "AFN Surface Venting Window or Door Opening Factor"
 
-    # zone
+    # zone ~  rates
     zone_mean_air_temp = "Zone Mean Air Temperature"
+    zone_surface_convection_heat_transfer = "Zone Air Heat Balance Surface Convection Rate"
+    zone_interzone_heat_transfer = "Zone Air Heat Balance Interzone Air Transfer Rate"
+    zone_outdoor_heat_transfer = "Zone Air Heat Balance Outdoor Air Transfer Rate"
+    zone_energy_balance = "Zone Air Heat Balance Air Energy Storage Rate"
+
+    # surface ~ face ~ rates / area 
+    inside_face_convection_heat_gain = 'Surface Inside Face Convection Heat Gain Rate per Area' 
+    inside_face_net_surface_thermal_radiation_heat_gain = 'Surface Inside Face Net Surface Thermal Radiation Heat Gain Rate per Area' 
+    inside_face_solar_radiation_heat_gain = 'Surface Inside Face Solar Radiation Heat Gain Rate per Area' 
+    inside_face_internal_gains_radiation = 'Surface Inside Face Internal Gains Radiation Rate per Area' 
+
+
+
+
 
     # site
-    # https://bigladdersoftware.com/epx/docs/22-2/input-output-reference/group-location-climate-weather-file-access.html#outputs-3-011
     site_db_temp = "Site Outdoor Air Drybulb Temperature"
     site_wb_temp = "Site Outdoor Air Wetbulb Temperature"
     site_dp_temp = "Site Outdoor Air Dewpoint Temperature"

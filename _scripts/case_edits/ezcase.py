@@ -46,8 +46,6 @@ class EzCase:
         self.format_inputs()
         self.run()
 
-        self.sql = None
-        self.plt = None
 
     def __repr__(self):
         return self.sinput_vals
@@ -140,11 +138,13 @@ class EzCase:
                 print("looking for sql")
                 self.sql = SQLReader(sql_input)
                 self.plt = Plotter(plotter_input, sql_input)
+                assert self.plt is not None
             else:
                 print("No SQL file")
-                self.plt = None
+                # self.plt = None
         else:
-            self.plt = None
+            print("No results")
+            # self.plt = None
 
     def post_process_variables(self):
         if self.sql:
