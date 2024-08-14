@@ -26,6 +26,10 @@ class OutputRequests:
             obj = self.epcase.idf.newidfobject("OUTPUT:JSON")
             obj.Option_Type = "TimeSeries" 
 
+    def request_advanced_variables(self):
+        obj = self.epcase.idf.newidfobject("OUTPUT:DIAGNOSTICS")
+        obj.Key_1 = "DisplayAdvancedReportVariables"
+
 
     def check_existing_variable(self, new_var_name):
         var_names = [o.Variable_Name  for o in self.epcase.idf.idfobjects["OUTPUT:VARIABLE"]]

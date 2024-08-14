@@ -102,6 +102,9 @@ class EzCase:
 
     def add_output_variables(self):
         self.out_reqs = OutputRequests(self.case)
+        self.out_reqs.request_advanced_variables()
+        self.out_reqs.request_sql()
+
         for var in self.inputs.output_variables:
             self.out_reqs.add_output_variable(name=var.value)
 
@@ -111,12 +114,10 @@ class EzCase:
             OV.site_direct_solar_rad,
         ]
         all_vars = self.inputs.output_variables + default_site_vars
-
         self.eligible_vars = Munch()
         for var in all_vars:
             self.eligible_vars.update({var.name: var})
 
-        self.out_reqs.request_sql()
 
     def make_base_plot(self):
         self.base_plot = Base2DPlot(self.case.geometry, self.case.case_name)

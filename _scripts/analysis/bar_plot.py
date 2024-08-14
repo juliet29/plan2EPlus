@@ -1,33 +1,46 @@
 from typing import List
+from enum import Enum
 
 import numpy as np
 import pandas as pd
+import plotly.express as px
+
 from ladybug.dt import Time
 
 from case_edits.ezcase import EzCase
 from outputs.variables import OutputVars as ov
 
+class PlotType(Enum):
+    STACKED_BAR = 0
+    VIOLIN = 1
+
+
+
 
 # TODO, will need a custom input, not the whole ezcase.. 
 class BarPlotAnalysis:
-    def __init__(self, ez:EzCase, qois:List[ov], time:tuple=(12,0)) -> None:
+    def __init__(self, ez:EzCase, qois:List[ov], plot_type:int=0, time:tuple=(12,0), qoi_names=[]) -> None:
         assert ez.plt
         assert ez.case
 
         self.plt = ez.plt
-
         self.zone_list = ez.case.geometry.zone_list
-        self.qois = qois
-        self.qoi = self.qois[0]
+        self.case_name = ez.case.case_name
 
+        self.qois = qois
         self.time = time
 
+        self.plot_type = PlotType(plot_type)
+
         self.long_data = []
+
+        self.qoi_names = qoi_names
 
 
     def run(self):
         for ix, qoi in enumerate(self.qois):
             self.qoi = qoi
+            self.qoi_name = self.qoi_names[ix] if self.qoi_names else self.qoi.name
             self.get_data()
             if ix == 0:
                 self.get_time_index()
@@ -35,8 +48,14 @@ class BarPlotAnalysis:
             for zone in self.zone_list:
                 self.curr_zone = zone
                 self.get_zone_values()
-                self.get_value_at_time()
-                self.create_entry()
+
+                if self.plot_type == PlotType.STACKED_BAR:
+                    self.get_value_at_time()
+                    self.create_single_value_entry()
+                elif self.plot_type == PlotType.VIOLIN:
+                    self.create_many_value_entry()
+
+
         self.df = pd.DataFrame(self.long_data)
 
     
@@ -58,19 +77,40 @@ class BarPlotAnalysis:
                 surf_values.append(np.array(surface.values))
 
         # NOTE: aggregating by summing, assuming rate/area is qoi
+        # TODO use numpy to reduce.. 
         self.zone_values = sum(surf_values)
+        return self.zone_values
+        
         
 
     def get_value_at_time(self):
         self.block_val_at_time = self.zone_values[self.time_ix] # type:ignore 
 
 
-    def create_entry(self):
+    def create_single_value_entry(self):
         d = {
             "room": self.curr_zone.bunch_name,
             "qoi": self.qoi.name,
             "value": self.block_val_at_time
         }
         self.long_data.append(d)
+
+
+    def create_many_value_entry(self):
+        for time, value in zip(self.curr_collection[0].datetimes, self.zone_values): #type:ignore
+            d = {
+                "room": self.curr_zone.bunch_name,
+                "qoi": self.qoi_name,
+                "time": time,
+                "value": value
+            }
+            self.long_data.append(d)
+
+
+    def create_stacked_bar_plot(self):
+        self.fig = px.bar(self.df, x="room", y="value", color="qoi", title=f"{self.case_name} at {self.time}")
+        self.fig.show()
+
+
 
 

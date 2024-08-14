@@ -32,6 +32,7 @@ class OutputVars(str, Enum):
     inside_face_net_surface_thermal_radiation_heat_gain = 'Surface Inside Face Net Surface Thermal Radiation Heat Gain Rate per Area' 
     inside_face_solar_radiation_heat_gain = 'Surface Inside Face Solar Radiation Heat Gain Rate per Area' 
     inside_face_internal_gains_radiation = 'Surface Inside Face Internal Gains Radiation Rate per Area' 
+    average_face_conduction_heat_transfer = "Surface Average Face Conduction Heat Transfer Rate per Area"
 
 
 
