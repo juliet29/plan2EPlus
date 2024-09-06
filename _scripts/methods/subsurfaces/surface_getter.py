@@ -1,5 +1,6 @@
 from methods.subsurfaces.inputs import SurfaceGetterInputs
 from geometry.wall_normal import WallNormal
+from helpers.idf_object_rename import convert_block_name_to_int
 
 
 class SurfaceGetter:
@@ -29,7 +30,7 @@ class SurfaceGetter:
             w for w in self.curr_zone.walls.values() if w.direction == self.dir.name
         ]  # type:ignore
         # TODO handle if a zone has multiple walls shared with a partner, or multiple walls in one direction
-        self.check_if_unique(candidates)
+        self.is_unique_block(candidates)
         self.goal_surface = candidates[0]
 
     def find_surface_by_partner(self):
@@ -43,15 +44,21 @@ class SurfaceGetter:
         candidates = list(
             filter(lambda x: self.test_zone_name(x, zone_num), self.zone_names)
         )
-        self.check_if_unique(candidates)
+        try:
+            self.is_unique_block(candidates)
+        except:
+            print(f"trying for {zone_num}")
+            raise Exception(f"candidates = {candidates}")
         return self.zones[candidates[0]]
 
     def test_zone_name(self, zone_name: str, zone_num: int):
-        test_name = f"0{zone_num}"
-        if test_name in zone_name:
+        test_name = convert_block_name_to_int(zone_name)
+        if test_name == zone_num:
             return True
         else:
             return False
 
-    def check_if_unique(self, candidates):
+    def is_unique_block(self, candidates):
         assert len(candidates) == 1, f"Walls != 1: {candidates}"
+
+    

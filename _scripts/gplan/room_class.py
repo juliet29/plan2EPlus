@@ -1,5 +1,5 @@
 # template for a single gplan floor plan, that consists of many plans 
-from typing import TypedDict
+from typing import TypedDict, Union
 from dataclasses import dataclass
 
 
@@ -11,7 +11,7 @@ class GPLANRoomAccess:
 
 class GPLANRoomType(TypedDict):
     id: int
-    label: str
+    label: Union[str, int]
     color: str
     left: int
     top: int 

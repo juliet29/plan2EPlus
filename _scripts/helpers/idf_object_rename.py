@@ -12,3 +12,16 @@ def wall_rename(name, zone, direction, number):
             f"B_{zone.entry_name}_{direction.title()}_W{number}"
         )
         short_name = f"B{zone.entry_name}-W{number}"
+
+
+
+def convert_block_name_to_int(name):
+    nums = name.split("_")[1]
+    match len(nums):
+        case 2:
+            return int(nums[-1])
+        case 3:
+            return int(nums[-2:])
+        case _:
+            raise Exception("invalid name length")
+                      

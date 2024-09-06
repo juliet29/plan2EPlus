@@ -3,8 +3,7 @@ from icecream import ic
 
 class GPLANRoom:
     def __init__(self, block: GPLANRoomType, room_height=10) -> None:
-        index = block["label"]  # TODO check that is label is a #
-        self.name = f"0{index}"
+        self.block = block
         self.room_height = room_height
 
         self.left_x = block["left"]
@@ -15,23 +14,26 @@ class GPLANRoom:
         self.create_geomeppy_block()
 
     def create_geomeppy_block(self):
+        self.create_numeric_name()
         self.create_pos()
         self.create_coords()
-        # self.flip_coords()
         self.create_object()
 
-    # def create_pos0(self):
-    #     self.toptop_y = self.top_y + self.height
-    #     self.right_x = self.left_x + self.width
+    def create_numeric_name(self):
+        label = self.block["label"]
+        id  = self.block["id"]
+        try:
+            label = int(label) + 0
+            self.name = f"0{label}"
+        except ValueError:
+            self.name = f"0{id}"
 
-    #     self.bottom_left = (self.left_x, self.top_y)
-    #     self.bottom_right = (self.right_x, self.top_y)
 
-    #     self.top_left = (self.left_x, self.toptop_y)
-    #     self.top_right = (self.right_x, self.toptop_y)
+
+
 
     def create_pos(self):
-        # using a convention where blocks are added from x=0, then going down.. 
+        # using a convention where blocks are added from y=0, then going down.. 
         self.top_y*=-1
         self.bottom_y = self.top_y - self.height
         self.right_x = self.left_x + self.width
@@ -42,8 +44,7 @@ class GPLANRoom:
         self.top_left = (self.left_x, self.top_y)
         self.top_right = (self.right_x, self.top_y)
 
-        # if self.name == "01":
-        #     ic((self.left_x, self.top_y))
+
 
 
     def create_coords(self):
@@ -55,13 +56,6 @@ class GPLANRoom:
             self.bottom_left,
         ]
 
-    # def flip_coords(self):
-    #     y_mag = max([abs(pt[1]) for pt in self.coords])
-    #     ic(y_mag)
-
-
-    #     self.flipped_coords = [(pt[0], pt[1]+ y_mag) for pt in self.coords]
-    #     ic(self.flipped_coords)
 
     def create_object(self):
         self.eppy_block = {
