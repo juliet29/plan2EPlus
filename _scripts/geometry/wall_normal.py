@@ -8,3 +8,6 @@ class WallNormal(Enum):
     EAST = 90.0
     SOUTH = 180.0
     WEST = 270.0
+
+    def __getitem__(self, i):
+        return getattr(self, i)

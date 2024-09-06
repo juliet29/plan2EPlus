@@ -56,6 +56,11 @@ class SubsurfacePair:
                 self.attrs = DEFAULT_DOOR
             elif self.attrs == SubsurfaceObjects.WINDOW:
                 self.attrs = DEFAULT_WINDOW
+
+    def __repr__(self) -> str:
+        return(
+            f"SubsurfacePair(pair={self.space_a, self.space_b}, attrs = {self.attrs})"
+        )
             
 
         
