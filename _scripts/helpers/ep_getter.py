@@ -49,3 +49,6 @@ class Getter:
                     for item in v:
                         self.afn_objects.append(item)
         return self.afn_objects
+
+
+    

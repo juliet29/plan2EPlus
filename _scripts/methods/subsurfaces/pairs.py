@@ -59,7 +59,7 @@ class SubsurfacePair:
 
     def __repr__(self) -> str:
         return(
-            f"SubsurfacePair(pair={self.space_a, self.space_b}, attrs = {self.attrs})"
+            f"SubsurfacePair(pair={self.space_a, self.space_b})"
         )
             
 
