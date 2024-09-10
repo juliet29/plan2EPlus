@@ -8,7 +8,7 @@ from geometry.wall_normal import WallNormal
 
 
 from gplan.room_class import GPLANRoomAccess
-from gplan.subsurfaces import SubsurfaceTranslator
+from gplan.subsurface_translator import SubsurfaceTranslator
 from case_edits.ezcase import EzCaseInput
 from recipes.two_zone import output_reqs
 
@@ -23,6 +23,7 @@ st.run()
 input = EzCaseInput(
     case_name=TEST_CASE,
     geometry=GPLANRoomAccess(st.gplan_path, PLAN_INDEX),
-    subsurface_pairs=(st.door_pairs + st.window_pairs),
+    subsurface_pairs=[],
+    # subsurface_pairs=st.pairs,
     output_variables=output_reqs,
 )
