@@ -17,11 +17,19 @@ class GeometryParser:
 
     def _get_zones(self):
         self._check_zone_names_are_unique()
-        self.zone_list = [Zone(zone, self.idf) for zone in self.idf.idfobjects["ZONE"]]
+
+        self.zone_list = []
+        for zone in self.idf.idfobjects["ZONE"]:
+            try:
+                self.zone_list.append(Zone(zone, self.idf))
+            except:
+                print(f"zone failed: {zone.Name}")
 
         self.zones = Munch()
+    
         for zone in self.zone_list:
             self.zones.update({zone.bunch_name: zone})
+        
 
     def _check_zone_names_are_unique(self):
         zone_names = [zone.Name for zone in self.idf.idfobjects["ZONE"]]

@@ -32,6 +32,7 @@ class Zone:
 
     def create_display_name(self):
         self.entry_name, self.display_name, self.bunch_name = zone_rename(self.name)
+        print(self.entry_name)
         # self.entry_name = self.name.split()[1]
         # self.display_name = f"Block {self.entry_name}"
         # self.bunch_name = f"B_{self.entry_name}"
@@ -50,12 +51,15 @@ class Zone:
         print(f"Added {len(self.wall_list)} walls ")
 
     def create_geometry(self):
-        wall_lines = [self.wall_list[i].line for i in range(len(self.wall_list))]
-        self.polygon = sp.get_geometry(sp.polygonize(wall_lines), 0)
+        self.wall_lines = [self.wall_list[i].line for i in range(len(self.wall_list))]
+        self.polygon = sp.get_geometry(sp.polygonize(self.wall_lines), 0)
 
-        assert (
-            type(self.polygon) == sp.Polygon
-        ), "When creating zone geometry, zone was not polygonal "
+        return self.polygon
+
+
+        # assert (
+        #     type(self.polygon) == sp.Polygon
+        # ), f"When creating zone geometry, zone was not polygonal "
 
     # get subsurfaces
     def get_subsurfaces(self):

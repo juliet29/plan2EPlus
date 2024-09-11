@@ -18,6 +18,7 @@ def prepare_line_traces(line: LineString, color="yellow", label=None, width=3):
     return trace
 
 
+
 def prepare_polygon_trace(polygon: Polygon, color="blue", label=None):
     x, y, _ = get_coords_as_seprate_xy(polygon.exterior.coords)
     trace = go.Scatter(
@@ -32,6 +33,13 @@ def prepare_polygon_trace(polygon: Polygon, color="blue", label=None):
     )
     return trace
 
+def show_traces(td):
+    fig = go.Figure()
+    for trace in td.values():
+        fig.add_trace(trace)
+
+    fig.show()
+    
 
 def prepare_shape_dict(
     coords: CoordinateSequence,

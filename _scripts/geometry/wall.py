@@ -71,6 +71,9 @@ class Wall:
         assert len(vertices) == 2, f"Line defining surface {self.display_name} ! have 2 vertices: {vertices}"
 
         self.line = sp.LineString(vertices)
+        # print([c for c in self.line.coords])
+
+
 
     # get subsurfaces 
     def get_subsurfaces(self, subsurfaces):

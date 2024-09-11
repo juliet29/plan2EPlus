@@ -60,6 +60,7 @@ class GPLANtoGeomeppy:
             block["coordinates"] = [(coord[0], coord[1]+y_max) for coord in block["coordinates"]]
 
 
+
     def update_case(self):
         for block in self.blocks:
             self.case.idf.add_block(**block)

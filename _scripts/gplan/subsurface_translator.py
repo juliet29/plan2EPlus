@@ -8,7 +8,7 @@ from geometry.wall_normal import WallNormal
 
 
 GRAPH_JSON = "graph.json"
-GPLAN_JSON = "graph_dim.json"
+GPLAN_JSON = "gplan.json"
 OUTPUTS_PATH = "/Users/julietnwagwuume-ezeoke/_UILCode/gqe-phd/svg2plan/outputs"
 
 class SubsurfaceTranslator:

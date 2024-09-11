@@ -44,7 +44,7 @@ class EzCase:
         self.inputs = input
         self.RUN_CASE = RUN_CASE
         self.format_inputs()
-        self.run()
+        # self.run()
 
 
     def __repr__(self):

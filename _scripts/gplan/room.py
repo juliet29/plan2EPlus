@@ -1,23 +1,35 @@
 from gplan.room_class import GPLANRoomType
 from icecream import ic
+from decimal import Decimal
+
+ROUNDING_LIM = 2
+
 
 class GPLANRoom:
     def __init__(self, block: GPLANRoomType, room_height=10) -> None:
         self.block = block
         self.room_height = room_height
 
-        self.left_x = block["left"]
-        self.top_y = block["top"]
-        self.width = block["width"]
-        self.height = block["height"]
 
         self.create_geomeppy_block()
 
     def create_geomeppy_block(self):
+        self.get_block_values()
         self.create_numeric_name()
         self.create_pos()
         self.create_coords()
         self.create_object()
+
+
+    def get_block_values(self):
+        self.left_x = self.get_block_value("left")
+        self.top_y = self.get_block_value("top")
+        self.width = self.get_block_value("width")
+        self.height = self.get_block_value("height")
+
+
+    def get_block_value(self, val):
+        return round(Decimal(self.block[val]), 2)
 
     def create_numeric_name(self):
         label = self.block["label"]
@@ -27,6 +39,9 @@ class GPLANRoom:
             self.name = f"0{label}"
         except ValueError:
             self.name = f"0{id}"
+
+   
+
 
 
 
