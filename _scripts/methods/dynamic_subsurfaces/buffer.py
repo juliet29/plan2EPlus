@@ -17,7 +17,8 @@ class Buffer:
     def get_buffer_distance(self):
         dims = self.original_surface.dimensions
         smaller_dim = dims.width if dims.width < dims.height else dims.height
-        self.buffer_dist = smaller_dim*0.1
+        self.buffer_dist = smaller_dim*0.01
+        # print(self.buffer_dist)
 
 
     def create_buffer_polygon(self):

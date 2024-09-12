@@ -15,6 +15,7 @@ from methods.shadings.creator import ShadingCreator
 class SubsurfaceCreator:
     def __init__(self, inputs: SubsurfaceCreatorInputs) -> None:
         self.inputs = inputs
+        
 
     def create_all_ssurface(self):
         for pair in self.inputs.ssurface_pairs:
@@ -26,10 +27,17 @@ class SubsurfaceCreator:
         self.determine_ssurface_type()
         self.create_ssurface_name()
         self.initialize_object()
+        try:
+            self.calculate_start_coords()
+        except:
+            print(f"failed to create {self.name} on {self.surface}")
+            self.abandon_object()
+            return
         self.update_attributes()
         if self.surface.is_interior_wall:
             self.make_partner_object()
         self.add_shadings()
+
 
     def get_case_surface(self):
         input = SurfaceGetterInputs(self.inputs.zones, self.curr_pair)
@@ -52,7 +60,6 @@ class SubsurfaceCreator:
             self.obj0 = self.inputs.case_idf.newidfobject(self.type)
 
     def update_attributes(self):
-        self.calculate_start_coords()
         self.obj0.Starting_X_Coordinate = self.start_x
         self.obj0.Starting_Z_Coordinate = self.start_z
         self.obj0.Height = self.height
@@ -91,9 +98,14 @@ class SubsurfaceCreator:
             attrs.location_in_wall,
             attrs.FRACTIONAL,
         )
+        if self.placement_object:
+            po = self.placement_object
+            self.start_x = po.starting_corner.x
+            self.start_z = po.starting_corner.y
+            self.height = po.dims.height
+            self.width = po.dims.width
+            
 
-        po = self.placement_object
-        self.start_x = po.starting_corner.x
-        self.start_z = po.starting_corner.y
-        self.height = po.dims.height
-        self.width = po.dims.width
+    def abandon_object(self):
+        print(f"removing incomplete surface {self.obj0.Name} from idf...")
+        self.inputs.case_idf.removeidfobject(self.obj0)

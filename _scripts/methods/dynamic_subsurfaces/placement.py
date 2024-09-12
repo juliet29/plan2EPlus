@@ -40,10 +40,12 @@ class Placement:
 
     def run(self):
         self.process_fraction()
-        self.run_prelim_checks()
-        self.find_starting_corner()
-        self.create_test_polygon()
-        self.get_relative_starting_point()
+        if self.run_prelim_checks():
+            self.find_starting_corner()
+            self.create_test_polygon()
+            self.get_relative_starting_point()
+        else:
+            return False
 
     def process_fraction(self):
         if self.FRACTION:
@@ -55,8 +57,15 @@ class Placement:
 
 
     def run_prelim_checks(self):
-        assert self.dims.height < self.buffer_surface.polygon.dimensions.height
-        assert self.dims.width < self.buffer_surface.polygon.dimensions.width
+        try:
+            assert self.dims.height < self.buffer_surface.polygon.dimensions.height
+            assert self.dims.width < self.buffer_surface.polygon.dimensions.width
+            return True
+
+        except:
+            print(f"ssurface: {self.dims.width, self.dims.height}. buffer surface: {self.buffer_surface.polygon.dimensions.width, self.buffer_surface.polygon.dimensions.height}")
+            print(f"original wall width: {self.buffer_surface.original_surface.dimensions.width}")
+            raise Exception("ssurfaced dims > surface dims")
 
     def get_relative_starting_point(self):
         org_coords = self.buffer_surface.original_surface.organized_coords

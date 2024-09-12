@@ -32,10 +32,7 @@ class Zone:
 
     def create_display_name(self):
         self.entry_name, self.display_name, self.bunch_name = zone_rename(self.name)
-        print(self.entry_name)
-        # self.entry_name = self.name.split()[1]
-        # self.display_name = f"Block {self.entry_name}"
-        # self.bunch_name = f"B_{self.entry_name}"
+
 
     def get_walls(self):
         self.wall_list = [
@@ -48,22 +45,13 @@ class Zone:
         for wall in self.wall_list:
             self.walls.update({wall.bunch_name: wall})
 
-        print(f"Added {len(self.wall_list)} walls ")
-
     def create_geometry(self):
-    #     self.wall_lines = [self.wall_list[i].line for i in range(len(self.wall_list))]
         self.wall_lines = [i.line for i in self.wall_list]
         self.polygon = sp.convex_hull(sp.union_all(self.wall_lines))
-        # self.polygon = sp.get_geometry(sp.polygonize(self.wall_lines), 0)
         if not isinstance(self.polygon, sp.Polygon):
             print(f"{self.display_name} did not make a polygon :(")
-
-        return self.polygon
-
-
-        # assert (
-        #     type(self.polygon) == sp.Polygon
-        # ), f"When creating zone geometry, zone was not polygonal "
+        else:
+            print(f"Added {len(self.wall_list)} walls for {self.display_name}")
 
     # get subsurfaces
     def get_subsurfaces(self):
@@ -75,15 +63,3 @@ class Zone:
             self.zone_subsurfaces.extend(wall.ssurface_list)
         return self.zone_subsurfaces
 
-    # dealing with outputs..
-
-    def create_output_data(self, data: GeometryOutputData):
-        self.output_data[data.short_name] = data
-
-    def create_extracted_data(self, dataset_name, data: TimeExtractData):
-        if dataset_name not in self.extracted_data.keys():
-            self.extracted_data[dataset_name] = []
-        self.extracted_data[dataset_name].append(data)
-
-    def color_extracted_data(self, dataset_name, ix, color):
-        self.extracted_data[dataset_name][ix].update_color(color)

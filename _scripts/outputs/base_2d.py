@@ -61,7 +61,7 @@ class Base2DPlot:
 
 
     def determine_plot_range(self):
-        buffer = 20
+        buffer = 2
         min_x = min(self.get_vals("x0"))
         max_x = max(self.get_vals("x1"))
 

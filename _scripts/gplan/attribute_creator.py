@@ -48,3 +48,13 @@ class AttributeCreator:
                 ),
                 location_in_wall=NinePointsLocator.bottom_middle,
             )
+
+    def get_height(self):
+        self.heights = []
+        floor_height = self.details["FLOOR_HEIGHT"]
+        if str(floor_height):
+            self.heights.append(nice_dim(floor_height))
+        else:
+            for item in self.details["FLOOR_HEIGHT"]:
+                print(item)
+                self.heights.append(nice_dim(item))

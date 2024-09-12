@@ -23,7 +23,7 @@ st.run()
 input = EzCaseInput(
     case_name=TEST_CASE,
     geometry=GPLANRoomAccess(st.gplan_path, PLAN_INDEX),
-    subsurface_pairs=[],
-    # subsurface_pairs=st.pairs,
+    # subsurface_pairs=[],
+    subsurface_pairs=st.pairs,
     output_variables=output_reqs,
 )

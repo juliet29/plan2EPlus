@@ -3,6 +3,7 @@ import json
 from typing import List, Union
 from gplan.room_class import GPLANRoomType, GPLANRoomAccess
 from gplan.room import GPLANRoom
+from gplan.attribute_creator import AttributeCreator
 
 
 class GPLANtoGeomeppy:
@@ -21,6 +22,7 @@ class GPLANtoGeomeppy:
 
     def run(self):
         self.get_plans()
+        self.get_room_height()
         self.create_blocks()
         self.adjust_blocks_y()
         self.update_case()
@@ -40,11 +42,20 @@ class GPLANtoGeomeppy:
             gplan_data = json.load(f)
         self.plan = gplan_data[self.gplan_access.index]
 
+    def get_room_height(self):
+        self.ac = AttributeCreator()
+        self.ac.get_data()
+        self.ac.get_height()
+        try:
+            [self.room_height] = self.ac.heights
+        except:
+            raise Exception("Multiple floors and heights not handled")
+
 
     def create_blocks(self):
         assert type(self.plan) == list
         for block in self.plan:
-            g = GPLANRoom(block)
+            g = GPLANRoom(block, room_height=self.room_height)
             self.blocks.append(g.eppy_block)
 
 

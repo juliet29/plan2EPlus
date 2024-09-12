@@ -1,11 +1,8 @@
 from geomeppy.patches import EpBunch
-import fnmatch
-import re
 import shapely as sp
 
 from geometry.wall_normal import WallNormal
 from helpers.strings import test_intersecting_surface
-from outputs.classes import GeometryOutputData
 from geometry.surface_geom import SurfaceGeometryExtractor
 from geometry.subsurface import Subsurface
 
