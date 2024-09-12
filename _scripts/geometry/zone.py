@@ -51,8 +51,12 @@ class Zone:
         print(f"Added {len(self.wall_list)} walls ")
 
     def create_geometry(self):
-        self.wall_lines = [self.wall_list[i].line for i in range(len(self.wall_list))]
-        self.polygon = sp.get_geometry(sp.polygonize(self.wall_lines), 0)
+    #     self.wall_lines = [self.wall_list[i].line for i in range(len(self.wall_list))]
+        self.wall_lines = [i.line for i in self.wall_list]
+        self.polygon = sp.convex_hull(sp.union_all(self.wall_lines))
+        # self.polygon = sp.get_geometry(sp.polygonize(self.wall_lines), 0)
+        if not isinstance(self.polygon, sp.Polygon):
+            print(f"{self.display_name} did not make a polygon :(")
 
         return self.polygon
 

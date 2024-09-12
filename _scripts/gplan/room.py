@@ -29,7 +29,7 @@ class GPLANRoom:
 
 
     def get_block_value(self, val):
-        return round(Decimal(self.block[val]), 2)
+        return Decimal(self.block[val])
 
     def create_numeric_name(self):
         label = self.block["label"]

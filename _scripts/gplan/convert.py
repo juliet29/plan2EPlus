@@ -58,7 +58,11 @@ class GPLANtoGeomeppy:
         # move all blocks up by this amount 
         for block in self.blocks:
             block["coordinates"] = [(coord[0], coord[1]+y_max) for coord in block["coordinates"]]
+            block["coordinates"] = [self.to_float(i) for i in block["coordinates"]]
 
+    def to_float(self, i):
+        return (float(i[0]), 
+                float(i[1]))
 
 
     def update_case(self):
