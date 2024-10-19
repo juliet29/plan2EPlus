@@ -1,10 +1,10 @@
 from copy import deepcopy
 
-from plan.room_class import GPLANRoomAccess
+ 
 from case_edits.ezcase import EzCaseInput
 from geometry.wall_normal import WallNormal
 from outputs.variables import OutputVars as ov
-from methods.subsurfaces.pairs import SubsurfacePair as SSP
+from new_subsurfaces.interfaces import SubsurfacePair as SSP
 from methods.subsurfaces.pairs import DEFAULT_WINDOW
 
 TEST_CASE = "tests/test16_ezcase"

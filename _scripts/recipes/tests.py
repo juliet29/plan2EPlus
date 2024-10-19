@@ -1,4 +1,4 @@
-from plan.room_class import GPLANRoomAccess
+ 
 from case_edits.ezcase import EzCaseInput
 from geometry.wall_normal import WallNormal
 from outputs.variables import OutputVars as ov

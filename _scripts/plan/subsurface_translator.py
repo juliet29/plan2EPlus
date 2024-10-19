@@ -1,14 +1,22 @@
 from pathlib import Path
 import json
 from helpers.helpers import key_from_value
-from methods.subsurfaces.pairs import  SubsurfacePair, SubsurfaceObjects, SubsurfaceAttributes
+from new_subsurfaces.interfaces import SubsurfacePair
 from geometry.wall_normal import WallNormal
+from new_subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceType
 from plan.interfaces import DetailsJSON, GraphEdgeJSON, SubSurfacesJSON, RoomTypeJSON
 from methods.dynamic_subsurfaces.inputs import (
     Dimensions,
     NinePointsLocator,
 )
-from plan.interfaces import SubSurfacesJSON, WindowsJSON, DoorsJSON
+from plan.interfaces import (
+    SubSurfacesJSON,
+    WindowsJSON,
+    DoorsJSON,
+    GRAPH,
+    PLAN,
+    SUBSURFACES,
+)
 
 
 class SubsurfaceTranslator:
@@ -17,61 +25,64 @@ class SubsurfaceTranslator:
         self.path_to_case = path_to_case
 
     def run(self):
-        self.get_data()
         self.create_room_map()
         self.create_subsurfaces()
 
-
-    def get_data(self):
-        self.plan_data: list[list[RoomTypeJSON]] = self.load_data_from_json("plan.json")
-        self.graph_data = self.load_data_from_json("graph.json")
-        self.subsurfaces: SubSurfacesJSON = self.load_data_from_json("subsurfaces.json")
-   
     def load_data_from_json(self, file_name):
-        with open(self.path_to_case  / file_name) as f:
+        with open(self.path_to_case / file_name) as f:
             res = json.load(f)
         return res
 
     def create_room_map(self):
+        self.plan_data: list[list[RoomTypeJSON]] = self.load_data_from_json(PLAN)
         self.room_map = {}
         for item in self.plan_data[0]:
             self.room_map[item["id"]] = item["label"]
 
-
     def create_subsurfaces(self):
+        self.graph_data = self.load_data_from_json(GRAPH)
         self.load_attributes()
         edges: list[GraphEdgeJSON] = self.graph_data["links"]
         for e in edges:
-            source, target = sorted([e["source"], e["target"]], key=lambda x: x not in self.room_map.values())
+            source, target = sorted(
+                [e["source"], e["target"]],
+                key=lambda x: x not in self.room_map.values(),
+            )
             self.pairs.append(
                 SubsurfacePair(
                     key_from_value(self.room_map, source),
                     self.get_node_mapping(target),
-                    self.get_attr(e["details"])
+                    self.get_attr(e["details"]),
                 )
             )
 
     def load_attributes(self):
-        self.doors_db = create_subsurface_database(self.subsurfaces, SubsurfaceObjects.DOOR, NinePointsLocator.bottom_middle)
-        self.windows_db = create_subsurface_database(self.subsurfaces, SubsurfaceObjects.WINDOW, NinePointsLocator.top_middle)
-
+        self.subsurfaces: SubSurfacesJSON = self.load_data_from_json(SUBSURFACES)
+        self.doors_db = create_subsurface_database(
+            self.subsurfaces, SubsurfaceType.DOOR, NinePointsLocator.bottom_middle
+        )
+        self.windows_db = create_subsurface_database(
+            self.subsurfaces, SubsurfaceType.WINDOW, NinePointsLocator.top_middle
+        )
 
     def get_attr(self, details: DetailsJSON):
         if details["external"]:
             return self.windows_db[details["id"]]
         else:
             return self.doors_db[details["id"]]
-        
+
     def get_node_mapping(self, node):
         try:
-           return key_from_value(self.room_map, node)
+            return key_from_value(self.room_map, node)
         except:
             return WallNormal[node]
 
 
-
-
-def create_subsurface_database(subsurfaces:SubSurfacesJSON, object_type: SubsurfaceObjects, location: NinePointsLocator):
+def create_subsurface_database(
+    subsurfaces: SubSurfacesJSON,
+    object_type: SubsurfaceType,
+    location: NinePointsLocator,
+):
     def create_attributes(item: DoorsJSON | WindowsJSON):
         return SubsurfaceAttributes(
             object_type=object_type,
@@ -79,7 +90,8 @@ def create_subsurface_database(subsurfaces:SubSurfacesJSON, object_type: Subsurf
             dimensions=get_dimensions(item),
             location_in_wall=location,
         )
-    ot = "WINDOWS" if object_type == SubsurfaceObjects.WINDOW else "DOORS"
+
+    ot = "WINDOWS" if object_type == SubsurfaceType.WINDOW else "DOORS"
     return {item["id"]: create_attributes(item) for item in subsurfaces[ot]}
 
 

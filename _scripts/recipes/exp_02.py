@@ -1,13 +1,12 @@
 from copy import deepcopy
 
 from case_edits.ezcase import EzCaseInput
-from methods.subsurfaces.pairs import SubsurfacePair as SSP
-from methods.subsurfaces.pairs import SubsurfaceObjects
+from new_subsurfaces.interfaces import SubsurfacePair as SSP
+from new_subsurfaces.interfaces import SubsurfaceType
 from methods.subsurfaces.pairs import DEFAULT_WINDOW
 from geometry.wall_normal import WallNormal
 
 
-from plan.room_class import GPLANRoomAccess
 from case_edits.ezcase import EzCaseInput
 from recipes.two_zone import output_reqs
 
@@ -22,14 +21,19 @@ input = EzCaseInput(
     output_variables=output_reqs,
 )
 
-def ns_axis(input:EzCaseInput):
-    input.subsurface_pairs.extend([
-        SSP(1,WallNormal.NORTH, SubsurfaceObjects.WINDOW), 
-        SSP(5,1, SubsurfaceObjects.DOOR), 
-        SSP(4,5, SubsurfaceObjects.DOOR), 
-        SSP(4,WallNormal.SOUTH, SubsurfaceObjects.WINDOW)])
+
+def ns_axis(input: EzCaseInput):
+    input.subsurface_pairs.extend(
+        [
+            SSP(1, WallNormal.NORTH, SubsurfaceType.WINDOW),
+            SSP(5, 1, SubsurfaceType.DOOR),
+            SSP(4, 5, SubsurfaceType.DOOR),
+            SSP(4, WallNormal.SOUTH, SubsurfaceType.WINDOW),
+        ]
+    )
 
     return input
+
 
 # _window = deepcopy(DEFAULT_WINDOW)
 # shaded_window.SHADING = True
@@ -39,11 +43,14 @@ shaded_window = deepcopy(DEFAULT_WINDOW)
 shaded_window.SHADING = True
 
 
-def ns_axis_shaded(input:EzCaseInput):
-    input.subsurface_pairs.extend([
-        SSP(1,WallNormal.NORTH, shaded_window), 
-        SSP(5,1, SubsurfaceObjects.DOOR), 
-        SSP(4,5, SubsurfaceObjects.DOOR), 
-        SSP(4,WallNormal.SOUTH, shaded_window)])
+def ns_axis_shaded(input: EzCaseInput):
+    input.subsurface_pairs.extend(
+        [
+            SSP(1, WallNormal.NORTH, shaded_window),
+            SSP(5, 1, SubsurfaceType.DOOR),
+            SSP(4, 5, SubsurfaceType.DOOR),
+            SSP(4, WallNormal.SOUTH, shaded_window),
+        ]
+    )
 
     return input

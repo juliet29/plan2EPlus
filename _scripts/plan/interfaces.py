@@ -1,7 +1,11 @@
 
 # TODO shared with svg2plan.. 
 from typing import Optional, TypedDict, NamedTuple
+from pathlib import Path
 
+GRAPH = "graph.json"
+PLAN = "plan.json"
+SUBSURFACES = "subsurfaces.json"
 
 class WindowsJSON(TypedDict):
     id: int
@@ -43,3 +47,10 @@ class GraphEdgeJSON(TypedDict):
     source: str
     target: str
     details: DetailsJSON
+
+
+
+class PlanAccess(NamedTuple):
+    path: Path
+    index : int
+

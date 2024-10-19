@@ -4,11 +4,11 @@ from typing import Union
 
 from geomeppy import IDF
 import case_edits.epcase as epcase
-from methods.subsurfaces.pairs import SubsurfaceObjects
+from new_subsurfaces.interfaces import SubsurfaceType
 
 
 class Getter:
-    def __init__(self, epcase_or_idf:Union[epcase.EneryPlusCaseEditor, IDF]) -> None:
+    def __init__(self, epcase_or_idf: Union[epcase.EneryPlusCaseEditor, IDF]) -> None:
         if type(epcase_or_idf) == epcase.EneryPlusCaseEditor:
             self.idfobjects = epcase_or_idf.idf.idfobjects
         elif type(epcase_or_idf) == IDF:
@@ -25,7 +25,7 @@ class Getter:
         return self.original_subsurfaces
 
     def get_subsurfaces(self):
-        types = [SubsurfaceObjects(i).name for i in range(2)]
+        types = [SubsurfaceType(i).name for i in range(2)]
         for type in types:
             pattern = re.compile(type)
             self.get_subsurface_by_type(pattern)
@@ -49,6 +49,3 @@ class Getter:
                     for item in v:
                         self.afn_objects.append(item)
         return self.afn_objects
-
-
-    

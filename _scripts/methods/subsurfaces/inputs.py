@@ -3,7 +3,7 @@ from munch import Munch
 from typing import List, Union
 from geomeppy import IDF
 
-from methods.subsurfaces.pairs import SubsurfacePair
+from new_subsurfaces.interfaces import SubsurfacePair
 
 
 
