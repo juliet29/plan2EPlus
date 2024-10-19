@@ -7,7 +7,7 @@ from methods.subsurfaces.pairs import DEFAULT_WINDOW
 from geometry.wall_normal import WallNormal
 
 
-from gplan.room_class import GPLANRoomAccess
+from plan.room_class import GPLANRoomAccess
 from case_edits.ezcase import EzCaseInput
 from recipes.two_zone import output_reqs
 

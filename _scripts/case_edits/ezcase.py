@@ -4,8 +4,8 @@ import dataclasses
 from operator import attrgetter
 from typing import List, Tuple, Union, Sequence
 from munch import Munch
-from gplan.room_class import GPLANRoomAccess
-from gplan.convert import GPLANtoGeomeppy
+from plan.room_class import GPLANRoomAccess
+from plan.convert import GPLANtoGeomeppy
 
 from case_edits.epcase import EneryPlusCaseEditor
 from helpers.special_types import GeometryType

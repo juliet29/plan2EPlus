@@ -1,9 +1,9 @@
 # assuming meters?
 import json
 from typing import List, Union
-from gplan.room_class import GPLANRoomType, GPLANRoomAccess
-from gplan.room import GPLANRoom
-from gplan.attribute_creator import AttributeCreator
+from plan.room_class import GPLANRoomType, GPLANRoomAccess
+from plan.room import GPLANRoom
+from plan.attribute_creator import AttributeCreator
 
 
 class GPLANtoGeomeppy:

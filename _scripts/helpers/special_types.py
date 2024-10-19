@@ -1,6 +1,6 @@
 from geometry.wall_normal import WallNormal
 from typing import List, Tuple, Union
-from gplan.room_class import GPLANRoomType, GPLANRoomAccess
+from plan.room_class import GPLANRoomType, GPLANRoomAccess
 
 ZonePairTuple = Tuple[int, int]
 ZoneDirectionTuple = Tuple[int, WallNormal]

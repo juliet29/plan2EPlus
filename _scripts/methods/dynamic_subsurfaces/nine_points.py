@@ -1,11 +1,9 @@
 from dataclasses import dataclass
 from methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
-from shapely import Point, Polygon
-from methods.dynamic_subsurfaces.inputs import NinePoints, MutablePoint
+from shapely import Point
+from methods.dynamic_subsurfaces.inputs import NinePoints
 
 
-
-# takes the bufferered_surface 
 class NinePointsCreator:
     def __init__(self, surface:SurfacePolygon) -> None:
         self.coords = surface.organized_coords
