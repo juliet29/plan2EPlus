@@ -1,30 +1,39 @@
-
 from copy import deepcopy
 from geomeppy import IDF
 
+from new_subsurfaces.constructions import assign_default_constructions
 from new_subsurfaces.ep_helpers import is_interior_wall
 from new_subsurfaces.interfaces import SubsurfacePair
 
-from new_subsurfaces.preparation import create_starting_coord, get_approp_surface_and_attrs
+from new_subsurfaces.preparation import (
+    create_starting_coord,
+    get_approp_surface_and_attrs,
+)
 
 
 class SubsurfaceCreator:
-    def __init__(self, idf: IDF, pair: SubsurfacePair, ) -> None:
+    def __init__(
+        self,
+        idf: IDF,
+        pair: SubsurfacePair,
+    ) -> None:
         self.idf = idf
         self.pair = pair
         self.is_interior_wall = False
 
     def run(self):
-        self.get_surface()
+        self.get_surface_and_update_attrs()
         self.get_start_location()
         self.create_objects()
-  
-    def get_surface(self):
+
+    def get_surface_and_update_attrs(self):
         self.surface, self.attrs = get_approp_surface_and_attrs(self.idf, self.pair)
+        self.attrs = assign_default_constructions(self.idf, self.attrs)
 
     def get_start_location(self):
-        self.start_width, self.start_height = create_starting_coord(self.surface, self.attrs.dimensions, self.attrs.location_in_wall.name)
-
+        self.start_width, self.start_height = create_starting_coord(
+            self.surface, self.attrs.dimensions, self.attrs.location_in_wall.name
+        )
 
     def create_objects(self):
         self.gather_details()
@@ -45,16 +54,17 @@ class SubsurfaceCreator:
         else:
             self.obj0 = self.idf.newidfobject(self.object_type)
 
-
     def update_attributes(self):
         width, height = self.attrs.dimensions
         self.obj0.Starting_X_Coordinate = self.start_width
         self.obj0.Starting_Z_Coordinate = self.start_height
         self.obj0.Length = width
         self.obj0.Height = height
-        # self.obj0.Construction_Name = self.pair.attrs.construction  # type: ignore
         self.obj0.Building_Surface_Name = self.surface.Name
         self.obj0.Name = self.name
+
+        assert self.attrs.construction
+        self.obj0.Construction_Name = self.attrs.construction.Name
 
     def make_partner_object(self):
         self.obj1 = self.idf.copyidfobject(self.obj0)

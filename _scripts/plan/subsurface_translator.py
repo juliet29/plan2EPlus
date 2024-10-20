@@ -40,16 +40,16 @@ def get_dimensions(item: DoorsJSON | WindowsJSON):
 
 
 class SubsurfaceTranslator:
-    def __init__(self, path_to_case: Path) -> None:
+    def __init__(self, path_to_inputs: Path) -> None:
         self.pairs: list[SubsurfacePair] = []
-        self.path_to_case = path_to_case
+        self.path_to_inputs = path_to_inputs
 
     def run(self):
         self.create_room_map()
         self.create_subsurfaces()
 
     def load_data_from_json(self, file_name):
-        with open(self.path_to_case / file_name) as f:
+        with open(self.path_to_inputs / file_name) as f:
             res = json.load(f)
         return res
 
@@ -78,12 +78,13 @@ class SubsurfaceTranslator:
             )
 
     def load_attributes(self):
+        # TODO handle type 0
         self.subsurfaces: SubSurfacesJSON = self.load_data_from_json(SUBSURFACES)
         self.doors_db = create_subsurface_database(
             self.subsurfaces, SubsurfaceObjects.DOOR, NinePointsLocator.bottom_middle
         )
         self.windows_db = create_subsurface_database(
-            self.subsurfaces, SubsurfaceObjects.WINDOW, NinePointsLocator.bottom_middle
+            self.subsurfaces, SubsurfaceObjects.WINDOW, NinePointsLocator.top_middle
         )
 
     def get_attr(self, details: DetailsJSON):
@@ -98,7 +99,7 @@ class SubsurfaceTranslator:
         except:
             return WallNormal[node]
 
-def get_subsurface_pairs_from_case(case_path: Path):
-    st = SubsurfaceTranslator(case_path)
+def get_subsurface_pairs_from_case(path_to_inputs: Path):
+    st = SubsurfaceTranslator(path_to_inputs)
     st.run()
     return st.pairs

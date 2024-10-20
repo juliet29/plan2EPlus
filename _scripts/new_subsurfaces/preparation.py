@@ -44,7 +44,7 @@ def find_surface_connecting_zone_and_drn(idf: IDF, pair: SubsurfacePair):
         )
         return res
     except MoreThanOneIntersectionError as err:
-        # TODO can put more complex logic here..
+        # can put more complex logic here..
         return err.surfaces[0]
 
 
@@ -92,14 +92,13 @@ def get_approp_surface_and_attrs(
 
 
 def create_starting_coord(surface: EpBunch, dim: Dimensions, loc: str):
-
     domain = create_domain_for_rectangular_wall(surface)
     np_dict = create_nine_points_for_domain(domain)
 
     assert loc in np_dict.keys()
     placement_details = np_dict[loc]
 
-    init_coord = placement_details.point
+    coord = placement_details.point
     for fx in placement_details.functions:
-        new_coord = fx(init_coord, dim)
-    return new_coord
+        coord = fx(coord, dim)
+    return coord
