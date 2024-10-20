@@ -12,7 +12,7 @@ from icecream import ic
 
 from new_subsurfaces.interfaces import Dimensions
 from new_subsurfaces.interfaces import Dimensions, NinePointsLocator
-from new_subsurfaces.ep_helpers import create_domain_for_rectangular_wall
+from helpers.ep_helpers import create_domain_for_rectangular_wall
 from new_subsurfaces.placement import create_nine_points_for_domain
 
 

@@ -1,0 +1,21 @@
+
+# init case manually
+case = initialize_case(outputs_dir)
+path_to_inputs = get_path_to_inputs(inputs_dir)
+
+# test subsurface creator
+pairs = get_subsurface_pairs_from_case(path_to_inputs)
+case.idf = add_rooms(case.idf, path_to_inputs)
+sc = SubsurfaceCreator(case.idf, pairs[0])
+sc.get_surface_and_update_attrs()
+sc.get_start_location()
+sc.gather_details()
+sc.initialize_object()
+sc.update_attributes()
+
+
+# test nine points creator
+dom = create_domain_for_rectangular_wall(get_zone_walls(idf, 4)[0])
+d = create_nine_points_for_domain(dom)
+surf, attrs = get_approp_surface_and_attrs(idf, pairs[-1])
+create_starting_coord(surf,pairs[-1].attrs.dimensions, "top_middle")

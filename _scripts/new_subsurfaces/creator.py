@@ -2,7 +2,7 @@ from copy import deepcopy
 from geomeppy import IDF
 
 from new_subsurfaces.constructions import assign_default_constructions
-from new_subsurfaces.ep_helpers import is_interior_wall
+from helpers.ep_helpers import is_interior_wall
 from new_subsurfaces.interfaces import SubsurfacePair
 
 from new_subsurfaces.preparation import (
