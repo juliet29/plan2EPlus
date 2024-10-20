@@ -5,6 +5,7 @@ from case_edits.interfaces import EzCaseInput
 from case_edits.epcase import EneryPlusCaseEditor
 from geomeppy import IDF
 
+from methods.outputs import OutputRequests
 from plan.convert import add_eppy_blocks_to_case
 from plan.interfaces import PlanAccess  # TODO should happen within module
 from plan.subsurface_translator import get_subsurface_pairs_from_case
@@ -45,11 +46,21 @@ def add_airflownetwork(_idf: IDF):
     idf = add_airflownetwork_to_case(idf)
     return idf
 
+# TODO move 
+def add_output_requests(case: EneryPlusCaseEditor):
+    o = OutputRequests(case)
+    o.request_dxf()
+    o.request_sql()
+    o.request_advanced_variables()
+    return case
+
 
 def create_ezcase(outputs_dir, inputs_dir):
     path_to_inputs = get_path_to_inputs(inputs_dir)
     case = initialize_case(outputs_dir)
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs)
+    case = add_output_requests(case)
     case.idf = add_airflownetwork(case.idf)
-    return case.idf
+    case.compare_and_save()
+    return case

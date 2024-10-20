@@ -37,6 +37,20 @@ class Domain:
     width: Range
     height: Range
 
+    def get_dict_for_plotting(self, color="blue", label=""):
+        return dict(
+        type="rect",
+        xref="x",
+        yref="y",
+        fillcolor=color,
+        x0=self.width.min,
+        y0=self.height.min,
+        x1=self.width.max,
+        y1=self.height.max,
+        label=dict(text=label),
+    )
+
+
 
 @dataclass
 class Coord:

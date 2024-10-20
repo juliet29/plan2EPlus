@@ -149,3 +149,5 @@
   Output:Table:SummaryReports,
     AllSummary;              !- Report 1 Name
 
+Output:Surfaces:Drawing, DXF;
+  Output:Surfaces:Drawing, DXF, RegularPolyline;

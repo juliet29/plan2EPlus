@@ -6,7 +6,7 @@ from methods.dynamic_subsurfaces.inputs import (
 )
 
 from methods.dynamic_subsurfaces.surface_polygon import SurfacePolygon
-from helpers.plots import prepare_shape_dict, plot_shape, create_range_limits
+from helpers.plots import prepare_shape_dict, plot_many_shapes, create_range_limits
 
 from icecream import ic
 
@@ -114,7 +114,7 @@ class Placement:
 
         xrange, yrange = create_range_limits(self.buffer_trace)
 
-        fig = plot_shape(traces, xrange, yrange)
+        fig = plot_many_shapes(traces, xrange, yrange)
         fig.show()
 
     def find_starting_corner(self):

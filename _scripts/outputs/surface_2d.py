@@ -5,7 +5,7 @@ from outputs.input_classes import Surface2DPlotInputs
 from outputs.helpers import create_plot_title
 from helpers.helpers import min_max_norm
 from helpers.plot_colors import get_norm_plotly_colors
-from helpers.plots import prepare_shape_dict, plot_shape, create_colorbar
+from helpers.plots import prepare_shape_dict, plot_many_shapes, create_colorbar
 
 
 class Surface2DPlot:
@@ -16,7 +16,7 @@ class Surface2DPlot:
 
     def create_plot(self):
         self.create_traces()
-        self.fig = plot_shape(
+        self.fig = plot_many_shapes(
             self.trace_dict,
             self.inputs.base2D.limits.x_range,
             self.inputs.base2D.limits.y_range,
@@ -62,8 +62,6 @@ class Surface2DPlot:
             if subsurface.name.upper() in collection_surfaces:
                 self.surface_map[subsurface.name.upper()] = subsurface
 
-
-
     def get_values(self):
         self.values_dict = {}
         for key in self.surface_map.keys():
@@ -86,7 +84,7 @@ class Surface2DPlot:
         norm_val = min_max_norm(val, self.min_val, self.max_val)
         color = get_norm_plotly_colors(norm_val, self.min_val, self.max_val, color_scheme=self.color_scheme)[0]  # type: ignore
         return color
-    
+
     def create_labels(self, surface):
         try:
             # windows / doors never
@@ -96,7 +94,7 @@ class Surface2DPlot:
             label = surface.short_name
 
         return label
-    
+
     def create_title(self):
         self.title = create_plot_title(self.inputs.collection_by_ap[0])
         time_str = self.inputs.plot_time.strftime("%H:%M")

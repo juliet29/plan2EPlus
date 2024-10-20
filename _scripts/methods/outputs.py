@@ -26,6 +26,13 @@ class OutputRequests:
             obj = self.epcase.idf.newidfobject("OUTPUT:JSON")
             obj.Option_Type = "TimeSeries" 
 
+    def request_dxf(self):
+        var = "Output:Surfaces:Drawing".upper()
+        if not self.epcase.idf.idfobjects[var]:
+            obj = self.epcase.idf.newidfobject(var)
+            obj.Report_Type = "DXF"
+
+
     def request_advanced_variables(self):
         obj = self.epcase.idf.newidfobject("OUTPUT:DIAGNOSTICS")
         obj.Key_1 = "DisplayAdvancedReportVariables"

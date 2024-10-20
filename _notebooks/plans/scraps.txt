@@ -19,3 +19,14 @@ dom = create_domain_for_rectangular_wall(get_zone_walls(idf, 4)[0])
 d = create_nine_points_for_domain(dom)
 surf, attrs = get_approp_surface_and_attrs(idf, pairs[-1])
 create_starting_coord(surf,pairs[-1].attrs.dimensions, "top_middle")
+
+
+# class Subsurface(EpBunch):
+#     Name: str
+#     Building_Surface_Name: str
+#     Outside_Boundary_Condition_Object: str
+#     Multiplier: int
+#     Starting_X_Coordinate: float
+#     Starting_Z_Coordinate: float
+#     Length: float
+#     Height: float

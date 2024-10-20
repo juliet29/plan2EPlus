@@ -2,12 +2,13 @@ import plotly.graph_objects as go
 from geometry.geometry_parser import GeometryParser
 from dataclasses import dataclass
 
-from helpers.plots import prepare_shape_dict, plot_shape
+from helpers.plots import prepare_shape_dict, plot_many_shapes
 
 
 ZONE_COLOR = "#9dd1eb"
 SUBSURFACE_COLOR = "#a32c54"
 SHADINGS_COLOR = "#7bf542"
+
 
 @dataclass
 class Base2DPlotLimits:
@@ -56,9 +57,12 @@ class Base2DPlot:
             )
 
     def create_figure(self):
-        self.limits = Base2DPlotLimits(self.x_range, self.y_range, self.fig_width, self.fig_height)
-        self.fig = plot_shape(self.traces, **self.limits.__dict__, title=self.case_name)
-
+        self.limits = Base2DPlotLimits(
+            self.x_range, self.y_range, self.fig_width, self.fig_height
+        )
+        self.fig = plot_many_shapes(
+            self.traces, **self.limits.__dict__, title=self.case_name
+        )
 
     def determine_plot_range(self):
         buffer = 2

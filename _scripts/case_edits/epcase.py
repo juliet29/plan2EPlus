@@ -70,8 +70,8 @@ class EneryPlusCaseEditor:
         os.remove(self.temp_idf_path)
 
         
-    def run_idf(self):
-        if self.is_changed_idf:
+    def run_idf(self, force_run = False):
+        if self.is_changed_idf or force_run:
             print("idf has changed - running case")
             try:
                 self.idf.run(output_directory=os.path.join(self.path, "results"))

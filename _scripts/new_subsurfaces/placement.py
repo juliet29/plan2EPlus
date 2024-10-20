@@ -3,6 +3,7 @@ from new_subsurfaces.interfaces import Dimensions
 from new_subsurfaces.geometry_interfaces import (
     Coord,
     Domain,
+    Range
 )
 
 
@@ -27,7 +28,13 @@ def push_left_half(init_pt: Coord, dim: Dimensions):
     return Coord(init_pt.x - dim.width / 2, init_pt.y)
 
 
-def create_nine_points_for_domain(d: Domain, buffer=0.01):
+def create_nine_points_for_domain(init_domain: Domain, buffer=0.01):
+    def zero_adjust_domain(d:Domain):
+        new_width = Range(0, d.width.size)
+        new_height = Range(0, d.height.size)
+        return Domain(new_width, new_height)
+
+    d = zero_adjust_domain(init_domain)
     w_min = d.width.buffered_min(buffer)
     w_mid = d.width.midpoint()
     w_max = d.width.buffered_max(buffer)
