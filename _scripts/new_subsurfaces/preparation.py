@@ -6,7 +6,7 @@ from new_subsurfaces.interfaces import Dimensions
 from new_subsurfaces.ep_helpers import create_domain_for_rectangular_wall
 from new_subsurfaces.interfaces import SubsurfacePair, SubsurfaceObjects
 from geometry.wall_normal import WallNormal
-from new_subsurfaces.ep_helpers import get_zone_walls
+from new_subsurfaces.ep_helpers import get_zone_walls, get_zone_name
 from new_subsurfaces.placement import create_nine_points_for_domain
 
 

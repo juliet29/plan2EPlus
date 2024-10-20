@@ -44,7 +44,7 @@ class Coord:
     y: float
 
     def __getitem__(self, i):
-        return getattr(self, i)
+        return (self.x, self.y)[i]
 
 
 @dataclass

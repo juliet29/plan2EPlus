@@ -3,7 +3,7 @@ import json
 from helpers.helpers import key_from_value
 from new_subsurfaces.interfaces import NinePointsLocator, SubsurfacePair
 from geometry.wall_normal import WallNormal
-from new_subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceType
+from new_subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceObjects
 from plan.interfaces import DetailsJSON, GraphEdgeJSON, SubSurfacesJSON, RoomTypeJSON
 from new_subsurfaces.interfaces import (
     Dimensions,
@@ -16,6 +16,27 @@ from plan.interfaces import (
     PLAN,
     SUBSURFACES,
 )
+
+def create_subsurface_database(
+    subsurfaces: SubSurfacesJSON,
+    object_type: SubsurfaceObjects,
+    location: NinePointsLocator,
+):
+    def create_attributes(item: DoorsJSON | WindowsJSON):
+        return SubsurfaceAttributes(
+            object_type=object_type,
+            construction=None,
+            dimensions=get_dimensions(item),
+            location_in_wall=location,
+        )
+
+    ot = "WINDOWS" if object_type == SubsurfaceObjects.WINDOW else "DOORS"
+    return {item["id"]: create_attributes(item) for item in subsurfaces[ot]}
+
+
+def get_dimensions(item: DoorsJSON | WindowsJSON):
+    w, h = item["width"], item["height"]
+    return Dimensions(float(w), float(h))
 
 
 class SubsurfaceTranslator:
@@ -33,6 +54,7 @@ class SubsurfaceTranslator:
         return res
 
     def create_room_map(self):
+        # TODO make this accessible elsewhere.. 
         self.plan_data: list[list[RoomTypeJSON]] = self.load_data_from_json(PLAN)
         self.room_map = {}
         for item in self.plan_data[0]:
@@ -58,10 +80,10 @@ class SubsurfaceTranslator:
     def load_attributes(self):
         self.subsurfaces: SubSurfacesJSON = self.load_data_from_json(SUBSURFACES)
         self.doors_db = create_subsurface_database(
-            self.subsurfaces, SubsurfaceType.DOOR, NinePointsLocator.bottom_middle
+            self.subsurfaces, SubsurfaceObjects.DOOR, NinePointsLocator.bottom_middle
         )
         self.windows_db = create_subsurface_database(
-            self.subsurfaces, SubsurfaceType.WINDOW, NinePointsLocator.top_middle
+            self.subsurfaces, SubsurfaceObjects.WINDOW, NinePointsLocator.bottom_middle
         )
 
     def get_attr(self, details: DetailsJSON):
@@ -76,24 +98,7 @@ class SubsurfaceTranslator:
         except:
             return WallNormal[node]
 
-
-def create_subsurface_database(
-    subsurfaces: SubSurfacesJSON,
-    object_type: SubsurfaceType,
-    location: NinePointsLocator,
-):
-    def create_attributes(item: DoorsJSON | WindowsJSON):
-        return SubsurfaceAttributes(
-            object_type=object_type,
-            construction=None,
-            dimensions=get_dimensions(item),
-            location_in_wall=location,
-        )
-
-    ot = "WINDOWS" if object_type == SubsurfaceType.WINDOW else "DOORS"
-    return {item["id"]: create_attributes(item) for item in subsurfaces[ot]}
-
-
-def get_dimensions(item: DoorsJSON | WindowsJSON):
-    w, h = item["width"], item["height"]
-    return Dimensions(float(w), float(h))
+def get_subsurface_pairs_from_case(case_path: Path):
+    st = SubsurfaceTranslator(case_path)
+    st.run()
+    return st.pairs

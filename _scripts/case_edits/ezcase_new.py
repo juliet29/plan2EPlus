@@ -5,11 +5,12 @@ from case_edits.interfaces import EzCaseInput
 from case_edits.epcase import EneryPlusCaseEditor
 from geomeppy import IDF
 
+from new_subsurfaces.creator import add_subsurfaces_to_case
 from new_subsurfaces.interfaces import SubsurfacePair
 from plan.convert import add_eppy_blocks_to_case
 from plan.interfaces import PlanAccess
-from plan.subsurface_translator import SubsurfaceTranslator
-from methods.airflownetwork import AirflowNetwork
+from plan.subsurface_translator import get_subsurface_pairs_from_case
+# from methods.airflownetwork import AirflowNetwork
 
 
 def get_case_inputs_path(inputs_dir: str):
@@ -25,36 +26,29 @@ def initialize_case(case_name:str):
         # project_name=inputs.project_name,
     )
 
-def add_rooms_to_case(_idf:IDF, access: PlanAccess):
+def add_rooms(_idf:IDF, case_path: Path):
     idf = deepcopy(_idf)
-    idf = add_eppy_blocks_to_case(idf, access)
+    idf = add_eppy_blocks_to_case(idf, PlanAccess(case_path, 0))
     idf.intersect_match()
     idf.set_default_constructions()
     return idf
 
 
-def add_subsurfaces(case_path: Path):
-    st = SubsurfaceTranslator(case_path)
-    st.run()
-    # TODO actually create subsurfaces. 
-    return st.pairs
+def add_subsurfaces(_idf:IDF, case_path: Path):
+    idf = deepcopy(_idf)
+    pairs = get_subsurface_pairs_from_case(case_path)
+    idf = add_subsurfaces_to_case(idf, pairs)
+    return idf
+    
 
-    pass
-    # if self.inputs.subsurface_pairs:
-    #     self.get_subsurface_constructions()
-    #     inputs = SubsurfaceCreatorInputs(
-    #         self.zones, self.inputs.subsurface_pairs, self.case.idf
-    #     )
-    #     self.ss = SubsurfaceCreator(inputs)
-    #     self.ss.create_all_ssurface()
-    #     self.case.geometry.update_geometry_subsurfaces()
 
-def add_airflownetwork(case):
-        return AirflowNetwork(case)
+# def add_airflownetwork(case):
+#         return AirflowNetwork(case)
 
 
 def create_ezcase(outputs_dir, inputs_dir):
     path_to_inputs = get_case_inputs_path(inputs_dir)
     case = initialize_case(outputs_dir)
-    case.idf = add_rooms_to_case(case.idf, PlanAccess(path_to_inputs, 0))
+    case.idf = add_rooms(case.idf, path_to_inputs)
+    case.idf = add_subsurfaces(case.idf, path_to_inputs)
     return case.idf

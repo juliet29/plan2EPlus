@@ -17,7 +17,7 @@ class Dimensions:
     height: float
 
     def __getitem__(self, i):
-        return getattr(self, i)
+        return (self.width, self.height)[i]
 
 class NinePointsLocator(Enum):
     top_left = 0

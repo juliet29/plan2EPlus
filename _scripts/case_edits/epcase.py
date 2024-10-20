@@ -5,7 +5,7 @@ import filecmp
 
 from icecream import ic 
 
-import geometry.geometry_parser as geom
+# import geometry.geometry_parser as geom
 from geomeppy import IDF
 from ladybug.epw import EPW
 from eppy.runner.run_functions import EnergyPlusRunError
@@ -86,8 +86,8 @@ class EneryPlusCaseEditor:
             print("idf has not changed - no run")
 
 
-    def get_geometry(self):
-        self.geometry = geom.GeometryParser(self.idf) 
+    # def get_geometry(self):
+    #     self.geometry = geom.GeometryParser(self.idf) 
 
 
     def update_weather_and_run_period(self):
@@ -119,5 +119,5 @@ class EneryPlusCaseReader:
     def __repr__(self):
         return f"EPCaseReader({self.case_name})"  
 
-    def get_geometry(self):
-        self.geometry = geom.GeometryParser(self.idf)  
+    # def get_geometry(self):
+    #     self.geometry = geom.GeometryParser(self.idf)  
