@@ -2,19 +2,40 @@ from dataclasses import dataclass
 from enum import Enum
 
 from geometry.wall_normal import WallNormal
-from methods.dynamic_subsurfaces.inputs import Dimensions, NinePointsLocator
 
 from geomeppy.patches import EpBunch
 
 
-class SubsurfaceType(Enum):
+class SubsurfaceObjects(Enum):
     DOOR = 0
     WINDOW = 1
 
 
 @dataclass
+class Dimensions:
+    width: float
+    height: float
+
+    def __getitem__(self, i):
+        return getattr(self, i)
+
+class NinePointsLocator(Enum):
+    top_left = 0
+    top_middle = 1
+    top_right = 2
+
+    middle_left = 3
+    middle_middle = 4
+    middle_right = 5
+
+    bottom_left = 6
+    bottom_middle = 7
+    bottom_right = 8
+
+
+@dataclass
 class SubsurfaceAttributes:
-    object_type: SubsurfaceType
+    object_type: SubsurfaceObjects
     construction: EpBunch | None
     dimensions: Dimensions
     location_in_wall: NinePointsLocator

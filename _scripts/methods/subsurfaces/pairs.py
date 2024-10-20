@@ -1,9 +1,8 @@
 from typing import Union
-from methods.dynamic_subsurfaces.inputs import (
+from new_subsurfaces.interfaces import (
     Dimensions,
-    NinePointsLocator,
 )
-from new_subsurfaces.interfaces import SubsurfaceType
+from new_subsurfaces.interfaces import NinePointsLocator, SubsurfaceType
 from new_subsurfaces.interfaces import SubsurfaceAttributes
 
 

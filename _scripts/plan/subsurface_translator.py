@@ -1,13 +1,12 @@
 from pathlib import Path
 import json
 from helpers.helpers import key_from_value
-from new_subsurfaces.interfaces import SubsurfacePair
+from new_subsurfaces.interfaces import NinePointsLocator, SubsurfacePair
 from geometry.wall_normal import WallNormal
 from new_subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceType
 from plan.interfaces import DetailsJSON, GraphEdgeJSON, SubSurfacesJSON, RoomTypeJSON
-from methods.dynamic_subsurfaces.inputs import (
+from new_subsurfaces.interfaces import (
     Dimensions,
-    NinePointsLocator,
 )
 from plan.interfaces import (
     SubSurfacesJSON,

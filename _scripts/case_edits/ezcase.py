@@ -81,7 +81,7 @@ class EzCase:
                 self.zones, self.inputs.subsurface_pairs, self.case.idf
             )
             self.ss = SubsurfaceCreator(inputs)
-            self.ss.create_all_ssurface()
+            self.ss.run()
             self.case.geometry.update_geometry_subsurfaces()
 
     def add_airflownetwork(self):

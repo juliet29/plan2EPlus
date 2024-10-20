@@ -15,9 +15,8 @@ from methods.shadings.creator import ShadingCreator
 class SubsurfaceCreator:
     def __init__(self, inputs: SubsurfaceCreatorInputs) -> None:
         self.inputs = inputs
-        
 
-    def create_all_ssurface(self):
+    def run(self):
         for pair in self.inputs.ssurface_pairs:
             self.curr_pair = pair
             self.create_single_ssurface()
@@ -37,7 +36,6 @@ class SubsurfaceCreator:
         if self.surface.is_interior_wall:
             self.make_partner_object()
         self.add_shadings()
-
 
     def get_case_surface(self):
         input = SurfaceGetterInputs(self.inputs.zones, self.curr_pair)
@@ -86,26 +84,3 @@ class SubsurfaceCreator:
                 return
             self.shading_creator = ShadingCreator(self.name, self.inputs.case_idf)
             self.shading_creator.run()
-
-    def calculate_start_coords(self):
-        attrs = self.curr_pair.attrs
-        assert attrs
-        self.recreated_surface = WallRecreation(self.surface)
-        self.buffered_surface = Buffer(self.recreated_surface.polygon)
-        self.placement_object = Placement(
-            self.buffered_surface,
-            attrs.dimensions,
-            attrs.location_in_wall,
-            attrs.FRACTIONAL,
-        )
-        if self.placement_object:
-            po = self.placement_object
-            self.start_x = po.starting_corner.x
-            self.start_z = po.starting_corner.y
-            self.height = po.dims.height
-            self.width = po.dims.width
-            
-
-    def abandon_object(self):
-        print(f"removing incomplete surface {self.obj0.Name} from idf...")
-        self.inputs.case_idf.removeidfobject(self.obj0)

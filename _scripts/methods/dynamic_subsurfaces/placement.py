@@ -1,8 +1,7 @@
+from geomeppy.patches import EpBunch
 from shapely import Point, Polygon
 from methods.dynamic_subsurfaces.buffer import Buffer
 from methods.dynamic_subsurfaces.inputs import (
-    Dimensions,
-    NinePointsLocator,
     MutablePoint,
 )
 
@@ -11,7 +10,10 @@ from helpers.plots import prepare_shape_dict, plot_shape, create_range_limits
 
 from icecream import ic
 
-from methods.dynamic_subsurfaces.inputs import  Dimensions
+from new_subsurfaces.interfaces import Dimensions
+from new_subsurfaces.interfaces import Dimensions, NinePointsLocator
+from new_subsurfaces.ep_helpers import create_domain_for_rectangular_wall
+from new_subsurfaces.placement import create_nine_points_for_domain
 
 
 """
@@ -26,7 +28,7 @@ class Placement:
         buffer_surface: Buffer,
         subsurface_dims: Dimensions,
         location: NinePointsLocator,
-        FRACTION:bool = False
+        FRACTION: bool = False,
     ) -> None:
         self.buffer_surface = buffer_surface
         self.bpts = buffer_surface.nine_points
@@ -36,7 +38,6 @@ class Placement:
         self.starting_corner = MutablePoint(x=0, y=0)
 
         self.run()
-
 
     def run(self):
         self.process_fraction()
@@ -49,12 +50,15 @@ class Placement:
 
     def process_fraction(self):
         if self.FRACTION:
-            self.dims = Dimensions(0,0)
-            self.dims.width = self.entered_dims.width * self.buffer_surface.polygon.dimensions.width
-            self.dims.height = self.entered_dims.height * self.buffer_surface.polygon.dimensions.height
+            self.dims = Dimensions(0, 0)
+            self.dims.width = (
+                self.entered_dims.width * self.buffer_surface.polygon.dimensions.width
+            )
+            self.dims.height = (
+                self.entered_dims.height * self.buffer_surface.polygon.dimensions.height
+            )
         else:
             self.dims = self.entered_dims
-
 
     def run_prelim_checks(self):
         try:
@@ -63,19 +67,25 @@ class Placement:
             return True
 
         except:
-            print(f"ssurface: {self.dims.width, self.dims.height}. buffer surface: {self.buffer_surface.polygon.dimensions.width, self.buffer_surface.polygon.dimensions.height}")
-            print(f"original wall width: {self.buffer_surface.original_surface.dimensions.width}")
+            print(
+                f"ssurface: {self.dims.width, self.dims.height}. buffer surface: {self.buffer_surface.polygon.dimensions.width, self.buffer_surface.polygon.dimensions.height}"
+            )
+            print(
+                f"original wall width: {self.buffer_surface.original_surface.dimensions.width}"
+            )
             raise Exception("ssurfaced dims > surface dims")
 
     def get_relative_starting_point(self):
         org_coords = self.buffer_surface.original_surface.organized_coords
-        self.relative_x = abs(org_coords.x0- self.starting_corner.x)
+        self.relative_x = abs(org_coords.x0 - self.starting_corner.x)
         self.relative_y = abs(org_coords.y0 - self.starting_corner.y)
 
-        if self.relative_x != self.starting_corner.x or self.relative_y != self.starting_corner.y:
+        if (
+            self.relative_x != self.starting_corner.x
+            or self.relative_y != self.starting_corner.y
+        ):
             self.old_starting_corner = self.starting_corner
             self.starting_corner = MutablePoint(x=self.relative_x, y=self.relative_y)
-
 
     def create_test_polygon(self):
         x0 = self.starting_corner.x
@@ -88,20 +98,24 @@ class Placement:
         polygon = Polygon([bottom_left, bottom_right, top_right, top_left, bottom_left])
         self.polygon = SurfacePolygon(polygon)
 
-        assert self.buffer_surface.polygon.polygon.crosses(self.polygon.polygon) == False
+        assert (
+            self.buffer_surface.polygon.polygon.crosses(self.polygon.polygon) == False
+        )
 
     def plot_test(self):
-        self.buffer_trace = prepare_shape_dict(self.buffer_surface.polygon.coord_sequence )
-        self.window_trace = prepare_shape_dict(self.polygon.coord_sequence, color="yellow")
+        self.buffer_trace = prepare_shape_dict(
+            self.buffer_surface.polygon.coord_sequence
+        )
+        self.window_trace = prepare_shape_dict(
+            self.polygon.coord_sequence, color="yellow"
+        )
 
-        traces = {i:v for i,v in enumerate([self.buffer_trace, self.window_trace])}
+        traces = {i: v for i, v in enumerate([self.buffer_trace, self.window_trace])}
 
         xrange, yrange = create_range_limits(self.buffer_trace)
 
         fig = plot_shape(traces, xrange, yrange)
         fig.show()
-
-
 
     def find_starting_corner(self):
         match self.loc.value:
@@ -123,11 +137,9 @@ class Placement:
                 self.place_bottom_middle()
             case 8:
                 self.place_bottom_right()
-            case _: 
+            case _:
                 raise Exception("Invalid Case")
 
-
-        
     def place_top_left(self):
         self.starting_corner = MutablePoint(self.bpts.top_left)
         self.extend_down()
@@ -141,7 +153,6 @@ class Placement:
         self.starting_corner = MutablePoint(self.bpts.top_right)
         self.extend_down()
         self.extend_left()
-
 
     def place_middle_left(self):
         self.starting_corner = MutablePoint(self.bpts.middle_left)
@@ -157,7 +168,6 @@ class Placement:
         self.extend_down_half()
         self.extend_left()
 
-
     def place_bottom_left(self):
         self.starting_corner = MutablePoint(self.bpts.bottom_left)
 
@@ -168,7 +178,6 @@ class Placement:
     def place_bottom_right(self):
         self.starting_corner = MutablePoint(self.bpts.bottom_right)
         self.extend_left()
-
 
     def extend_down(self):
         val = self.starting_corner.y - self.dims.height
@@ -185,3 +194,13 @@ class Placement:
     def extend_left_half(self):
         val = self.starting_corner.x - (self.dims.width / 2)
         self.starting_corner.update_vals(x=val)
+
+
+def create_starting_coord(surface: EpBunch, dim: Dimensions, loc: str):
+    domain = create_domain_for_rectangular_wall(surface)
+    np_dict = create_nine_points_for_domain(domain)
+    placement_details = np_dict[loc]
+    init_coord = placement_details.point
+    for fx in placement_details.functions:
+        new_coord = fx(init_coord, dim)
+    return new_coord

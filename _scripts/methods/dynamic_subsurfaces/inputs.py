@@ -1,17 +1,10 @@
 from dataclasses import dataclass
-from enum import Enum
 from shapely import Point
 
 
-@dataclass
-class Dimensions:
-    width: float
-    height: float
-
-
 class MutablePoint:
-    #TODO not sure why this becoming numpy? 
-    def __init__(self, point:Point=None, x=None, y=None) -> None:
+    # TODO not sure why this becoming numpy?
+    def __init__(self, point: Point = None, x=None, y=None) -> None:
         if not point:
             self.x = float(x)
             self.y = float(y)
@@ -32,6 +25,7 @@ class MutablePoint:
 
         # self.point = Point(self.x, self.y)
 
+
 @dataclass
 class NinePoints:
     top_left: Point
@@ -45,17 +39,3 @@ class NinePoints:
     bottom_left: Point
     bottom_middle: Point
     bottom_right: Point
-
-
-class NinePointsLocator(Enum):
-    top_left = 0
-    top_middle = 1
-    top_right = 2
-
-    middle_left = 3
-    middle_middle = 4
-    middle_right = 5
-
-    bottom_left = 6
-    bottom_middle = 7
-    bottom_right = 8

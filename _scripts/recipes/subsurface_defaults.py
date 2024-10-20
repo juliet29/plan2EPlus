@@ -3,10 +3,9 @@ from methods.subsurfaces.inputs import (
     SubsurfaceAttributes,
     SubsurfaceObjects,
 )
-from methods.dynamic_subsurfaces.inputs import (
+from new_subsurfaces.interfaces import (
     Dimensions,
-    NinePointsLocator,
 )
+from new_subsurfaces.interfaces import NinePointsLocator
 
 # TODO: default constructions..
-
