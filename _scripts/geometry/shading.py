@@ -1,11 +1,12 @@
 from shapely import Point, Polygon
 
-from geomeppy.patches import EpBunch
+from eppy.bunch_subclass import EpBunch
 
 from geometry.wall_normal import WallNormal
 from helpers.shapely_helpers import get_coords_as_points, get_point_as_xy
 
 from warnings import warn
+
 # from geometry.subsurface import Subsurface
 
 
@@ -47,8 +48,6 @@ class Shading:
         self.new_points.reverse()
         coords = [get_point_as_xy(c) for c in (self.original_points + self.new_points)]
         self.polygon = Polygon(coords)
-
-        
 
     def check_valid_geometry(self):
         is_valid_geom = self.polygon.is_valid

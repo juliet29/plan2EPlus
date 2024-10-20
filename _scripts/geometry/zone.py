@@ -1,4 +1,4 @@
-from geomeppy.patches import EpBunch
+from eppy.bunch_subclass import EpBunch
 from munch import Munch
 import shapely as sp
 
@@ -33,7 +33,6 @@ class Zone:
     def create_display_name(self):
         self.entry_name, self.display_name, self.bunch_name = zone_rename(self.name)
 
-
     def get_walls(self):
         self.wall_list = [
             Wall(surface, self)
@@ -62,4 +61,3 @@ class Zone:
             wall.get_subsurfaces(self.case_subsurfaces)
             self.zone_subsurfaces.extend(wall.ssurface_list)
         return self.zone_subsurfaces
-

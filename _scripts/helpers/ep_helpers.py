@@ -1,5 +1,5 @@
 from geomeppy import IDF
-from geomeppy.patches import EpBunch
+from eppy.bunch_subclass import EpBunch
 
 from new_subsurfaces.geometry_interfaces import Coordinate3D, Domain, Range
 
@@ -8,7 +8,7 @@ def get_zone_name(num: int):
     return f"Block 0{num} Storey 0"
 
 
-def get_zone_surfaces(idf: IDF, num: int):
+def get_zone_surfaces(idf: IDF, num: int) -> list[EpBunch]:
     return [
         i
         for i in idf.idfobjects["BUILDINGSURFACE:DETAILED"]
@@ -16,7 +16,7 @@ def get_zone_surfaces(idf: IDF, num: int):
     ]
 
 
-def get_zone_walls(idf: IDF, num: int):
+def get_zone_walls(idf: IDF, num: int) -> list[EpBunch]:
     return [
         i
         for i in idf.idfobjects["BUILDINGSURFACE:DETAILED"]
@@ -24,7 +24,7 @@ def get_zone_walls(idf: IDF, num: int):
     ]
 
 
-def get_zones(idf: IDF):
+def get_zones(idf: IDF) -> list[EpBunch]:
     return [i for i in idf.idfobjects["ZONE"]]
 
 

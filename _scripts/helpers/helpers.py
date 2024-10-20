@@ -19,12 +19,8 @@ def sort_and_group_objects(lst: Iterable[T], fx: Callable[[T], Any]) -> List[Lis
     return [list(g) for _, g in groupby(sorted_objs, fx)]
 
 
-def sort_and_group_objects_dict(lst: Iterable[T], fx: Callable[[T], Any]) :
-    sorted_objs = sorted(lst, key=fx)
-    groups = []
-    uniquekeys = []
-    for k, g in groupby(sorted_objs, fx):
-        groups.append(list(g))
-        uniquekeys.append(k)
+def chain_flatten(lst: Iterable[Iterable[T]]) -> Iterable[T]:
+    return list(chain.from_iterable(lst))
 
-    return uniquekeys, groups
+def filter_none(lst: Iterable[T|None]) -> List[T]:
+    return [i for i in lst if i]

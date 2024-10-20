@@ -1,9 +1,7 @@
-from geomeppy.patches import EpBunch
+from eppy.bunch_subclass import EpBunch
 from shapely import LineString
 
 from geometry.shading import Shading
-
-
 
 
 class Subsurface:
@@ -28,8 +26,8 @@ class Subsurface:
         self.start_x = self.data.Starting_X_Coordinate
         self.length = self.data.Length
         line = self.wall.line
-        start =line.line_interpolate_point(self.start_x)
-        end = line.line_interpolate_point(self.start_x+self.length)
+        start = line.line_interpolate_point(self.start_x)
+        end = line.line_interpolate_point(self.start_x + self.length)
         self.line = LineString([start, end])
 
     def get_simple_object(self):

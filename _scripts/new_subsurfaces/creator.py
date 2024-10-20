@@ -5,12 +5,13 @@ from new_subsurfaces.constructions import assign_default_constructions
 from helpers.ep_helpers import is_interior_wall
 from new_subsurfaces.interfaces import SubsurfacePair
 
-from new_subsurfaces.preparation import (
+from new_subsurfaces.logic import (
     create_starting_coord,
     get_approp_surface_and_attrs,
 )
 
 
+#TODO seperate out modifers.. 
 class SubsurfaceCreator:
     def __init__(
         self,

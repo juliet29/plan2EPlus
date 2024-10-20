@@ -1,5 +1,5 @@
 from copy import deepcopy
-from geomeppy.patches import EpBunch
+from eppy.bunch_subclass import EpBunch
 from geomeppy import IDF
 
 from new_subsurfaces.interfaces import Dimensions

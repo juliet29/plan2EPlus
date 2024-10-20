@@ -3,7 +3,7 @@ from enum import Enum
 
 from geometry.wall_normal import WallNormal
 
-from geomeppy.patches import EpBunch
+from eppy.bunch_subclass import EpBunch
 
 
 class SubsurfaceObjects(Enum):
@@ -18,6 +18,7 @@ class Dimensions:
 
     def __getitem__(self, i):
         return (self.width, self.height)[i]
+
 
 class NinePointsLocator(Enum):
     top_left = 0

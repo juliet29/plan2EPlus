@@ -1,4 +1,4 @@
-from geomeppy.patches import EpBunch
+from eppy.bunch_subclass import EpBunch
 from shapely import Point, Polygon
 from methods.dynamic_subsurfaces.buffer import Buffer
 from methods.dynamic_subsurfaces.inputs import (

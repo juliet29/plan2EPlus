@@ -1,4 +1,4 @@
-from geomeppy.patches import EpBunch
+from eppy.bunch_subclass import EpBunch
 import shapely as sp
 
 from geometry.wall_normal import WallNormal
@@ -65,13 +65,17 @@ class Wall:
             if coord.Z == 0:
                 vertices.append([coord.X, coord.Y])
 
-        assert len(vertices) == 2, f"Line defining surface {self.display_name} ! have 2 vertices: {vertices}"
+        assert (
+            len(vertices) == 2
+        ), f"Line defining surface {self.display_name} ! have 2 vertices: {vertices}"
 
         self.line = sp.LineString(vertices)
         # print([c for c in self.line.coords])
 
-
-
-    # get subsurfaces 
+    # get subsurfaces
     def get_subsurfaces(self, subsurfaces):
-        self.ssurface_list = [Subsurface(s, self) for s in subsurfaces if s.Building_Surface_Name == self.name]
+        self.ssurface_list = [
+            Subsurface(s, self)
+            for s in subsurfaces
+            if s.Building_Surface_Name == self.name
+        ]
