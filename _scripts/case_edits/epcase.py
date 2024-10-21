@@ -27,7 +27,8 @@ class EneryPlusCaseEditor:
         
         self.make_case_folder()
         self.get_idf()
-        self.update_weather_and_run_period()
+        self.idf.epw = WEATHER_FILE
+        # self.update_weather_and_run_period()
 
         
     def __repr__(self):
@@ -47,8 +48,12 @@ class EneryPlusCaseEditor:
         if not self.starting_case:
             self.idf = IDF(IDF_PATH) 
         else:
-            self.starting_idf_path = os.path.join("cases", self.starting_case, "out.idf")
-            self.idf = IDF(self.starting_idf_path)  
+            try:
+                self.starting_idf_path = os.path.join("cases", self.starting_case, "out.idf")
+                self.idf = IDF(self.starting_idf_path)  
+            except:
+                self.starting_idf_path =  self.starting_case
+                self.idf = IDF(self.starting_idf_path)  
 
 
     def compare_and_save(self):

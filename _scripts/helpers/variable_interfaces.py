@@ -1,5 +1,5 @@
-from variables import afn, surface, site, zone
 from dataclasses import dataclass
+from helpers.variables import afn, surface, site, zone
 from helpers.helpers import chain_flatten
 
 
@@ -20,6 +20,7 @@ class AFNVariables(Vars):
 class ZoneVariables(Vars):
     temp: dict
     rate: dict
+    wind: dict
 
 
 @dataclass
@@ -30,9 +31,9 @@ class SurfaceVariablesPattern(Vars):
 
 @dataclass
 class SurfaceVariables(Vars):
-    inside_face: SurfaceVariablesPattern
-    outside_face: SurfaceVariablesPattern
-    average_face: SurfaceVariablesPattern
+    inside_face: dict
+    outside_face: dict
+    average_face: dict
 
 
 @dataclass
@@ -53,15 +54,19 @@ class AllVariables(Vars):
 afn_vars = AFNVariables(**afn)
 zone_vars = ZoneVariables(**zone)
 site_vars = SiteVariables(**site)
-surface_vars = {k: SurfaceVariablesPattern(*v) for k, v in surface.items()}
-surface_vars = SurfaceVariables(**surface_vars)
+
+surface_vars = SurfaceVariables(**surface)
 
 all_variables = AllVariables(
     **{"afn": afn_vars, "zone": zone_vars, "surface": surface_vars, "site": site_vars}
 )
 
-def get_vars(arr: list[AFNVariables | ZoneVariables | SiteVariables]=[afn_vars, zone_vars, site_vars]):
+def get_vars(arr: list[AFNVariables | ZoneVariables | SiteVariables |SurfaceVariables]=[afn_vars, zone_vars, site_vars]):
     vars = []
     for a in arr:
         vars.append(a.get_values())
+
+    vars.append(["Surface Outside Face Outdoor Air Wind Speed", "Surface Outside Face Outdoor Air Wind Direction", "Zone Outside Face Outdoor Air Wind Speed", "Zone Outdoor Air Wind Direction"])
+
+    
     return chain_flatten(vars)

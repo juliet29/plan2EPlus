@@ -30,6 +30,10 @@ zone = {
         "outdoor_heat_transfer": "Zone Air Heat Balance Outdoor Air Transfer Rate",
         "energy_storage": "Zone Air Heat Balance Air Energy Storage Rate",
     },
+    "wind": {
+        "speed": "Zone Average Outdoor Air Wind Speed",
+        "direction": "Zone Outdoor Air Wind Direction",
+    }
 }
 
 surface = {

@@ -1,11 +1,11 @@
 from geomeppy import IDF
-from helpers.variables import all_variables, get_vars
+from helpers.variable_interfaces import all_variables, get_vars
 
 
 def check_existing_variable(idf: IDF, new_var_name):
     var_names = [o.Variable_Name for o in idf.idfobjects["OUTPUT:VARIABLE"]]
     if new_var_name in var_names:
-        # print(f"`{new_var_name}` is already in IDF")
+        # print(f"`{new_var_name}` is already in IDF") TODO log
         return True
 
 
