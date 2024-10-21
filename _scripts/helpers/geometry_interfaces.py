@@ -84,6 +84,8 @@ class Domain:
         bl = (self.width.min, self.height.min)
         return [br, tr, tl, bl]
 
+    def create_centroid(self):
+        return Coord(self.width.midpoint(), self.height.midpoint())
 
 
 

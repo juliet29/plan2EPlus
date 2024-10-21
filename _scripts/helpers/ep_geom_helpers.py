@@ -53,7 +53,7 @@ def create_domain_for_zone(idf: IDF, num: int):
 
     assert ranges["EAST"] == ranges["WEST"]
     assert ranges["NORTH"] == ranges["SOUTH"]
-    return Domain(ranges["EAST"], ranges["NORTH"])
+    return Domain(ranges["NORTH"], ranges["EAST"])
 
 
 def get_zone_domains(idf: IDF):
