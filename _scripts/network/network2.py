@@ -86,6 +86,18 @@ def create_base_graph(idf: IDF, path_to_input: Path):
     G = add_edges(idf, G, pairs)
     return G, positions
 
+def get_subsurface_wall_num(name: str):
+    temp = name.split(" ")[-2]
+    res = temp.split("_")
+    if len(res) == 1:
+        return int(res[0])
+    elif len(res) == 2:
+        r = int(res[0])
+        s = int(res[1])
+        return float(f"{r}.{s}")
+    else:
+        raise Exception(f"Invalid name: {name}")
+
 
 
 def create_edge_label(idf: IDF, G: nx.DiGraph, edge: GraphEdge):
@@ -100,10 +112,11 @@ def create_edge_label(idf: IDF, G: nx.DiGraph, edge: GraphEdge):
 
     owning_zone = G.nodes[edge.source]["num"]
     type = map_ss_type(edge.details["stype"])
-    drn = get_surface_direction(idf, edge.details["surface"]).name
-    s_drn = short_drn(drn)
+    wall_num = get_subsurface_wall_num(edge.details["subsurfaces"])
+    # drn = get_surface_direction(idf, edge.details["surface"]).name
+    # s_drn = short_drn(drn)
 
-    return f"{type}-{owning_zone}-{s_drn}"
+    return f"{type}-{owning_zone}-{wall_num}"
 
 def create_edge_label_dict(idf: IDF, G: nx.DiGraph):
     nice_edges = [GraphEdge(*e) for e in G.edges(data=True)]
@@ -117,6 +130,7 @@ def create_afn_graph(idf: IDF, G: nx.DiGraph):
 
     def is_edge_afn_surface(e1, e2):
         afn_surfaces = [i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]]
-        return G.edges[(e1, e2)].get("subsurfaces") in afn_surfaces
+        res = G.edges[(e1, e2)].get("subsurfaces") in afn_surfaces
+        return res
 
-    return nx.subgraph_view(G, filter_node=is_node_afn_zone, filter_edge=is_edge_afn_surface)
+    return nx.subgraph_view(G, filter_node=is_node_afn_zone), nx.subgraph_view(G, filter_edge=is_edge_afn_surface)

@@ -1,4 +1,4 @@
-from airflow_network.logic import pair_zone_and_subsurfaces
+from airflow_network.logic import get_afn_zones_and_subsurfaces
 from airflow_network.modifiers import add_simulation_control, add_subsurface, add_zone
 
 
@@ -8,7 +8,7 @@ from copy import deepcopy
 
 def add_airflownetwork_to_case(_idf: IDF):
     idf = deepcopy(_idf)
-    zones, subsurfaces = pair_zone_and_subsurfaces(idf)
+    zones, subsurfaces = get_afn_zones_and_subsurfaces(idf)
 
     idf = add_simulation_control(idf)
 
