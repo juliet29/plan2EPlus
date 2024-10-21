@@ -43,6 +43,9 @@ class GraphEdgeJSON(TypedDict):
     target: str
     details: DetailsJSON
 
+class RoomCoordinates(NamedTuple):
+    id: int
+    coords: Coord
 
 @dataclass
 class RoomFromJSON:
@@ -65,6 +68,6 @@ class RoomFromJSON:
     def create_zone_name(self):
         return f"0{self.id}"
 
-    def get_node_data(self):
+    def get_coordinates(self):
         left, top, *_ = self.convert_numbers()
-        return (self.id, self.label, Coord(left, top))
+        return RoomCoordinates(self.id, Coord(left, top))
