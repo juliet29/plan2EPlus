@@ -9,7 +9,7 @@ def check_existing_variable(idf: IDF, new_var_name):
         return True
 
 
-def add_output_variable(idf: IDF, name: str, reporting_frequency="Timestep"):
+def add_output_variable(idf: IDF, name: str, reporting_frequency="Hourly"):
     if check_existing_variable(idf, name):
         return idf
 

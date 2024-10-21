@@ -48,7 +48,11 @@ def line_plots(collections: list[BaseCollection]):
         try:
             return dataset.header.metadata["System"]
         except:
-            return dataset.header.metadata["Zone"]
+            try:
+                return dataset.header.metadata["Zone"]
+            except:
+                return dataset.header.metadata["Surface"]
+
 
     for dataset in collections:
         name = get_name_for_system(dataset)

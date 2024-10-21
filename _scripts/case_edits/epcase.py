@@ -27,8 +27,8 @@ class EneryPlusCaseEditor:
         
         self.make_case_folder()
         self.get_idf()
-        self.idf.epw = WEATHER_FILE
-        # self.update_weather_and_run_period()
+        # self.idf.epw = WEATHER_FILE
+        self.update_weather_and_run_period()
 
         
     def __repr__(self):
