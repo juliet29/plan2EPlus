@@ -2,7 +2,7 @@ from geomeppy import IDF
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from network.network2 import create_afn_graph, create_edge_label_dict, filter_nodes
+from network.network import create_afn_graph, create_edge_label_dict, filter_nodes
 
 
 NODE_COLOR = "#99d3ff"

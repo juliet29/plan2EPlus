@@ -4,7 +4,7 @@ from pathlib import Path
 from case_edits.epcase import EneryPlusCaseEditor
 from geomeppy import IDF
 
-from helpers.outputs import OutputRequests
+from helpers.output_requests import add_all_output_requests
 from plan.plan_to_eppy import add_eppy_blocks_to_case
 from plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
 from subsurfaces.creator import add_subsurfaces_to_case
@@ -17,9 +17,14 @@ def get_path_to_inputs(inputs_dir: str):
     assert path_to_inputs.exists()
     return path_to_inputs
 
-
 def initialize_case(outputs_dir: str):
     return EneryPlusCaseEditor(outputs_dir, "", "")
+
+def get_path_to_outputs(case: EneryPlusCaseEditor):
+    try:
+        return Path(case.path)
+    except:
+        raise Exception("Case has not been initialized!")
 
 
 def add_rooms(_idf: IDF, path_to_inputs: Path):
@@ -43,15 +48,6 @@ def add_airflownetwork(_idf: IDF):
     return idf
 
 
-# TODO move
-def add_output_requests(case: EneryPlusCaseEditor):
-    o = OutputRequests(case)
-    o.request_dxf()
-    o.request_sql()
-    o.request_advanced_variables()
-    return case
-
-
 def create_ezcase(outputs_dir, inputs_dir):
     path_to_inputs = get_path_to_inputs(inputs_dir)
     case = initialize_case(outputs_dir)
@@ -60,6 +56,6 @@ def create_ezcase(outputs_dir, inputs_dir):
     case.idf = add_subsurfaces(case.idf, path_to_inputs)
     case.idf = add_airflownetwork(case.idf)
 
-    case = add_output_requests(case)
+    case.idf = add_all_output_requests(case.idf)
     case.compare_and_save()
     return case

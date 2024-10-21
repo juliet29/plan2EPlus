@@ -1,34 +1,91 @@
+# plot nodes and labels..
 from pathlib import Path
-from turtle import position
-from typing import Any, NamedTuple
+from typing import Optional
 from geomeppy import IDF
+
 import networkx as nx
-from helpers.ep_helpers import (
-    EpBunch,
-    WallNormal,
-    create_zone_map,
-    create_zone_map_without_partners,
-    get_surface_of_subsurface,
-    get_subsurface_by_name,
-)
-from helpers.geometry_interfaces import Coord
-from plan.interfaces import RoomCoordinates
-from plan.helpers import create_room_map, get_plans_from_file
+from network.cardinal_positions import create_cardinal_positions, NodePositions
+from plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
+from plan.helpers import create_room_map
+from helpers.ep_helpers import get_surface_direction, get_zones, WallNormal
+from helpers.ep_geom_helpers import create_domain_for_zone
+from subsurfaces.interfaces import SubsurfacePair
+from subsurfaces.logic import get_connecting_surface
+from typing import NamedTuple, TypedDict, Literal
 
 
-def create_subsurface_positions(coord: Coord, direction: WallNormal, diff=0.3):
-    match direction:
-        case WallNormal.NORTH:
-            return Coord(coord.x, coord.y + diff)
-        case WallNormal.SOUTH:
-            return Coord(coord.x, coord.y - diff)
-        case WallNormal.EAST:
-            return Coord(coord.x + diff, coord.y)
-        case WallNormal.WEST:
-            return Coord(coord.x - diff, coord.y)
+class EdgeDetails(TypedDict):
+    surface: str
+    subsurfaces: str
+    stype: Literal["WINDOW", "DOOR"]
 
 
-# display data
+class GraphEdge(NamedTuple):
+    source: str
+    target: str
+    details: EdgeDetails
+
+
+def create_graph_for_zone(idf: IDF, path_to_input: Path):
+    G = nx.DiGraph()
+    positions = {}
+    room_map = create_room_map(path_to_input)
+
+    # node should have num and label
+
+    for ix, zone in enumerate(get_zones(idf)):
+        room_name = room_map[ix]
+        label = f"{ix}-{room_name}"
+        G.add_node(label, num=ix, room_name=room_name, zone_name=zone.Name)
+        positions[label] = create_domain_for_zone(idf, ix).create_centroid().pair
+        # positions
+    return G, positions
+
+
+def add_cardinal_directions(G: nx.DiGraph, positions: NodePositions):
+    for i in WallNormal:
+        G.add_node(i.name, type="Direction")
+    new_positions = create_cardinal_positions(positions)
+    return G, new_positions
+
+
+def filter_nodes(G: nx.DiGraph):
+    zone_nodes = [i[0] for i in G.nodes(data=True) if "zone_name" in i[1].keys()]
+    cardinal_nodes = [i[0] for i in G.nodes(data=True) if "type" in i[1].keys()]
+    return zone_nodes, cardinal_nodes
+
+
+def get_node_in_G(G, space: WallNormal | int):
+    try:
+        assert not isinstance(space, int)
+        return space.name
+    except:
+        assert not hasattr(space, "name")
+        for i, data in G.nodes(data=True):
+            if "num" in data.keys():
+                if data["num"] == space:
+                    return i
+        raise Exception("No matching node found")
+
+
+def add_edges(idf: IDF, G: nx.DiGraph, pairs: list[SubsurfacePair]):
+    for pair in pairs:
+        surf = get_connecting_surface(idf, pair)
+        assert surf
+        subsurface = surf.subsurfaces[0]  # just one each
+        node_a = get_node_in_G(G, pair.space_a)
+        node_b = get_node_in_G(G, pair.space_b)
+        G.add_edge(node_a, node_b, surface=surf.Name, subsurfaces=subsurface.Name, stype=pair.attrs.object_type.name)  # type: ignore
+
+    return G
+
+def create_base_graph(idf: IDF, path_to_input: Path):
+    G, positions = create_graph_for_zone(idf, path_to_input)
+    G, positions  = add_cardinal_directions(G, positions)
+    pairs = get_subsurface_pairs_from_case(path_to_input)
+    G = add_edges(idf, G, pairs)
+    return G, positions
+
 def get_subsurface_wall_num(name: str):
     temp = name.split(" ")[-2]
     res = temp.split("_")
@@ -42,112 +99,38 @@ def get_subsurface_wall_num(name: str):
         raise Exception(f"Invalid name: {name}")
 
 
-def get_subsurface_direction(idf, subsurface: EpBunch):
-    s = get_surface_of_subsurface(idf, subsurface)
-    assert s
-    if s.azimuth not in [i.value for i in WallNormal]:
-        print(subsurface.Name, s.azimuth)
-    return WallNormal(round(s.azimuth))
+
+def create_edge_label(idf: IDF, G: nx.DiGraph, edge: GraphEdge):
+    # TODO put elsewhere.. 
+    def map_ss_type(val):
+        d = {"DOOR": "DR", "WINDOW": "WND"}
+        return d[val]
+
+    def short_drn(name):
+        assert str(name)
+        return name[0]
+
+    owning_zone = G.nodes[edge.source]["num"]
+    type = map_ss_type(edge.details["stype"])
+    wall_num = get_subsurface_wall_num(edge.details["subsurfaces"])
+    # drn = get_surface_direction(idf, edge.details["surface"]).name
+    # s_drn = short_drn(drn)
+
+    return f"{type}-{owning_zone}-{wall_num}"
+
+def create_edge_label_dict(idf: IDF, G: nx.DiGraph):
+    nice_edges = [GraphEdge(*e) for e in G.edges(data=True)]
+    return {(e.source, e.target):create_edge_label(idf, G, e) for e in nice_edges}
 
 
-def get_display_data_for_subsurface(idf, subsurface: EpBunch):
-    direction = get_subsurface_direction(idf, subsurface)
-    wall_num = get_subsurface_wall_num(subsurface.Name)
-    zone_num = int(subsurface.Name.split(" ")[1])
-    ss_type = subsurface.Name.split(" ")[-1]
-    return (ss_type, zone_num, wall_num, direction)
+def create_afn_graph(idf: IDF, G: nx.DiGraph):
+    def is_node_afn_zone(node):
+        afn_zones = [i.Zone_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:ZONE"]]
+        return G.nodes[node].get("zone_name") in afn_zones
 
+    def is_edge_afn_surface(e1, e2):
+        afn_surfaces = [i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]]
+        res = G.edges[(e1, e2)].get("subsurfaces") in afn_surfaces
+        return res
 
-def get_display_data_for_zone(room_map: dict[int, str], name: str):
-    num = int(name.split(" ")[1])
-    label = room_map[num]
-    return num, label
-
-
-def get_room_positions(path_to_input: Path):
-    plans = get_plans_from_file(path_to_input)
-    return [i.get_coordinates() for i in plans]
-
-
-class NodeData(NamedTuple):
-    node_label: str
-    data: dict[str, Any]
-    position: Coord
-
-
-def create_node_for_zone(
-    room_posistions: list[RoomCoordinates], room_map: dict[int, str], zone: str
-):
-    def get_zone_coordinate(zone_num: int):
-        return [i.coords for i in room_posistions if i.id == zone_num][0]
-
-    num, label = get_display_data_for_zone(room_map, zone)
-    zone_label = f"Z{num}"
-    data = {"label": label, "zone_num": num, "dtype": "zone"}
-    position = get_zone_coordinate(num)
-    return NodeData(zone_label, data, position)
-
-
-def create_node_for_subsurface(idf: IDF, subsurface_name: str, zone_data: NodeData):
-    subsurface = get_subsurface_by_name(idf, subsurface_name)
-    ss_type, zone_num, wall_num, direction = get_display_data_for_subsurface(
-        idf, subsurface
-    )
-
-    def map_ss_type():
-        d = {"Door": "DR", "Window": "WND"}
-        return d[ss_type]
-
-    ss_label = f"{zone_num}-{wall_num}_{map_ss_type()}"
-    data = {
-        "ss_type": ss_type,
-        "wall_num": wall_num,
-        "direction": direction.name,
-        "dtype": "subsurface",
-    }
-    position = create_subsurface_positions(zone_data.position, direction)
-    return NodeData(ss_label, data, position)
-
-
-def update_node(G: nx.Graph, positions: dict, ndata: NodeData):
-    G.add_node(ndata.node_label, data=ndata.data)
-    positions[ndata.node_label] = ndata.position
-    return G, positions
-
-
-def create_graph_nodes(idf: IDF, path_to_input: Path):
-    zone_map = create_zone_map_without_partners(idf)
-    room_positions = get_room_positions(path_to_input)
-    room_map = create_room_map(path_to_input)
-    G = nx.DiGraph()
-    edge_map = {}
-    positions = {}
-
-    for zone, subsurfaces in zone_map.items():
-        zone_data = create_node_for_zone(room_positions, room_map, zone)
-        edge_map[zone_data.node_label] = []
-        G, positions = update_node(G, positions, zone_data)
-
-        for subsurface_name in subsurfaces:
-            ss_data = create_node_for_subsurface(idf, subsurface_name, zone_data)
-            edge_map[zone_data.node_label].append(ss_data.node_label)
-            G, positions = update_node(G, positions, ss_data)
-
-    pos = {k: v.pair for k, v in positions.items()}
-    return G, pos, edge_map
-
-
-def update_graph_edges(G: nx.Graph, edge_map: dict):
-    for k, v in edge_map.items():
-        for ss in v:
-            G.add_edge(k, ss)
-    return G, edge_map
-
-
-def create_graph(idf: IDF, path_to_input: Path):
-    G, pos, edge_map = create_graph_nodes(idf, path_to_input)
-    G, edge_map = update_graph_edges(G, edge_map)
-    return G, pos, edge_map
-
-
-# positions..
+    return nx.subgraph_view(G, filter_node=is_node_afn_zone), nx.subgraph_view(G, filter_edge=is_edge_afn_surface)
