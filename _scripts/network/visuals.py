@@ -23,3 +23,6 @@ def draw_graph_with_node_labels(
     nx.draw_networkx_labels(G, pos, labels=labels, font_size=7)
 
     # nx.draw_networkx_edges(G, pos, arrows=True)
+
+def draw_graph_edges(G, pos):
+    nx.draw_networkx_edges(G, pos)

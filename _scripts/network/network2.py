@@ -1,16 +1,16 @@
 # plot nodes and labels..
-from copy import deepcopy
 from pathlib import Path
 from typing import Optional
 from geomeppy import IDF
 
 import networkx as nx
+from network.cardinal_positions import create_cardinal_positions, NodePositions
 from plan.helpers import create_room_map
 from helpers.ep_helpers import get_zones, WallNormal
 from helpers.ep_geom_helpers import create_domain_for_zone
-from helpers.geometry_interfaces import Domain, Range
+from subsurfaces.interfaces import SubsurfacePair
+from subsurfaces.logic import get_connecting_surface
 
-NodePositions = dict[str, tuple[float, float]]
 
 def create_graph_for_zone(idf: IDF, path_to_input: Path):
     G = nx.DiGraph()
@@ -28,42 +28,38 @@ def create_graph_for_zone(idf: IDF, path_to_input: Path):
     return G, positions
 
 
-# zone_nodes = [i for i in G.nodes(data=True) if i[1]["zone_name"]]
-
-
-# add cardinal positions..
-
-
-def get_bounds_of_positioned_graph(pos: NodePositions):
-    x_values = [coord[0] for coord in pos.values()]
-    y_values = [coord[1] for coord in pos.values()]
-
-    x_min, x_max = min(x_values), max(x_values)
-    y_min, y_max = min(y_values), max(y_values)
-    return Domain(Range(x_min, x_max), Range(y_min, y_max))
-
-
-def create_cardinal_positions(_positions: NodePositions, PAD=1):
-    positions = deepcopy(_positions)
-    c = get_bounds_of_positioned_graph(positions)
-    mid_x = c.width.midpoint() 
-    mid_y = c.height.midpoint() 
-
-    res = [
-        (mid_x, c.height.max + PAD),
-        (mid_x, c.height.min - PAD),
-        (c.width.min - PAD, mid_y),
-        (c.width.max + PAD, mid_y),
-    ]
-
-    drns = [WallNormal.NORTH, WallNormal.SOUTH, WallNormal.EAST, WallNormal.WEST]
-    temp = {i.name: r for i, r in zip(drns, res)}
-    
-    positions.update(temp)
-    return positions
-
 def add_cardinal_directions(G: nx.DiGraph, positions: NodePositions):
     for i in WallNormal:
         G.add_node(i.name, type="Direction")
     new_positions = create_cardinal_positions(positions)
     return G, new_positions
+
+def filter_nodes(G: nx.DiGraph):
+    zone_nodes = [i[0] for i in G.nodes(data=True) if "zone_name" in i[1].keys()]
+    cardinal_nodes = [i[0] for i in G.nodes(data=True) if "type" in i[1].keys()] 
+    return zone_nodes, cardinal_nodes
+
+
+def get_node_in_G(G, space: WallNormal | int):
+    nodes = list(G.nodes)
+    try:
+        assert not isinstance(space, int)
+        return space.name
+    except:
+        assert not hasattr(space, "name")
+        for i in nodes:
+            if int(i[0]) == space:
+                return i
+        raise Exception("No matching node found")
+
+def add_edges(idf: IDF, G: nx.DiGraph, pairs: list[SubsurfacePair]):
+    for pair in pairs:
+        surf = get_connecting_surface(idf, pair)
+        assert surf
+        subsurface = surf.subsurfaces[0] #just one each
+        node_a = get_node_in_G(G, pair.space_a)
+        node_b = get_node_in_G(G, pair.space_b)
+        G.add_edge(node_a, node_b, surface=surf.Name, subsurfaces=subsurface, stype=pair.attrs.object_type.name)
+
+    return G
+
