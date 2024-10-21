@@ -3,7 +3,7 @@ from eppy.bunch_subclass import EpBunch
 from geomeppy import IDF
 
 from subsurfaces.interfaces import Dimensions
-from helpers.ep_helpers import create_domain_for_rectangular_wall
+from helpers.ep_geom_helpers import create_domain_for_rectangular_wall
 from subsurfaces.interfaces import SubsurfacePair, SubsurfaceObjects
 from helpers.ep_helpers import WallNormal
 from helpers.ep_helpers import get_zone_walls, get_zone_name

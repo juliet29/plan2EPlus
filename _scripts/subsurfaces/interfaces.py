@@ -4,7 +4,7 @@ from helpers.ep_helpers import WallNormal
 from eppy.bunch_subclass import EpBunch
 
 
-class SubsurfaceObjects(Enum, str):
+class SubsurfaceObjects(Enum):
     DOOR = 0
     WINDOW = 1
 

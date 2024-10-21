@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+import numpy as np
 from helpers.plots import ShapeDict
 
 @dataclass
@@ -36,6 +36,9 @@ class Range:
             assert self.min <= self.max
         except AssertionError:
             raise InvalidRangeException(self.min, self.max)
+        
+    def __repr__(self) -> str:
+        return f"[{self.min:.2f}, {self.max:.2f}]"
 
     @property
     def size(self):
@@ -49,6 +52,9 @@ class Range:
 
     def midpoint(self):
         return (self.min + self.max) / 2
+    
+    def __eq__(self, other) -> bool:
+        return np.isclose(self.min, other.min) and np.isclose(self.max, other.max)
 
 
 @dataclass(frozen=True)
