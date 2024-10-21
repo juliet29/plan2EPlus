@@ -6,9 +6,9 @@ CARDINAL_COLOR = "#ffec99"
 
 
 def draw_graph_with_node_labels(
-    G, pos, nodes, color=NODE_COLOR, shape="s", alpha=0.5, size=300
+    G, pos, nodes, color=NODE_COLOR, shape="s", alpha=0.5, size=500
 ):
-    margin = 0.1
+    margin = 0.001
     nx.draw_networkx_nodes(
         G,
         pos,
@@ -20,9 +20,10 @@ def draw_graph_with_node_labels(
         node_size=size,
     )
     labels = {n: n for n in nodes}
-    nx.draw_networkx_labels(G, pos, labels=labels, font_size=7)
+    nx.draw_networkx_labels(G, pos, labels=labels, font_size=10)
 
     # nx.draw_networkx_edges(G, pos, arrows=True)
 
-def draw_graph_edges(G, pos):
+def draw_graph_edges_with_labels(G, pos, label_dict):
     nx.draw_networkx_edges(G, pos)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=label_dict)

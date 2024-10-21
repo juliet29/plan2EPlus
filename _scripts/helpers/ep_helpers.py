@@ -15,6 +15,8 @@ class WallNormal(Enum):
 
     def __getitem__(self, i):
         return getattr(self, i)
+    
+
 
 
 def get_zone_name(num: int):
@@ -32,6 +34,11 @@ def get_zone_walls(idf: IDF, num: int) -> list[EpBunch]:
         if get_zone_name(num) in i.Name and "Wall" in i.Name
     ]
 
+def get_surface_direction(idf: IDF, surface_name: str):
+    surface =  idf.getobject("BUILDINGSURFACE:DETAILED", surface_name)
+    assert surface
+    rounded_azimuuth = round(float(surface.azimuth))
+    return WallNormal(rounded_azimuuth)
 
 def is_interior_wall(surf: EpBunch):
     return surf.Surface_Type == "wall" and surf.Outside_Boundary_Condition == "surface"
@@ -44,6 +51,7 @@ def get_surface_of_subsurface(idf: IDF, subsurface: EpBunch):
 def get_subsurface_by_name(idf: IDF, name: str):
     subsurfaces = idf.getsubsurfaces()
     return [i for i in subsurfaces if name == i.Name][0]
+
 
 
 PARTNER = " Partner"
