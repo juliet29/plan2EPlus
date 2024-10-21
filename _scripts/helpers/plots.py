@@ -1,73 +1,10 @@
 from typing import TypedDict
-from shapely import LineString, Polygon
-from shapely.coords import CoordinateSequence
-from helpers.shapely_helpers import get_coords_as_seprate_xy, CoordOrganizer
 import plotly.graph_objects as go
 import numpy as np
 
 
-def prepare_line_traces(line: LineString, color="yellow", label=None, width=3):
-    x, y, _ = get_coords_as_seprate_xy(line.coords)
-    trace = go.Scatter(
-        x=x,
-        y=y,
-        mode="markers+lines",
-        marker=dict(color=color),
-        line=dict(color=color, width=width),
-        name=label,
-    )
-    return trace
 
 
-def prepare_polygon_trace(polygon: Polygon, color="blue", label=None):
-    x, y, _ = get_coords_as_seprate_xy(polygon.exterior.coords)
-    trace = go.Scatter(
-        x=x,
-        y=y,
-        fill="toself",
-        marker=dict(color=color),
-        fillcolor=color,
-        opacity=0.5,
-        line_width=0,
-        name=label,
-    )
-    return trace
-
-
-def show_traces(td):
-    fig = go.Figure()
-    for trace in td.values():
-        fig.add_trace(trace)
-
-    fig.show()
-
-
-def prepare_shape_dict(
-    coords: CoordinateSequence,
-    type="rect",
-    color="blue",
-    label="",
-    width=3,
-):
-    r = CoordOrganizer(coords)
-    d = dict(
-        type=type,
-        xref="x",
-        yref="y",
-        fillcolor=color,
-        x0=r.x0,
-        y0=r.y0,
-        x1=r.x1,
-        y1=r.y1,
-        label=dict(text=label),
-    )
-
-    if type == "line":
-        d["line"] = dict(color=color, width=width)  # type:ignore
-        d["label_font_color"] = color
-        d["label_font_size"] = 9  # type:ignore
-
-    return d
 
 
 class ShapeDict(TypedDict):

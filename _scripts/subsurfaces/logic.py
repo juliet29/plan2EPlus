@@ -5,7 +5,7 @@ from geomeppy import IDF
 from subsurfaces.interfaces import Dimensions
 from helpers.ep_helpers import create_domain_for_rectangular_wall
 from subsurfaces.interfaces import SubsurfacePair, SubsurfaceObjects
-from geometry.wall_normal import WallNormal
+from helpers.ep_helpers import WallNormal
 from helpers.ep_helpers import get_zone_walls, get_zone_name
 from subsurfaces.placement import create_nine_points_for_domain
 

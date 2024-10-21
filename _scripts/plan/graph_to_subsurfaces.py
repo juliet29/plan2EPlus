@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 from helpers.helpers import key_from_value
 from subsurfaces.interfaces import NinePointsLocator, SubsurfacePair
-from geometry.wall_normal import WallNormal
+from helpers.ep_helpers import WallNormal
 from subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceObjects
 from subsurfaces.interfaces import (
     Dimensions,

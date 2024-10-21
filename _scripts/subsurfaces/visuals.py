@@ -2,7 +2,6 @@ from eppy.bunch_subclass import EpBunch
 from geomeppy import IDF
 from helpers.ep_helpers import create_domain_for_rectangular_wall, create_domain_for_subsurface, get_surface_of_subsurface
 from helpers.plots import plot_one_shape
-from helpers.geometry_interfaces import Domain, Range
 
 COLOR_1 = "rgba(26,150,65,0.5)"
 COLOR_2 = "rgba(26,90,65,0.5)"

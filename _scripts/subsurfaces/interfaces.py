@@ -1,12 +1,10 @@
 from dataclasses import dataclass
 from enum import Enum
-
-from geometry.wall_normal import WallNormal
-
+from helpers.ep_helpers import WallNormal
 from eppy.bunch_subclass import EpBunch
 
 
-class SubsurfaceObjects(Enum):
+class SubsurfaceObjects(Enum, str):
     DOOR = 0
     WINDOW = 1
 

@@ -9,6 +9,11 @@ class Coord:
 
     def __getitem__(self, i):
         return (self.x, self.y)[i]
+    
+    @property
+    def pair(self):
+        return (self.x, self.y)
+
 
 
 @dataclass

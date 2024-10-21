@@ -106,18 +106,3 @@ class EneryPlusCaseEditor:
         ap1.Begin_Day_of_Month = 1
         ap1.End_Month = 7
         ap1.End_Day_of_Month = 1
-
-
-class EneryPlusCaseReader:
-    def __init__(self, case_name:str) -> None:
-        IDF_PATH = os.path.join("cases", case_name, "out.idf")
-        self.idf = IDF(IDF_PATH)
-        self.case_name = case_name
-        
-        # self.get_geometry()
-
-    def __repr__(self):
-        return f"EPCaseReader({self.case_name})"  
-
-    # def get_geometry(self):
-    #     self.geometry = geom.GeometryParser(self.idf)  

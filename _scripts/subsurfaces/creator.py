@@ -2,7 +2,7 @@ from copy import deepcopy
 from geomeppy import IDF
 
 from subsurfaces.constructions import assign_default_constructions
-from helpers.ep_helpers import is_interior_wall
+from helpers.ep_helpers import is_interior_wall, create_partner_name
 from subsurfaces.interfaces import SubsurfacePair
 
 from subsurfaces.logic import (
@@ -10,18 +10,7 @@ from subsurfaces.logic import (
     get_approp_surface_and_attrs,
 )
 
-PARTNER = " Partner"
 
-
-def create_partner_name(name):
-    return name + PARTNER
-
-
-def reverse_partner_name(partner_name):
-    return partner_name.replace(PARTNER, "")
-
-
-# TODO seperate out modifers..
 class SubsurfaceCreator:
     def __init__(
         self,
