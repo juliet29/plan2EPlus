@@ -79,7 +79,7 @@ class ShapeDict(TypedDict):
     y0: float
     x1: float
     y1: float
-    label: str
+    label: dict[str, str]
 
 
 def plot_one_shape(trace_dict: ShapeDict, fig=None):

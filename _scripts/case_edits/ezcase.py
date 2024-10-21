@@ -5,18 +5,18 @@ from operator import attrgetter
 from typing import List, Tuple, Union, Sequence
 from munch import Munch
 
-from new_subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceType
-from plan.convert import PlantoGeomeppy
+from subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceType
+from plan.plan_to_eppy import PlantoGeomeppy
 
 from case_edits.epcase import EneryPlusCaseEditor
 from helpers.special_types import GeometryType
 
 from methods.subsurfaces.inputs import SubsurfaceCreatorInputs
-from new_subsurfaces.interfaces import SubsurfacePair
+from subsurfaces.interfaces import SubsurfacePair
 from methods.subsurfaces.creator import SubsurfaceCreator
 
 from methods.airflownetwork import AirflowNetwork
-from methods.outputs import OutputRequests
+from helpers.outputs import OutputRequests
 
 from outputs.variables import OutputVars as OV
 from outputs.input_classes import SQLInputs, PlotterInputs

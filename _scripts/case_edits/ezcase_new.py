@@ -1,18 +1,14 @@
 from copy import deepcopy
 from pathlib import Path
 
-from case_edits.interfaces import EzCaseInput
 from case_edits.epcase import EneryPlusCaseEditor
 from geomeppy import IDF
 
-from methods.outputs import OutputRequests
-from plan.convert import add_eppy_blocks_to_case
-from plan.interfaces import PlanAccess  # TODO should happen within module
-from plan.subsurface_translator import get_subsurface_pairs_from_case
-from new_subsurfaces.creator import add_subsurfaces_to_case
+from helpers.outputs import OutputRequests
+from plan.plan_to_eppy import add_eppy_blocks_to_case
+from plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
+from subsurfaces.creator import add_subsurfaces_to_case
 from airflow_network.creator import add_airflownetwork_to_case
-
-# from methods.airflownetwork import AirflowNetwork
 
 
 def get_path_to_inputs(inputs_dir: str):
@@ -26,17 +22,17 @@ def initialize_case(outputs_dir: str):
     return EneryPlusCaseEditor(outputs_dir, "", "")
 
 
-def add_rooms(_idf: IDF, inputs_dir: Path):
+def add_rooms(_idf: IDF, path_to_inputs: Path):
     idf = deepcopy(_idf)
-    idf = add_eppy_blocks_to_case(idf, PlanAccess(inputs_dir, 0))
+    idf = add_eppy_blocks_to_case(idf, path_to_inputs)
     idf.intersect_match()
     idf.set_default_constructions()
     return idf
 
 
-def add_subsurfaces(_idf: IDF, inputs_dir: Path):
+def add_subsurfaces(_idf: IDF, path_to_inputs: Path):
     idf = deepcopy(_idf)
-    pairs = get_subsurface_pairs_from_case(inputs_dir)
+    pairs = get_subsurface_pairs_from_case(path_to_inputs)
     idf = add_subsurfaces_to_case(idf, pairs)
     return idf
 
@@ -46,7 +42,8 @@ def add_airflownetwork(_idf: IDF):
     idf = add_airflownetwork_to_case(idf)
     return idf
 
-# TODO move 
+
+# TODO move
 def add_output_requests(case: EneryPlusCaseEditor):
     o = OutputRequests(case)
     o.request_dxf()
@@ -58,9 +55,11 @@ def add_output_requests(case: EneryPlusCaseEditor):
 def create_ezcase(outputs_dir, inputs_dir):
     path_to_inputs = get_path_to_inputs(inputs_dir)
     case = initialize_case(outputs_dir)
+
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs)
-    case = add_output_requests(case)
     case.idf = add_airflownetwork(case.idf)
+
+    case = add_output_requests(case)
     case.compare_and_save()
     return case

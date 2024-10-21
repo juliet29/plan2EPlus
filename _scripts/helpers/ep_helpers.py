@@ -1,12 +1,15 @@
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
-from new_subsurfaces.geometry_interfaces import Coordinate3D, Domain, Range
+from helpers.geometry_interfaces import Coordinate3D, Domain, Range
 
 
 def get_zone_name(num: int):
     return f"Block 0{num} Storey 0"
 
+
+def get_zones(idf: IDF) -> list[EpBunch]:
+    return [i for i in idf.idfobjects["ZONE"]]
 
 def get_zone_surfaces(idf: IDF, num: int) -> list[EpBunch]:
     return [
@@ -23,9 +26,6 @@ def get_zone_walls(idf: IDF, num: int) -> list[EpBunch]:
         if get_zone_name(num) in i.Name and "Wall" in i.Name
     ]
 
-
-def get_zones(idf: IDF) -> list[EpBunch]:
-    return [i for i in idf.idfobjects["ZONE"]]
 
 
 def is_interior_wall(surf: EpBunch):
