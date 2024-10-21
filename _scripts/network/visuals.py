@@ -1,8 +1,17 @@
+from geomeppy import IDF
 import networkx as nx
+import matplotlib.pyplot as plt
+
+from network.network2 import create_afn_graph, create_edge_label_dict, filter_nodes
 
 
 NODE_COLOR = "#99d3ff"
 CARDINAL_COLOR = "#ffec99"
+DEFAULT_EDGE = "#000000"
+
+GREYED_OUT_NODE = "#E5D4ED"
+NODE = "#ed6904"
+
 
 
 def draw_graph_with_node_labels(
@@ -22,8 +31,37 @@ def draw_graph_with_node_labels(
     labels = {n: n for n in nodes}
     nx.draw_networkx_labels(G, pos, labels=labels, font_size=10)
 
-    # nx.draw_networkx_edges(G, pos, arrows=True)
 
-def draw_graph_edges_with_labels(G, pos, label_dict):
-    nx.draw_networkx_edges(G, pos)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=label_dict)
+
+def draw_graph_edges_with_labels(G, pos, label_dict, color=DEFAULT_EDGE):
+    nx.draw_networkx_edges(G, pos, edge_color=color)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=label_dict, font_color=color)
+
+
+def draw_over(G, pos, color):
+    nx.draw_networkx_nodes(G, pos, node_color=color)
+    nx.draw_networkx_edges(G, pos, edge_color=color)
+
+
+def draw_init_graph(idf:IDF, G, positions,node_color=GREYED_OUT_NODE, edge_color=GREYED_OUT_EDGE):
+    zone_nodes, cardinal_nodes = filter_nodes(G)
+    e_labels = create_edge_label_dict(idf, G)
+
+    fig = plt.figure(3,figsize=(12,8))
+
+    draw_graph_with_node_labels(G, positions, zone_nodes, color=node_color)
+    draw_graph_with_node_labels(G, positions, cardinal_nodes, color=node_color, shape="*", size=200)
+    draw_graph_edges_with_labels(G, positions, e_labels, color=edge_color)
+
+    return fig
+
+def draw_afn_graph(G, fig, positions, color=NODE):
+    draw_over(G, positions, color)
+    return fig
+
+def draw_afn_comparison(idf:IDF, G, positions,):
+    G_afn = create_afn_graph(idf, G)
+    fig = draw_init_graph(idf, G, positions)
+    fig = draw_afn_graph(G_afn, fig, positions)
+
+    return fig

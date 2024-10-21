@@ -16,7 +16,8 @@ class WallNormal(Enum):
     def __getitem__(self, i):
         return getattr(self, i)
     
-
+def get_zone_num(name:str):
+    return int(name.split(" ")[1])
 
 
 def get_zone_name(num: int):

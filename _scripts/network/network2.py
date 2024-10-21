@@ -5,6 +5,7 @@ from geomeppy import IDF
 
 import networkx as nx
 from network.cardinal_positions import create_cardinal_positions, NodePositions
+from plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
 from plan.helpers import create_room_map
 from helpers.ep_helpers import get_surface_direction, get_zones, WallNormal
 from helpers.ep_geom_helpers import create_domain_for_zone
@@ -78,6 +79,14 @@ def add_edges(idf: IDF, G: nx.DiGraph, pairs: list[SubsurfacePair]):
 
     return G
 
+def create_base_graph(idf: IDF, path_to_input: Path):
+    G, positions = create_graph_for_zone(idf, path_to_input)
+    G, positions  = add_cardinal_directions(G, positions)
+    pairs = get_subsurface_pairs_from_case(path_to_input)
+    G = add_edges(idf, G, pairs)
+    return G, positions
+
+
 
 def create_edge_label(idf: IDF, G: nx.DiGraph, edge: GraphEdge):
     # TODO put elsewhere.. 
@@ -99,3 +108,15 @@ def create_edge_label(idf: IDF, G: nx.DiGraph, edge: GraphEdge):
 def create_edge_label_dict(idf: IDF, G: nx.DiGraph):
     nice_edges = [GraphEdge(*e) for e in G.edges(data=True)]
     return {(e.source, e.target):create_edge_label(idf, G, e) for e in nice_edges}
+
+
+def create_afn_graph(idf: IDF, G: nx.DiGraph):
+    def is_node_afn_zone(node):
+        afn_zones = [i.Zone_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:ZONE"]]
+        return G.nodes[node].get("zone_name") in afn_zones
+
+    def is_edge_afn_surface(e1, e2):
+        afn_surfaces = [i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]]
+        return G.edges[(e1, e2)].get("subsurfaces") in afn_surfaces
+
+    return nx.subgraph_view(G, filter_node=is_node_afn_zone, filter_edge=is_edge_afn_surface)
