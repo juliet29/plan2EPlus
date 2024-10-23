@@ -31,7 +31,7 @@ zone = {
         "energy_storage": "Zone Air Heat Balance Air Energy Storage Rate",
     },
     "wind": {
-        "speed": "Zone Average Outdoor Air Wind Speed",
+        "speed": "Zone Outdoor Air Wind Speed",
         "direction": "Zone Outdoor Air Wind Direction",
     }
 }
@@ -60,8 +60,12 @@ surface = {
             "surf_net_thermal_rad": "Surface Outside Face Net Thermal Radiation Heat Gain Rate per Area",
         },
         "temp": {
-            "surf_outside_temp": "Surface Outside Face Temperature",
+            "temp": "Surface Outside Face Temperature",
         },
+        "wind": {
+            "speed": "Surface Outside Face Outdoor Air Wind Speed",
+            "direction": "Surface Outside Face Outdoor Air Wind Direction"
+        }
     },
 }
 

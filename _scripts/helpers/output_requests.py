@@ -1,3 +1,4 @@
+from re import L
 from geomeppy import IDF
 from helpers.variable_interfaces import all_variables, get_vars
 
@@ -9,9 +10,17 @@ def check_existing_variable(idf: IDF, new_var_name):
         return True
 
 
-def add_output_variable(idf: IDF, name: str, reporting_frequency="Hourly"):
+def is_surface_or_zone_wind(name):
+    if "Wind" in name:
+        if "Zone" in name or "Surace" in name:
+            return True
+
+def add_output_variable(idf: IDF, name: str, reporting_frequency="Timestep"):
     if check_existing_variable(idf, name):
         return idf
+    
+    if is_surface_or_zone_wind(name):
+        reporting_frequency = "Hourly"
 
     obj = idf.newidfobject("OUTPUT:VARIABLE")
     obj.Key_Value = "*"

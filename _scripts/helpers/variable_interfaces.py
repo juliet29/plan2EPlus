@@ -2,11 +2,14 @@ from dataclasses import dataclass
 from helpers.variables import afn, surface, site, zone
 from helpers.helpers import chain_flatten
 
+def get_values(d:dict):
+        return chain_flatten([list(v.values()) for v in d.values()])
 
 @dataclass
 class Vars:
     def get_values(self):
         return chain_flatten([list(v.values()) for v in self.__dict__.values()])
+    
 
 @dataclass
 class AFNVariables(Vars):
@@ -61,12 +64,15 @@ all_variables = AllVariables(
     **{"afn": afn_vars, "zone": zone_vars, "surface": surface_vars, "site": site_vars}
 )
 
-def get_vars(arr: list[AFNVariables | ZoneVariables | SiteVariables |SurfaceVariables]=[afn_vars, zone_vars, site_vars]):
+def get_vars(arr: list[AFNVariables | ZoneVariables | SiteVariables |SurfaceVariables]=[afn_vars, zone_vars, site_vars, surface_vars]):
     vars = []
     for a in arr:
-        vars.append(a.get_values())
+        if hasattr(a, "inside_face"):
+            for v in a.__dict__.values():
+                vars.append(get_values(v))
 
-    vars.append(["Surface Outside Face Outdoor Air Wind Speed", "Surface Outside Face Outdoor Air Wind Direction", "Zone Outside Face Outdoor Air Wind Speed", "Zone Outdoor Air Wind Direction"])
+        else:
+            vars.append(a.get_values())
 
     
     return chain_flatten(vars)

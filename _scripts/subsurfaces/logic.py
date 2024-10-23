@@ -40,7 +40,7 @@ def find_surface_connecting_zone_and_drn(idf: IDF, pair: SubsurfacePair):
     zone_walls = get_zone_walls(idf, pair.space_a)
     try:
         res = handle_connection_result(
-            [i for i in zone_walls if WallNormal(i.azimuth) == pair.space_b]
+            [i for i in zone_walls if WallNormal(round(float(i.azimuth))) == pair.space_b]
         )
         return res
     except MoreThanOneIntersectionError as err:
