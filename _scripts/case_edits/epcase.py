@@ -1,11 +1,9 @@
-from __future__ import annotations
+
 
 import os
 import filecmp
-
-from icecream import ic 
-
-# import geometry.geometry_parser as geom
+from pathlib import Path
+from typing import Optional
 from geomeppy import IDF
 from ladybug.epw import EPW
 from eppy.runner.run_functions import EnergyPlusRunError
@@ -13,63 +11,46 @@ from eppy.runner.run_functions import EnergyPlusRunError
 from case_edits.defaults import IDF_PATH, IDD_PATH, WEATHER_FILE
 
 
-IDF.setiddname(IDD_PATH) # TODO this may be a problem later.. 
+IDF.setiddname(IDD_PATH)
 
 
 
 class EneryPlusCaseEditor:
-    def __init__(self, case_name:str, starting_case:str="", project_name="",) -> None: # type: ignore
-        self.project_name = project_name
-        self.starting_case = starting_case
-        self.case_name = case_name
+    def __init__(self, path_to_outputs:Path, starting_path:Optional[Path]=None) -> None: 
+        self.path = path_to_outputs
+        self.case_name = self.path.name
+        self.starting_path = starting_path
         self.is_changed_idf = True
         self.is_failed_simulation = False
         
-        self.make_case_folder()
         self.get_idf()
-        # self.idf.epw = WEATHER_FILE
         self.update_weather_and_run_period()
 
         
     def __repr__(self):
         return f"EPCaseEditor({self.case_name})"  
     
-    def make_case_folder(self):
-        if self.project_name:
-            self.path = os.path.join("cases", "projects", self.project_name, self.case_name)
-        else:
-            self.path = os.path.join("cases", self.case_name)
-            
-        if not os.path.exists(self.path):
-            os.makedirs(self.path)
-
 
     def get_idf(self):
-        if not self.starting_case:
+        if not self.starting_path:
             self.idf = IDF(IDF_PATH) 
         else:
-            try:
-                self.starting_idf_path = os.path.join("cases", self.starting_case, "out.idf")
-                self.idf = IDF(self.starting_idf_path)  
-            except:
-                self.starting_idf_path =  self.starting_case
-                self.idf = IDF(self.starting_idf_path)  
+            self.idf = IDF(self.starting_path)  
 
 
     def compare_and_save(self):
-        self.temp_idf_path = os.path.join(self.path, "temp.idf")
-        self.idf_path = os.path.join(self.path, "out.idf")
+        self.temp_idf_path = self.path / "temp.idf"
+        self.idf_path = self.path / "out.idf"
         self.idf.save(filename=self.temp_idf_path)
 
-        curr_case_files = next(os.walk(self.path))[2]
-        if "out.idf" in curr_case_files:
+        dir_files = list(self.path.iterdir())
+        if "out.idf" in dir_files:
             print("out.idf exists")
             self.is_changed_idf = not filecmp.cmp(self.temp_idf_path, self.idf_path)
             print(f"IDF has changed: {self.is_changed_idf}")
         else:
             print("out.idf does not exist")
             self.is_changed_idf = True
-            # TODO based on results.. 
 
         self.idf.save(filename=self.idf_path)
         os.remove(self.temp_idf_path)
@@ -82,17 +63,12 @@ class EneryPlusCaseEditor:
                 self.idf.run(output_directory=os.path.join(self.path, "results"))
             except EnergyPlusRunError:
                 self.is_failed_simulation = True
-                print(f"Simulation for case `{self.case_name}` failed - see error logs")
-                err_file = os.path.join(self.path, "results", "eplusout.err")
-                print(err_file)
-
-            # self.is_changed_idf = False
+                print(f"Simulation for case `{self.path}` failed - see error logs")
+    
         else:
             print("idf has not changed - no run")
 
 
-    # def get_geometry(self):
-    #     self.geometry = geom.GeometryParser(self.idf) 
 
 
     def update_weather_and_run_period(self):

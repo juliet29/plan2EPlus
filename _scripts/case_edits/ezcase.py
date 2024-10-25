@@ -17,10 +17,20 @@ def get_path_to_inputs(inputs_dir: str):
     assert path_to_inputs.exists()
     return path_to_inputs
 
-def initialize_case(outputs_dir: str):
-    return EneryPlusCaseEditor(outputs_dir, "", "")
 
-def get_path_to_outputs(case: EneryPlusCaseEditor):
+def get_path_to_outputs(outputs_dir: str):
+    path_to_root = Path.cwd() / "cases" 
+    path_to_outputs = path_to_root / outputs_dir
+    if not path_to_outputs.exists():
+        path_to_outputs.mkdir()
+    return path_to_outputs
+
+def initialize_case(path_to_outputs: Path):
+    return EneryPlusCaseEditor(path_to_outputs)
+
+
+# TODO, Move creation to fx above.. 
+def get_path_to_outputs_ep(case: EneryPlusCaseEditor):
     try:
         return Path(case.path)
     except:
