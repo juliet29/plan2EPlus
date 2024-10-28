@@ -112,6 +112,18 @@ def create_edge_label_dict(G: nx.DiGraph):
 ## -- ^^^ this goes elsewhere -------
 
 
+def create_multi_graph(G: nx.DiGraph):
+    G_rev = G.reverse()
+    for e in G_rev.edges:
+        G_rev.edges[e]["reverse"] = True
+    Gm = nx.MultiDiGraph()
+    Gm.add_edges_from(G.edges(data=True))
+    Gm.add_edges_from(G_rev.edges(data=True))
+
+    return Gm
+
+
+
 def create_afn_graph(idf: IDF, G: nx.DiGraph):
     def is_node_afn_zone(node):
         afn_zones = [
@@ -136,3 +148,5 @@ def create_afn_graph(idf: IDF, G: nx.DiGraph):
     ), "Graph induced on subsurfaces should include all AFN zones"
 
     return G_afn
+
+
