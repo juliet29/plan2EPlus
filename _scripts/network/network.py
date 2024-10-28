@@ -4,6 +4,7 @@ from typing import Optional
 from geomeppy import IDF
 
 import networkx as nx
+from helpers.ep_helpers import get_subsurface_wall_num
 from network.cardinal_positions import create_cardinal_positions, NodePositions
 from plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
 from plan.helpers import create_room_map
@@ -61,10 +62,10 @@ def get_node_in_G(G, space: WallNormal | int):
         return space.name
     except:
         assert not hasattr(space, "name")
-        for i, data in G.nodes(data=True):
+        for node_name, data in G.nodes(data=True):
             if "num" in data.keys():
                 if data["num"] == space:
-                    return i
+                    return node_name
         raise Exception("No matching node found")
 
 
@@ -79,32 +80,19 @@ def add_edges(idf: IDF, G: nx.DiGraph, pairs: list[SubsurfacePair]):
 
     return G
 
+
 def create_base_graph(idf: IDF, path_to_input: Path):
     G, positions = create_graph_for_zone(idf, path_to_input)
-    G, positions  = add_cardinal_directions(G, positions)
+    G, positions = add_cardinal_directions(G, positions)
     pairs = get_subsurface_pairs_from_case(path_to_input)
     G = add_edges(idf, G, pairs)
     return G, positions
 
 
-## -- this goes elsewhere -------
-
-def get_subsurface_wall_num(name: str):
-    temp = name.split(" ")[-2]
-    res = temp.split("_")
-    if len(res) == 1:
-        return int(res[0])
-    elif len(res) == 2:
-        r = int(res[0])
-        s = int(res[1])
-        return float(f"{r}.{s}")
-    else:
-        raise Exception(f"Invalid name: {name}")
-
+## TODO -- this goes elsewhere -------
 
 
 def create_edge_label(G: nx.DiGraph, edge: GraphEdge):
-    # TODO put elsewhere.. 
     def map_ss_type(val):
         d = {"DOOR": "DR", "WINDOW": "WND"}
         return d[val]
@@ -115,29 +103,36 @@ def create_edge_label(G: nx.DiGraph, edge: GraphEdge):
 
     return f"{type}-{owning_zone}-{wall_num}"
 
+
 def create_edge_label_dict(G: nx.DiGraph):
     nice_edges = [GraphEdge(*e) for e in G.edges(data=True)]
-    return {(e.source, e.target):create_edge_label(G, e) for e in nice_edges}
+    return {(e.source, e.target): create_edge_label(G, e) for e in nice_edges}
 
 
-## -- this goes elsewhere -------
+## -- ^^^ this goes elsewhere -------
+
 
 def create_afn_graph(idf: IDF, G: nx.DiGraph):
     def is_node_afn_zone(node):
-        afn_zones = [i.Zone_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:ZONE"]]
+        afn_zones = [
+            i.Zone_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:ZONE"]
+        ]
         return G.nodes[node].get("zone_name") in afn_zones
 
     def is_edge_afn_surface(e):
-        afn_surfaces = [i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]]
+        afn_surfaces = [
+            i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]
+        ]
         return G.edges[e].get("subsurfaces") in afn_surfaces
 
     nodes = [n for n in G.nodes if is_node_afn_zone(n)]
     G_zones = nx.subgraph(G, nodes)
 
-    edges =[e for e in G.edges if is_edge_afn_surface(e)]
+    edges = [e for e in G.edges if is_edge_afn_surface(e)]
     G_afn = nx.edge_subgraph(G, edges)
 
-
-    assert G_zones.nodes < G_afn.nodes, "Graph induced on subsurfaces should include all AFN zones"
+    assert (
+        G_zones.nodes < G_afn.nodes
+    ), "Graph induced on subsurfaces should include all AFN zones"
 
     return G_afn

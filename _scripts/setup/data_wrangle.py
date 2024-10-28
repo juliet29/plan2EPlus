@@ -30,6 +30,7 @@ def get_dataset_description(dataset: BaseCollection):
 #     return title
 
 
+    
 def create_init_data(case_name, dataset):
     dd = get_dataset_description(dataset)
     return InitData(case_name, dd.space, dataset.values, dataset.datetimes, dd.qoi)
@@ -87,9 +88,30 @@ def join_site_data(case: CaseData, qoi: str, df: pl.DataFrame):
 
 
 
+def get_plot_labels(case: CaseData, qoi: str):
+    collection = get_collection_for_variable(case.sql, qoi)
+    dd = get_dataset_description(collection[0])
+    case_info = f"Case: {case.case_name}"
+    # <br><sup> {dd.analysis_period} </sup> 
+    qoi_info = f"{dd.qoi} [{dd.unit}]"
+    return case_info, qoi_info
+
+
+def add_displot_labels(g, case: CaseData, qoi: str):
+    case_info, qoi_info = get_plot_labels(case, qoi)
+    g.set_xlabels(qoi_info)
+    g.figure.suptitle(case_info)
+    return g
+    
+
 
 def append_similar_geom_var_to_dataframe(case_name, dataset):
     pass
+# qoi1 = 'AFN Linkage Node 1 to Node 2 Volume Flow Rate'
+# qoi2 = "Site Wind Speed"
+# qoi3 = "Site Wind Direction"
+# qoi4 = all_variables.afn.zone["ach"]
+# qoi4
 
 # case_data = retrieve_cases()
 # sample_case = case_data[0]
@@ -109,9 +131,3 @@ def append_similar_geom_var_to_dataframe(case_name, dataset):
 # g = sns.FacetGrid(df3, col="wind_dir")
 # g.map(sns.boxplot, "case_names", "values", order=["amb_b1", "bol_5","red_b1"])
 
-
-# qoi1 = 'AFN Linkage Node 1 to Node 2 Volume Flow Rate'
-# qoi2 = "Site Wind Speed"
-# qoi3 = "Site Wind Direction"
-# qoi4 = all_variables.afn.zone["ach"]
-# qoi4
