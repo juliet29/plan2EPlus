@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import numpy as np
 from helpers.plots import ShapeDict
+from matplotlib.patches import Rectangle
 
 @dataclass
 class Coord:
@@ -74,6 +75,9 @@ class Domain:
         y1=self.height.max,
         label=dict(text=label),
     )
+
+    def get_mpl_patch(self):
+        return Rectangle((self.width.min, self.height.min), self.width.size, self.height.size, fill=False, edgecolor="black", linestyle="--")
 
     def create_coordinates(self):
         # following requirements for geomeppy block

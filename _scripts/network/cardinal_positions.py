@@ -13,7 +13,7 @@ def get_bounds_of_positioned_graph(pos: NodePositions):
     return Domain(Range(x_min, x_max), Range(y_min, y_max))
 
 
-def create_cardinal_positions(_positions: NodePositions, PAD=1):
+def create_cardinal_positions(_positions: NodePositions, PAD=1.4):
     positions = deepcopy(_positions)
     c = get_bounds_of_positioned_graph(positions)
     mid_x = c.width.midpoint()
