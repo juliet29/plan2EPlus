@@ -31,3 +31,6 @@ def line_plot(collections: list[BaseCollection]):
     fig.update_layout(title_text=title)
 
     return fig
+
+
+

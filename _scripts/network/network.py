@@ -86,6 +86,9 @@ def create_base_graph(idf: IDF, path_to_input: Path):
     G = add_edges(idf, G, pairs)
     return G, positions
 
+
+## -- this goes elsewhere -------
+
 def get_subsurface_wall_num(name: str):
     temp = name.split(" ")[-2]
     res = temp.split("_")
@@ -100,37 +103,41 @@ def get_subsurface_wall_num(name: str):
 
 
 
-def create_edge_label(idf: IDF, G: nx.DiGraph, edge: GraphEdge):
+def create_edge_label(G: nx.DiGraph, edge: GraphEdge):
     # TODO put elsewhere.. 
     def map_ss_type(val):
         d = {"DOOR": "DR", "WINDOW": "WND"}
         return d[val]
 
-    def short_drn(name):
-        assert str(name)
-        return name[0]
-
     owning_zone = G.nodes[edge.source]["num"]
     type = map_ss_type(edge.details["stype"])
     wall_num = get_subsurface_wall_num(edge.details["subsurfaces"])
-    # drn = get_surface_direction(idf, edge.details["surface"]).name
-    # s_drn = short_drn(drn)
 
     return f"{type}-{owning_zone}-{wall_num}"
 
-def create_edge_label_dict(idf: IDF, G: nx.DiGraph):
+def create_edge_label_dict(G: nx.DiGraph):
     nice_edges = [GraphEdge(*e) for e in G.edges(data=True)]
-    return {(e.source, e.target):create_edge_label(idf, G, e) for e in nice_edges}
+    return {(e.source, e.target):create_edge_label(G, e) for e in nice_edges}
 
+
+## -- this goes elsewhere -------
 
 def create_afn_graph(idf: IDF, G: nx.DiGraph):
     def is_node_afn_zone(node):
         afn_zones = [i.Zone_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:ZONE"]]
         return G.nodes[node].get("zone_name") in afn_zones
 
-    def is_edge_afn_surface(e1, e2):
+    def is_edge_afn_surface(e):
         afn_surfaces = [i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]]
-        res = G.edges[(e1, e2)].get("subsurfaces") in afn_surfaces
-        return res
+        return G.edges[e].get("subsurfaces") in afn_surfaces
 
-    return nx.subgraph_view(G, filter_node=is_node_afn_zone), nx.subgraph_view(G, filter_edge=is_edge_afn_surface)
+    nodes = [n for n in G.nodes if is_node_afn_zone(n)]
+    G_zones = nx.subgraph(G, nodes)
+
+    edges =[e for e in G.edges if is_edge_afn_surface(e)]
+    G_afn = nx.edge_subgraph(G, edges)
+
+
+    assert G_zones.nodes < G_afn.nodes, "Graph induced on subsurfaces should include all AFN zones"
+
+    return G_afn

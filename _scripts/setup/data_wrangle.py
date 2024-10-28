@@ -90,3 +90,28 @@ def join_site_data(case: CaseData, qoi: str, df: pl.DataFrame):
 
 def append_similar_geom_var_to_dataframe(case_name, dataset):
     pass
+
+# case_data = retrieve_cases()
+# sample_case = case_data[0]
+# df = create_dataframe_for_all_cases(case_data, qoi4)
+# df.head()
+
+# df2 = join_site_data(sample_case, qoi3, df)
+# df2.head()
+# df3 = df2.with_columns(
+#     pl.when(pl.col("values_right") > 100)
+#     .then(1)
+#     .otherwise(0)
+#     .alias("wind_dir")
+# )
+# df3.head(2)
+
+# g = sns.FacetGrid(df3, col="wind_dir")
+# g.map(sns.boxplot, "case_names", "values", order=["amb_b1", "bol_5","red_b1"])
+
+
+# qoi1 = 'AFN Linkage Node 1 to Node 2 Volume Flow Rate'
+# qoi2 = "Site Wind Speed"
+# qoi3 = "Site Wind Direction"
+# qoi4 = all_variables.afn.zone["ach"]
+# qoi4

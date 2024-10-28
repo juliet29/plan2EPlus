@@ -13,6 +13,7 @@ GREYED_OUT_NODE = "#E5D4ED"
 GREYED_OUT_EDGE = "#DFDFE2"
 
 BRIGHT_NODE = "#ed6904"
+BRIGHT_NODE2 = "#ad6804"
 
 
 def draw_graph_with_node_labels(
@@ -46,25 +47,25 @@ def draw_over(G, pos, color, label_dict):
     nx.draw_networkx_edge_labels(G, pos, edge_labels=label_dict, font_color=color)
 
 
-def draw_init_graph(idf:IDF, G, positions, node_color=GREYED_OUT_NODE, edge_color=GREYED_OUT_EDGE):
+def draw_init_graph(G, positions, node_color=GREYED_OUT_NODE, edge_color=GREYED_OUT_EDGE):
     zone_nodes, cardinal_nodes = filter_nodes(G)
-    e_labels  =create_edge_label_dict(idf, G)
+    e_labels  =create_edge_label_dict(G)
 
     fig = plt.figure(3,figsize=(12,8))
 
     draw_graph_with_node_labels(G, positions, zone_nodes, color=node_color)
-    draw_graph_with_node_labels(G, positions, cardinal_nodes, color=node_color, shape="*", size=200)
+    draw_graph_with_node_labels(G, positions, cardinal_nodes, color=node_color, shape="*", size=400)
     draw_graph_edges_with_labels(G, positions, e_labels, color=edge_color)
 
     return fig
 
-def draw_afn_graph(idf:IDF, G, fig, positions, color=BRIGHT_NODE):
-    e_labels  =create_edge_label_dict(idf, G)
+def draw_afn_graph( G, fig, positions, color=BRIGHT_NODE):
+    e_labels  = create_edge_label_dict(G)
     draw_over(G, positions, color, e_labels)
     return fig
 
-def draw_afn_comparison(idf:IDF, G, G_afn, positions):
-    fig = draw_init_graph(idf, G, positions)
-    fig = draw_afn_graph(idf, G_afn, fig, positions)
+def draw_afn_over_init(G, G_afn, positions):
+    fig = draw_init_graph(G, positions)
+    fig = draw_afn_graph(G_afn, fig, positions)
 
     return fig
