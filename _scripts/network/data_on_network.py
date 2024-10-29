@@ -2,10 +2,11 @@ from pathlib import Path
 from geomeppy import IDF
 import polars as pl
 import networkx as nx
+import numpy as np
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from matplotlib.colors import Colormap, Normalize
+from matplotlib.colors import Colormap, Normalize, LinearSegmentedColormap
 from matplotlib.cm import ScalarMappable
 from matplotlib.axes import Axes
 
@@ -162,7 +163,8 @@ def create_data_on_network_fig_facet_winddir(case_data:list[CaseData], curr_case
     min_val, max_val = true_min_max(min_max_pairs)
 
 
-    cmap = plt.get_cmap("Blues")
+    colors = ["#9ee6f7", "#001f26"]
+    cmap = LinearSegmentedColormap.from_list("customBlues", colors)
     norm = Normalize(vmin=min_val, vmax=max_val) # type: ignore
 
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
