@@ -16,7 +16,7 @@ from network.network import create_base_graph, create_multi_graph
 from setup.data_wrangle import create_dataframe_for_all_cases, get_plot_labels, join_any_data, join_site_data
 from setup.interfaces import CaseData
 
-
+DEG_SPLIT = 180
 
 def is_medians_df(medians: pl.DataFrame):
     assert medians.schema == pl.Schema(
@@ -54,8 +54,8 @@ def get_medians_data(case_data: list[CaseData], curr_case: CaseData, qois: list[
     df1 = join_any_data(df, case_data, qois[1])
     df2 = join_site_data(curr_case, qoi3, df1, 1 )
 
-    df_high_wind = df2.filter(pl.col("values_1") > 100)
-    df_low_wind = df2.filter(pl.col("values_1") <= 100)
+    df_high_wind = df2.filter(pl.col("values_1") > DEG_SPLIT)
+    df_low_wind = df2.filter(pl.col("values_1") <= DEG_SPLIT)
 
     df_wind = df_low_wind if low_wind_dir else df_high_wind
 
@@ -160,22 +160,23 @@ def create_data_on_network_fig_facet_winddir(case_data:list[CaseData], curr_case
     low_wind_dir_vals = [True, False]
     medians = [get_medians_data(case_data, curr_case, qois, i) for i in low_wind_dir_vals]
     min_max_pairs = [get_min_max_values(i) for i in medians]
-    min_val, max_val = true_min_max(min_max_pairs)
+    min_val, max_val = true_min_max(min_max_pairs) # type: ignore
 
 
     colors = ["#9ee6f7", "#001f26"]
     cmap = LinearSegmentedColormap.from_list("customBlues", colors)
+    # cmap = plt.get_cmap("Blues").resampled(20)
     norm = Normalize(vmin=min_val, vmax=max_val) # type: ignore
 
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
 
-    for ax, median, windir in zip(axes, medians, low_wind_dir_vals):
+    for ax, median, windir in zip(axes, medians, low_wind_dir_vals): # type: ignore
         ax = plot_zone_domains(curr_case.idf, ax)
         ax = plot_nodes(Gm, pos, ax)
         ax = plot_edges(Gm, pos, ax, median, cmap)
         ax = set_axis_ticks(ax)
         drn = ">" if windir else "<"
-        ax.set_title(f" {drn} 100º Wind Dir ")
+        ax.set_title(f" {drn} {DEG_SPLIT}º Wind Dir ")
 
 
     case_info, qoi_info = get_plot_labels(curr_case, qois[0])

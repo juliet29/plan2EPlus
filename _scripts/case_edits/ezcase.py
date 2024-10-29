@@ -60,7 +60,8 @@ def add_airflownetwork(_idf: IDF):
 
 def create_ezcase(outputs_dir, inputs_dir):
     path_to_inputs = get_path_to_inputs(inputs_dir)
-    case = initialize_case(outputs_dir)
+    path_to_outputs = get_path_to_outputs(outputs_dir)
+    case = initialize_case(path_to_outputs)
 
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs)

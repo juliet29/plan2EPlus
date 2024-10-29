@@ -1,4 +1,5 @@
 from copy import deepcopy
+from typing import NamedTuple
 from eppy.bunch_subclass import EpBunch
 from geomeppy import IDF
 
@@ -8,6 +9,10 @@ from subsurfaces.interfaces import SubsurfacePair, SubsurfaceObjects
 from helpers.ep_helpers import WallNormal
 from helpers.ep_helpers import get_zone_walls, get_zone_name
 from subsurfaces.placement import create_nine_points_for_domain
+
+class PairOnly(NamedTuple):
+    space_a: int
+    space_b: WallNormal | int
 
 
 class MoreThanOneIntersectionError(Exception):
@@ -25,7 +30,7 @@ def handle_connection_result(res: list[EpBunch]):
         raise MoreThanOneIntersectionError(res)
 
 
-def find_surface_connecting_two_zones(idf: IDF, pair: SubsurfacePair):
+def find_surface_connecting_two_zones(idf: IDF, pair: PairOnly):
     assert pair.space_b + 1  # type: ignore
 
     zone_walls = get_zone_walls(idf, pair.space_a)
@@ -35,7 +40,7 @@ def find_surface_connecting_two_zones(idf: IDF, pair: SubsurfacePair):
     )
 
 
-def find_surface_connecting_zone_and_drn(idf: IDF, pair: SubsurfacePair):
+def find_surface_connecting_zone_and_drn(idf: IDF, pair: PairOnly):
     assert pair.space_b.name  # type: ignore
     zone_walls = get_zone_walls(idf, pair.space_a)
     try:
@@ -46,13 +51,27 @@ def find_surface_connecting_zone_and_drn(idf: IDF, pair: SubsurfacePair):
     except MoreThanOneIntersectionError as err:
         # can put more complex logic here..
         return err.surfaces[0]
+    
+def is_directed_pair(pair):
+    for i in pair:
+        if hasattr(i, "name"):
+            return True
+    return False
+
+def sort_zone_first(pair):
+    p = sorted(
+            pair,
+            key=lambda x: hasattr(x, "name"),
+        )
+    return PairOnly(*p)
 
 
 def get_connecting_surface(idf: IDF, pair: SubsurfacePair):
-    if pair.attrs.object_type == SubsurfaceObjects.WINDOW:
-        return find_surface_connecting_zone_and_drn(idf, pair)
+    p = sort_zone_first((pair.space_a, pair.space_b))
+    if is_directed_pair(p):
+        return find_surface_connecting_zone_and_drn(idf, p)
     else:
-        return find_surface_connecting_two_zones(idf, pair)
+        return find_surface_connecting_two_zones(idf, p)
 
 
 def is_dim_greater(subsurf_val, surf_val, dim):

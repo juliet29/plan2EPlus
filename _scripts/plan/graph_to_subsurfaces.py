@@ -73,12 +73,14 @@ def handle_edge(
     room_map: dict[int, str],
     databases: list[dict[int, SubsurfaceAttributes]],
 ):
-    source, target = sorted(
-        [e["source"], e["target"]],
-        key=lambda x: x not in room_map.values(),
-    )
+    # source, target = sorted(
+    #     [e["source"], e["target"]],
+    #     key=lambda x: x not in room_map.values(),
+    # )
+    source, target = e["source"], e["target"]
+    #         # key_from_value(room_map, source),
     return SubsurfacePair(
-        key_from_value(room_map, source),
+        get_node_mapping(source, room_map),
         get_node_mapping(target, room_map),
         get_attr(e["details"], databases),
     )

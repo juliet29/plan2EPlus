@@ -44,7 +44,7 @@ class SubsurfaceAttributes:
 
 class SubsurfacePair:
     def __init__(
-        self, space_a: int, space_b: int | WallNormal, attrs: SubsurfaceAttributes
+        self, space_a: int | WallNormal, space_b: int | WallNormal, attrs: SubsurfaceAttributes
     ) -> None:
         self.space_a = space_a
         self.space_b = space_b
@@ -52,3 +52,5 @@ class SubsurfacePair:
 
     def __repr__(self) -> str:
         return f"SSP(pair={self.space_a, self.space_b}, type={self.attrs.object_type.name}, dims=({self.attrs.dimensions.width}, {self.attrs.dimensions.height})"
+
+

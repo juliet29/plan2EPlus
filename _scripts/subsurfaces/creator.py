@@ -28,7 +28,9 @@ class SubsurfaceCreator:
 
     def get_surface_and_update_attrs(self):
         self.surface, self.attrs = get_approp_surface_and_attrs(self.idf, self.pair)
+        # print(self.attrs.object_type)
         self.attrs = assign_default_constructions(self.idf, self.attrs)
+        # print(self.attrs.construction)
 
     def get_start_location(self):
         self.start_width, self.start_height = create_starting_coord(
