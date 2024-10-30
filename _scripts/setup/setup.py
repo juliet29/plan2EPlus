@@ -8,6 +8,7 @@ from helpers.read_sql import get_sql_results
 from setup.interfaces import CaseData
 
 DEFAULT_OUTPUTS_FOLDER = "oct_h4h_plans"
+AIRBOUNDARY_FOLDER = "airboundary"
 
 def get_case_names():
     return ["amb_b1", "bol_5", "red_b1"]

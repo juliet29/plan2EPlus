@@ -82,6 +82,7 @@ def find_zone_subsurfaces(zone_name: str, subsurfaces: list[EpBunch]) -> list[st
 def create_zone_map(idf: IDF) -> dict[str, list[str]]:
     zones = get_zones(idf)
     subsurfaces = idf.getsubsurfaces()
+    # modify to include walls.. 
     return {z.Name: find_zone_subsurfaces(z.Name, subsurfaces) for z in zones}
 
 def create_zone_map_without_partners(idf: IDF):
