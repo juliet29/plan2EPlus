@@ -7,15 +7,15 @@ from case_edits.ezcase import create_ezcase, get_path_to_inputs, get_path_to_out
 from helpers.read_sql import get_sql_results
 from setup.interfaces import CaseData
 
+DEFAULT_OUTPUTS_FOLDER = "oct_h4h_plans"
 
 def get_case_names():
     return ["amb_b1", "bol_5", "red_b1"]
 
-def create_directories():
+def create_directories(outputs_folder=DEFAULT_OUTPUTS_FOLDER):
     case_names = get_case_names()
     input_dirs = [f"case_{i}" for i in case_names]
 
-    outputs_folder = "oct_h4h_plans"
     output_dirs = [f"{outputs_folder}/{i}" for i in input_dirs]
 
     return list(zip(input_dirs, output_dirs, case_names))
@@ -30,7 +30,7 @@ def get_idf(path_to_output: Path):
     idf_path = path_to_output / "out.idf"
     return IDF(idf_path)
 
-def create_cases():
+def create_cases(outputs_folder=DEFAULT_OUTPUTS_FOLDER):
     def create_case(dirs):
         input_dir, output_dir, _ = dirs
         case = create_ezcase(output_dir, input_dir)
@@ -38,23 +38,22 @@ def create_cases():
             case.run_idf(force_run=False)
         except EnergyPlusRunError:
             raise Exception
-    for i in create_directories():
+    for i in create_directories(outputs_folder):
         create_case(i)
     return True
 
+def retrieve_case_data(input_dir, output_dir, case_name):
+    path_to_input, path_to_output = retrieve_paths(input_dir, output_dir)
+    idf = get_idf(path_to_output)
+    sql = get_sql_results(path_to_output)
+    return CaseData(case_name, idf, sql, path_to_input, path_to_output)
 
-def retrieve_cases():
-    def retrieve_case_data(dirs):
-        input_dir, output_dir, case_name = dirs
-        path_to_input, path_to_output = retrieve_paths(input_dir, output_dir)
-        idf = get_idf(path_to_output)
-        sql = get_sql_results(path_to_output)
-
-        return CaseData(case_name, idf, sql, path_to_input, path_to_output)
-    return [retrieve_case_data(i) for i in create_directories()]
+def retrieve_cases(outputs_folder=DEFAULT_OUTPUTS_FOLDER):
+    return [retrieve_case_data(*i) for i in create_directories(outputs_folder)]
 
 # def get_sqls(case_data: list[CaseData]):
 #     return sqls
+
 
 
     

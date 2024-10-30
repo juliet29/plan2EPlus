@@ -104,3 +104,26 @@ def get_subsurface_wall_num(name: str):
         return float(f"{r}.{s}")
     else:
         raise Exception(f"Invalid name: {name}")
+    
+def get_surface_wall_num(name: str):
+    temp = name.split(" ")[-1]
+    res = temp.split("_")
+    if len(res) == 1:
+        return int(res[0])
+    elif len(res) == 2:
+        r = int(res[0])
+        s = int(res[1])
+        return float(f"{r}.{s}")
+    else:
+        raise Exception(f"Invalid name: {name}")
+    
+def get_simple_name_for_subsurface_or_wall(name:str):
+    try:
+        wall_num = get_subsurface_wall_num(name)
+        type = name.split(" ")[-1][:3].lower()
+    except:
+        wall_num = get_surface_wall_num(name)
+        type = "wall".upper()
+    zone_num = get_zone_num(name)
+    return f"b{zone_num}_{type}_{wall_num}"
+

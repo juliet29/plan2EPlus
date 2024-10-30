@@ -25,7 +25,7 @@ def get_collection_for_variable(sql: SQLiteResult, var: str) -> BaseCollection:
         collection = sql.data_collections_by_output_name(var)
         return collection
         # split_collection_by_ap(collection)
-    raise Exception(f"Invalid variable request")
+    raise Exception(f"Invalid variable request: {var} not in {sql.available_outputs} in {sql}")
 
 
 

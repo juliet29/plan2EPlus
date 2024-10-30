@@ -127,6 +127,7 @@ def get_plot_labels(case: CaseData, qoi: str, custom_qoi= None, ap=False):
     return case_info, qoi_info
 
 
+
 def add_displot_labels(g, case: CaseData, qoi: str):
     case_info, qoi_info = get_plot_labels(case, qoi)
     g.set_xlabels(qoi_info)

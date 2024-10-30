@@ -65,6 +65,8 @@ def get_min_max_values(medians: pl.DataFrame, col=None):
 def get_medians_data(
     case_data: list[CaseData], curr_case: CaseData, qois: list[str], low_wind_dir=True
 ):
+    print(curr_case.case_name)
+    print(curr_case.sql)
     qoi3 = "Site Wind Direction"
     df = create_dataframe_for_all_cases(case_data, qois[0])
     df1 = join_any_data(df, case_data, qois[1])
@@ -161,6 +163,7 @@ def true_min_max(min_max_pairs: list[tuple[float, float]]):
 def create_data_on_network_fig_facet_winddir(
     case_data: list[CaseData], curr_case: CaseData, qois: list[str]
 ):
+    print(curr_case.case_name)
     Gm, pos = init_multigraph(curr_case.idf, curr_case.path_to_input)
 
     low_wind_dir_vals = [True, False]
@@ -185,20 +188,26 @@ def create_data_on_network_fig_facet_winddir(
         drn = "NORTH_EAST" if windir else "NORTH_WEST"
         ax.set_title(f" {drn}")
 
-    case_info, qoi_info = get_plot_labels(curr_case, qois[0], "AFN Net Flow Rate (1>2 - 2>1)", True)
+    case_info, qoi_info = get_plot_labels(
+        curr_case, qois[0], "AFN Net Flow Rate (1>2 - 2>1)", True
+    )
     fig.colorbar(ScalarMappable(norm=norm, cmap=cmap), ax=ax, label=qoi_info)
     fig.suptitle(f"{case_info}")
 
     return fig
 
 
-def save_figures_for_all_cases():
-    qoi1 = 'AFN Linkage Node 1 to Node 2 Volume Flow Rate'
-    qoi12 = 'AFN Linkage Node 2 to Node 1 Volume Flow Rate'
+def save_figures_for_all_cases(save_folder: str, case_folder: str):
+    qoi1 = "AFN Linkage Node 1 to Node 2 Volume Flow Rate"
+    qoi12 = "AFN Linkage Node 2 to Node 1 Volume Flow Rate"
     qois = [qoi1, qoi12]
-    case_data = retrieve_cases()
-    figures_root  = Path.cwd() / "figures" / "net_linkages"
+    case_data = retrieve_cases(case_folder)
+    figures_root = Path.cwd() / "figures" / save_folder
+    if not figures_root.exists():
+        figures_root.mkdir()
+    case_data = [i for i in case_data if i.case_name in ["bol_5", "red_b1"]]
     for sample_case in case_data:
+        print(sample_case.case_name)
         fig = create_data_on_network_fig_facet_winddir(case_data, sample_case, qois)
         fname = f"{sample_case.case_name}.png"
         figures_path = figures_root / fname

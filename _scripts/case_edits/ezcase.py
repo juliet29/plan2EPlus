@@ -1,6 +1,7 @@
 from copy import deepcopy
 from pathlib import Path
 
+from airflow_network.airboundary import update_air_boundary_constructions
 from case_edits.epcase import EneryPlusCaseEditor
 from geomeppy import IDF
 
@@ -22,7 +23,11 @@ def get_path_to_outputs(outputs_dir: str):
     path_to_root = Path.cwd() / "cases" 
     path_to_outputs = path_to_root / outputs_dir
     if not path_to_outputs.exists():
-        path_to_outputs.mkdir()
+        try:
+            path_to_outputs.mkdir()
+        except:
+            path_to_outputs.parent.mkdir()
+            path_to_outputs.mkdir()
     return path_to_outputs
 
 def initialize_case(path_to_outputs: Path):
@@ -57,6 +62,7 @@ def create_ezcase(outputs_dir, inputs_dir):
     case = initialize_case(path_to_outputs)
 
     case.idf = add_rooms(case.idf, path_to_inputs)
+    case.idf = update_air_boundary_constructions(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs)
     case.idf = add_airflownetwork(case.idf)
 
