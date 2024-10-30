@@ -116,12 +116,14 @@ def join_any_data(df: pl.DataFrame, cases: list[CaseData], qoi: str, ix=0):
 ### TODO move to plots..
 
 
-def get_plot_labels(case: CaseData, qoi: str):
+def get_plot_labels(case: CaseData, qoi: str, custom_qoi= None, ap=False):
     collection = get_collection_for_variable(case.sql, qoi)
     dd = get_dataset_description(collection[0])
-    case_info = f"Case: {case.case_name}"
+    case_info = f"Case: {case.case_name}" if not ap else f"Case: {case.case_name}. AP: {dd.analysis_period}"
     # <br><sup> {dd.analysis_period} </sup>
-    qoi_info = f"{dd.qoi} [{dd.unit}]"
+
+    qoi_name = custom_qoi if custom_qoi else dd.qoi
+    qoi_info = f"{qoi_name} [{dd.unit}]"
     return case_info, qoi_info
 
 

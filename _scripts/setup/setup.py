@@ -38,7 +38,8 @@ def create_cases():
             case.run_idf(force_run=False)
         except EnergyPlusRunError:
             raise Exception
-    (create_case(i) for i in create_directories())
+    for i in create_directories():
+        create_case(i)
     return True
 
 
