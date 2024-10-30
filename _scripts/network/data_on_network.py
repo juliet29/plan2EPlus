@@ -12,15 +12,16 @@ from matplotlib.axes import Axes
 
 from helpers.ep_geom_helpers import get_zone_domains
 from helpers.geometry_interfaces import Domain
-from network.network import create_base_graph, create_multi_graph
+from network.network import create_base_graph, create_multi_graph, get_partners_of_surface_or_subsurface, get_node_partners
 from setup.data_wrangle import (
-    create_dataframe_for_all_cases,
+    create_dataframe_for_many_cases,
     get_plot_labels,
     join_any_data,
     join_site_data,
 )
 from setup.interfaces import CaseData
 from setup.setup import retrieve_cases
+from helpers.variable_interfaces import all_variables
 
 
 def get_domains_lim(zone_domains: list[Domain]):
@@ -32,20 +33,27 @@ def get_domains_lim(zone_domains: list[Domain]):
     return (min_x, max_x), (min_y, max_y)
 
 
-def get_matching_edge(G: nx.MultiDiGraph, subsurface_name: str, value: float):
-    consider_reverse = True if value < 0 else False
+def get_matching_edge(idf: IDF, G: nx.MultiDiGraph, subsurface_name: str, value: float):
+    node_a, node_b = get_node_partners(idf, G, subsurface_name)
+    if value < 0:
+        return node_b, node_a
+    return node_a, node_b
 
-    for e in G.edges:
-        if consider_reverse:
-            if G.edges[e].get("reverse"):
-                if G.edges[e].get("subsurfaces").upper() == subsurface_name:
-                    return e
-        else:
-            if G.edges[e].get("subsurfaces").upper() == subsurface_name:
-                if not G.edges[e].get("reverse"):
-                    return e
 
-    raise Exception(f"No match for {subsurface_name} in {G.edges}")
+    # consider_reverse = True if value < 0 else False
+
+
+    # for e in G.edges:
+    #     if consider_reverse:
+    #         if G.edges[e].get("reverse"):
+    #             if G.edges[e].get("subsurfaces").upper() == subsurface_name:
+    #                 return e
+    #     else:
+    #         if G.edges[e].get("subsurfaces").upper() == subsurface_name:
+    #             if not G.edges[e].get("reverse"):
+    #                 return e
+
+    # raise Exception(f"No match for {subsurface_name} in {G.edges}")
 
 
 def get_min_max_values(medians: pl.DataFrame, col=None):
@@ -65,10 +73,10 @@ def get_min_max_values(medians: pl.DataFrame, col=None):
 def get_medians_data(
     case_data: list[CaseData], curr_case: CaseData, qois: list[str], low_wind_dir=True
 ):
-    print(curr_case.case_name)
-    print(curr_case.sql)
+    # print(curr_case.case_name)
+    # print(curr_case.sql)
     qoi3 = "Site Wind Direction"
-    df = create_dataframe_for_all_cases(case_data, qois[0])
+    df = create_dataframe_for_many_cases(case_data, qois[0])
     df1 = join_any_data(df, case_data, qois[1])
     df2 = join_site_data(curr_case, qoi3, df1, 1)
     df3 = df2.with_columns(linkage=pl.col("values") - pl.col("values_0"))
@@ -111,6 +119,7 @@ def plot_nodes(Gm: nx.MultiDiGraph, pos, ax: Axes):
 
 
 def plot_edges(
+    idf: IDF,
     Gm: nx.MultiDiGraph,
     pos,
     ax: Axes,
@@ -119,7 +128,7 @@ def plot_edges(
     color_lims: tuple,
 ):
     match_edges = [
-        get_matching_edge(Gm, s, v)
+        get_matching_edge(idf, Gm, s, v)
         for s, v in zip(medians["space_names"], medians["linkage"])
     ]
     min_val, max_val = color_lims
@@ -161,8 +170,13 @@ def true_min_max(min_max_pairs: list[tuple[float, float]]):
 
 
 def create_data_on_network_fig_facet_winddir(
-    case_data: list[CaseData], curr_case: CaseData, qois: list[str]
+    case_data: list[CaseData], curr_case: CaseData, qois: list[str] = []
 ):
+    if not qois:
+        qoi1 = all_variables.afn.linkage["flow12"]
+        qoi12 = all_variables.afn.linkage["flow21"]
+        qois = [qoi1, qoi12]
+    
     print(curr_case.case_name)
     Gm, pos = init_multigraph(curr_case.idf, curr_case.path_to_input)
 
@@ -183,7 +197,7 @@ def create_data_on_network_fig_facet_winddir(
     for ax, median, windir in zip(axes, medians, low_wind_dir_vals):  # type: ignore
         ax = plot_zone_domains(curr_case.idf, ax)
         ax = plot_nodes(Gm, pos, ax)
-        ax = plot_edges(Gm, pos, ax, median, cmap, (min_val, max_val))
+        ax = plot_edges(curr_case.idf, Gm, pos, ax, median, cmap, (min_val, max_val))
         ax = set_axis_ticks(ax)
         drn = "NORTH_EAST" if windir else "NORTH_WEST"
         ax.set_title(f" {drn}")
@@ -205,7 +219,7 @@ def save_figures_for_all_cases(save_folder: str, case_folder: str):
     figures_root = Path.cwd() / "figures" / save_folder
     if not figures_root.exists():
         figures_root.mkdir()
-    case_data = [i for i in case_data if i.case_name in ["bol_5", "red_b1"]]
+    # case_data = [i for i in case_data if i.case_name in ["bol_5", "red_b1"]]
     for sample_case in case_data:
         print(sample_case.case_name)
         fig = create_data_on_network_fig_facet_winddir(case_data, sample_case, qois)

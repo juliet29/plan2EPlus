@@ -60,7 +60,7 @@ def create_dataframe_for_case(case_name, sql, qoi):
     return pl.concat(dataframes, how="vertical")
 
 
-def create_dataframe_for_all_cases(cases: list[CaseData], qoi: str):
+def create_dataframe_for_many_cases(cases: list[CaseData], qoi: str):
     dataframes = [create_dataframe_for_case(i.case_name, i.sql, qoi) for i in cases]
     return pl.concat(dataframes, how="vertical")
 
@@ -90,7 +90,7 @@ def join_site_data(case: CaseData, qoi: str, df: pl.DataFrame, ix=0):
 
     dfs = [create_case_df(i) for i in cases]
     site_df_for_cases = pl.concat(dfs, how="vertical")
-    joined_df =  df.join(site_df_for_cases, on=["case_names", "datetimes"])
+    joined_df = df.join(site_df_for_cases, on=["case_names", "datetimes"])
     return joined_df.rename({"qoi_right": f"qoi_{ix}", "values_right": f"values_{ix}"})
 
 
@@ -107,19 +107,17 @@ def join_any_data(df: pl.DataFrame, cases: list[CaseData], qoi: str, ix=0):
     return joined_df.rename({"qoi_right": f"qoi_{ix}", "values_right": f"values_{ix}"})
 
 
-
-
-
-
-
-
 ### TODO move to plots..
 
 
-def get_plot_labels(case: CaseData, qoi: str, custom_qoi= None, ap=False):
+def get_plot_labels(case: CaseData, qoi: str, custom_qoi=None, ap=False):
     collection = get_collection_for_variable(case.sql, qoi)
     dd = get_dataset_description(collection[0])
-    case_info = f"Case: {case.case_name}" if not ap else f"Case: {case.case_name}. AP: {dd.analysis_period}"
+    case_info = (
+        f"Case: {case.case_name}"
+        if not ap
+        else f"Case: {case.case_name}. AP: {dd.analysis_period}"
+    )
     # <br><sup> {dd.analysis_period} </sup>
 
     qoi_name = custom_qoi if custom_qoi else dd.qoi
@@ -127,15 +125,11 @@ def get_plot_labels(case: CaseData, qoi: str, custom_qoi= None, ap=False):
     return case_info, qoi_info
 
 
-
 def add_displot_labels(g, case: CaseData, qoi: str):
     case_info, qoi_info = get_plot_labels(case, qoi)
     g.set_xlabels(qoi_info)
     g.figure.suptitle(case_info)
     return g
-
-
-
 
 
 # qoi1 = 'AFN Linkage Node 1 to Node 2 Volume Flow Rate'

@@ -1,5 +1,5 @@
 from helpers.variable_interfaces import all_variables
-from setup.data_wrangle import create_dataframe_for_all_cases, join_any_data
+from setup.data_wrangle import create_dataframe_for_many_cases, join_any_data
 from setup.interfaces import CaseData
 from setup.setup import retrieve_case_data
 import polars as pl
@@ -16,13 +16,13 @@ def get_qois():
 
 def get_df(case_data: CaseData):
     qois = get_qois()
-    df = create_dataframe_for_all_cases([case_data], qois[0])
+    df = create_dataframe_for_many_cases([case_data], qois[0])
     return join_any_data(df, [case_data], qois[1])
 
 
 def get_zone_df(case_data: CaseData):
     _, _, ach, vent_vol = get_qois()
-    df = create_dataframe_for_all_cases([case_data], ach)
+    df = create_dataframe_for_many_cases([case_data], ach)
     return join_any_data(df, [case_data], vent_vol)
 
 

@@ -22,6 +22,9 @@ def get_zone_num(name: str):
 def get_zone_name(num: int):
     return f"Block 0{num} Storey 0"
 
+def get_zone_by_name(idf: IDF, name:str):
+    return idf.getobject("ZONE", name)
+
 
 def get_zones(idf: IDF) -> list[EpBunch]:
     return [i for i in idf.idfobjects["ZONE"]]

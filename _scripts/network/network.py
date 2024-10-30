@@ -4,7 +4,8 @@ from typing import Optional
 from geomeppy import IDF
 
 import networkx as nx
-from helpers.ep_helpers import get_subsurface_wall_num
+from helpers.helpers import set_union
+from helpers.ep_helpers import get_partner_of_surface, get_subsurface_by_name, get_subsurface_wall_num, get_surface_by_name
 from network.cardinal_positions import create_cardinal_positions, NodePositions
 from plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
 from plan.helpers import create_room_map
@@ -45,38 +46,70 @@ def create_graph_for_zone(idf: IDF, path_to_input: Path):
 
 def add_cardinal_directions(G: nx.DiGraph, positions: NodePositions):
     for i in WallNormal:
-        G.add_node(i.name, type="Direction")
+        G.add_node(i.name, type="Direction", zone_name=i.name)
     new_positions = create_cardinal_positions(positions)
     return G, new_positions
 
 
 def filter_nodes(G: nx.DiGraph):
+    # TODO redo! zone_name in [i.name for i in WallNormal] or not.. 
     zone_nodes = [i[0] for i in G.nodes(data=True) if "zone_name" in i[1].keys()]
-    cardinal_nodes = [i[0] for i in G.nodes(data=True) if "type" in i[1].keys()]
+    cardinal_nodes = [i[0] for i in G.nodes(data=True) if "zone_name" in i[1].keys()]
     return zone_nodes, cardinal_nodes
 
-
-def get_node_in_G(G, space: WallNormal | int):
+def get_partners_of_surface_or_subsurface(idf: IDF, name:str):
+    name = name.title()
     try:
-        assert not isinstance(space, int)
-        return space.name
+        subsurf_obj = get_subsurface_by_name(idf, name) 
+        assert subsurf_obj, f"No suburface found for {name}"
+        surf = get_surface_by_name(idf, subsurf_obj.Building_Surface_Name)
     except:
-        assert not hasattr(space, "name")
-        for node_name, data in G.nodes(data=True):
-            if "num" in data.keys():
-                if data["num"] == space:
-                    return node_name
-        raise Exception("No matching node found")
+        surf = get_surface_by_name(idf, name)
+
+    assert surf, f"No surface found for {name}"
+    space_a = surf.Zone_Name
 
 
-def add_edges(idf: IDF, G: nx.DiGraph, pairs: list[SubsurfacePair]):
-    for pair in pairs:
-        surf = get_connecting_surface(idf, pair)
-        assert surf
-        subsurface = surf.subsurfaces[0]  # just one each
-        node_a = get_node_in_G(G, pair.space_a)
-        node_b = get_node_in_G(G, pair.space_b)
-        G.add_edge(node_a, node_b, surface=surf.Name, subsurfaces=subsurface.Name, stype=pair.attrs.object_type.name)  # type: ignore
+    if surf.Outside_Boundary_Condition == "outdoors":
+        surf_dir = get_surface_direction(idf, surf.Name)
+        space_b = surf_dir.name
+    else:
+        partner_surf = get_partner_of_surface(idf, surf)
+        assert partner_surf
+        space_b = partner_surf.Zone_Name
+
+    return space_a, space_b
+
+def get_node_in_G(G:nx.DiGraph, zone_name: str):
+    for node in G.nodes:
+        if G.nodes[node].get("zone_name") == zone_name:
+            return node
+    raise Exception(f"No node found for zone_name:`{zone_name}` in G.nodes: {G.nodes}")
+
+
+def get_node_partners(idf: IDF, G: nx.DiGraph, surf_name: str):
+    partners = get_partners_of_surface_or_subsurface(idf, surf_name)
+    nodes = [get_node_in_G(G, i) for i in partners]
+    return nodes
+
+
+def add_edges(idf: IDF, G: nx.DiGraph):
+    all_subsurf = [i.Name for i in idf.getsubsurfaces() if "Partner" not in i.Name]
+    afn_surfaces = [i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]]
+    all_poss_surfs = set_union(all_subsurf, afn_surfaces)
+
+    for s in all_poss_surfs:
+        nodes = get_node_partners(idf, G, s)
+        G.add_edge(*nodes, surface=s)
+
+
+    # for pair in pairs:
+    #     surf = get_connecting_surface(idf, pair)
+    #     assert surf
+    #     subsurface = surf.subsurfaces[0]  # just one each
+    #     node_a = get_node_in_G(G, pair.space_a)
+    #     node_b = get_node_in_G(G, pair.space_b)
+    #     G.add_edge(node_a, node_b, surface=surf.Name, subsurfaces=subsurface.Name, stype=pair.attrs.object_type.name)  # type: ignore
 
     return G
 
@@ -84,8 +117,7 @@ def add_edges(idf: IDF, G: nx.DiGraph, pairs: list[SubsurfacePair]):
 def create_base_graph(idf: IDF, path_to_input: Path):
     G, positions = create_graph_for_zone(idf, path_to_input)
     G, positions = add_cardinal_directions(G, positions)
-    pairs = get_subsurface_pairs_from_case(path_to_input)
-    G = add_edges(idf, G, pairs)
+    G = add_edges(idf, G)
     return G, positions
 
 
@@ -116,9 +148,7 @@ def create_multi_graph(G: nx.DiGraph):
     G_rev = G.reverse()
     for e in G_rev.edges:
         G_rev.edges[e]["reverse"] = True
-    Gm = nx.MultiDiGraph()
-    Gm.add_edges_from(G.edges(data=True))
-    Gm.add_edges_from(G_rev.edges(data=True))
+    Gm = nx.MultiDiGraph(G, G_rev)
 
     return Gm
 

@@ -28,5 +28,10 @@ def filter_none(lst: Iterable[T|None]) -> List[T]:
 def set_difference(s_large:Iterable, s2:Iterable):
     return list(set(s_large).difference(set(s2)))
 
+def set_union(s1:Iterable, s2:Iterable):
+    return list(set(s1).union(set(s2)))
+
+
+
 def list_all_dict_values(d:dict):
     return chain_flatten([v for v in d.values()])
