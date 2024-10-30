@@ -18,10 +18,9 @@ from setup.interfaces import CaseData
 
 DEG_SPLIT = 180
 
-def is_medians_df(medians: pl.DataFrame):
-    assert medians.schema == pl.Schema(
-        [("space_names", pl.String), ("values", pl.Float64), ("values_0", pl.Float64)]
-    )
+# def is_medians_df(medians: pl.DataFrame):
+#     assert medians.schema == pl.Schema(
+#         [("space_names", pl.String), ("values", pl.Float64), ("values_0", pl.Float64)])
 
 
 def get_domains_lim(zone_domains: list[Domain]):
@@ -33,14 +32,22 @@ def get_domains_lim(zone_domains: list[Domain]):
     return (min_x, max_x), (min_y, max_y)
 
 
-def get_matching_edge(G: nx.DiGraph, subsurface_name: str):
+def get_matching_edge(G: nx.MultiDiGraph, subsurface_name: str, value:float):
+    consider_reverse = True if value >= 0 else False
+    print(value, consider_reverse)
     for e in G.edges:
-        if G.edges[e].get("subsurfaces").upper() == subsurface_name:
-            return e
+        if consider_reverse:
+            if G.edges[e].get("reverse"):
+                if G.edges[e].get("subsurfaces").upper() == subsurface_name:
+                    return e
+        else:
+            if G.edges[e].get("subsurfaces").upper() == subsurface_name:
+                    return e
+
     raise Exception(f"No match for {subsurface_name} in {G.edges}")
 
 def get_min_max_values(medians: pl.DataFrame):
-    is_medians_df(medians)
+    # is_medians_df(medians)
     numeric_values = medians.select(pl.selectors.numeric())
     min_val = numeric_values.min_horizontal().min()
     max_val = numeric_values.max_horizontal().max()
@@ -53,16 +60,25 @@ def get_medians_data(case_data: list[CaseData], curr_case: CaseData, qois: list[
     df = create_dataframe_for_all_cases(case_data, qois[0])
     df1 = join_any_data(df, case_data, qois[1])
     df2 = join_site_data(curr_case, qoi3, df1, 1 )
+    df3 = df2.with_columns(linkage=pl.col("values") - pl.col("values_0"))
+    df_case = df3.filter(pl.col("case_names") == curr_case.case_name)
 
-    df_high_wind = df2.filter(pl.col("values_1") > DEG_SPLIT)
-    df_low_wind = df2.filter(pl.col("values_1") <= DEG_SPLIT)
+    df_north_east = df_case.filter(pl.col("values_1").is_between(0,15)  )
+    df_north_west = df_case.filter(pl.col("values_1").is_between(345, 360))
 
-    df_wind = df_low_wind if low_wind_dir else df_high_wind
+    # medians = df_case.group_by(pl.col("space_names")).agg(
+    #         pl.col(["values", "values_0", "linkage"]).median()
+    #     )
+
+
+    # return medians
+
+    df_wind = df_north_east if low_wind_dir else df_north_west
 
 
     df_case = df_wind.filter(pl.col("case_names") == curr_case.case_name)
     return df_case.group_by(pl.col("space_names")).agg(
-        pl.col(["values", "values_0"]).median()
+        pl.col(["values", "values_0", "linkage"]).median()
     )
 
 
@@ -93,10 +109,10 @@ def plot_nodes(Gm: nx.MultiDiGraph, pos, ax: Axes):
 
 
 def plot_edges(Gm: nx.MultiDiGraph, pos, ax: Axes, medians: pl.DataFrame, cmap: Colormap):
-    is_medians_df(medians)
-    forward_edges = [get_matching_edge(Gm, s) for s in medians["space_names"]]
+    # is_medians_df(medians)
+    match_edges = [get_matching_edge(Gm, s, v) for s, v in zip(medians["space_names"], medians["linkage"])]
     
-    rev_edges = [(e[1], e[0], e[2]) for e in forward_edges]
+    rev_edges = [(e[1], e[0], e[2]) for e in match_edges]
 
     min_val, max_val = get_min_max_values(medians)
     connectionstyle = [f"arc3,rad={r}" for r in [0.05] * 2]
@@ -115,8 +131,8 @@ def plot_edges(Gm: nx.MultiDiGraph, pos, ax: Axes, medians: pl.DataFrame, cmap: 
             width=2,
             ax=ax,
         )
-    plot_one_direction_edges(forward_edges, medians["values"], 0)
-    plot_one_direction_edges(rev_edges, medians["values_0"], 1)
+    plot_one_direction_edges(match_edges, medians["values"], 0)
+    # plot_one_direction_edges(rev_edges, medians["values_0"], 1)
 
     return ax
 
@@ -175,8 +191,8 @@ def create_data_on_network_fig_facet_winddir(case_data:list[CaseData], curr_case
         ax = plot_nodes(Gm, pos, ax)
         ax = plot_edges(Gm, pos, ax, median, cmap)
         ax = set_axis_ticks(ax)
-        drn = ">" if windir else "<"
-        ax.set_title(f" {drn} {DEG_SPLIT}º Wind Dir ")
+        drn = "NORTH_EAST" if windir else "NORTH_WEST"
+        ax.set_title(f" {drn}")
 
 
     case_info, qoi_info = get_plot_labels(curr_case, qois[0])
