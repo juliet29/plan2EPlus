@@ -1,18 +1,13 @@
 from copy import deepcopy
-from typing import NamedTuple
 from eppy.bunch_subclass import EpBunch
 from geomeppy import IDF
 
-from subsurfaces.interfaces import Dimensions
+from subsurfaces.interfaces import Dimensions, PairOnly
 from helpers.ep_geom_helpers import create_domain_for_rectangular_wall
 from subsurfaces.interfaces import SubsurfacePair, SubsurfaceObjects
 from helpers.ep_helpers import WallNormal
 from helpers.ep_helpers import get_zone_walls, get_zone_name
 from subsurfaces.placement import create_nine_points_for_domain
-
-class PairOnly(NamedTuple):
-    space_a: int
-    space_b: WallNormal | int
 
 
 class MoreThanOneIntersectionError(Exception):
@@ -45,24 +40,30 @@ def find_surface_connecting_zone_and_drn(idf: IDF, pair: PairOnly):
     zone_walls = get_zone_walls(idf, pair.space_a)
     try:
         res = handle_connection_result(
-            [i for i in zone_walls if WallNormal(round(float(i.azimuth))) == pair.space_b]
+            [
+                i
+                for i in zone_walls
+                if WallNormal(round(float(i.azimuth))) == pair.space_b
+            ]
         )
         return res
     except MoreThanOneIntersectionError as err:
         # can put more complex logic here..
         return err.surfaces[0]
-    
+
+
 def is_directed_pair(pair):
     for i in pair:
         if hasattr(i, "name"):
             return True
     return False
 
+
 def sort_zone_first(pair):
     p = sorted(
-            pair,
-            key=lambda x: hasattr(x, "name"),
-        )
+        pair,
+        key=lambda x: hasattr(x, "name"),
+    )
     return PairOnly(*p)
 
 

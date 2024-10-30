@@ -78,6 +78,7 @@ def handle_edge(
     #     key=lambda x: x not in room_map.values(),
     # )
     source, target = e["source"], e["target"]
+    # attributes = None if e[""]
     #         # key_from_value(room_map, source),
     return SubsurfacePair(
         get_node_mapping(source, room_map),
@@ -91,4 +92,6 @@ def get_subsurface_pairs_from_case(path_to_inputs: Path):
     databases = load_attributes(path_to_inputs)
     graph_data = load_data_from_json(path_to_inputs, GRAPH)
     edges: list[GraphEdgeJSON] = graph_data["links"]
-    return [handle_edge(e, room_map, databases) for e in edges]
+    return [
+        handle_edge(e, room_map, databases) for e in edges if e["details"]["id"] != 0
+    ]

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import NamedTuple
 from helpers.ep_helpers import WallNormal
 from eppy.bunch_subclass import EpBunch
 
@@ -44,7 +45,10 @@ class SubsurfaceAttributes:
 
 class SubsurfacePair:
     def __init__(
-        self, space_a: int | WallNormal, space_b: int | WallNormal, attrs: SubsurfaceAttributes
+        self,
+        space_a: int | WallNormal,
+        space_b: int | WallNormal,
+        attrs: SubsurfaceAttributes,
     ) -> None:
         self.space_a = space_a
         self.space_b = space_b
@@ -54,3 +58,6 @@ class SubsurfacePair:
         return f"SSP(pair={self.space_a, self.space_b}, type={self.attrs.object_type.name}, dims=({self.attrs.dimensions.width}, {self.attrs.dimensions.height})"
 
 
+class PairOnly(NamedTuple):
+    space_a: int
+    space_b: WallNormal | int

@@ -20,6 +20,7 @@ from setup.data_wrangle import (
     join_site_data,
 )
 from setup.interfaces import CaseData
+from setup.setup import retrieve_cases
 
 
 def get_domains_lim(zone_domains: list[Domain]):
@@ -189,3 +190,16 @@ def create_data_on_network_fig_facet_winddir(
     fig.suptitle(f"{case_info}")
 
     return fig
+
+
+def save_figures_for_all_cases():
+    qoi1 = 'AFN Linkage Node 1 to Node 2 Volume Flow Rate'
+    qoi12 = 'AFN Linkage Node 2 to Node 1 Volume Flow Rate'
+    qois = [qoi1, qoi12]
+    case_data = retrieve_cases()
+    figures_root  = Path.cwd() / "figures" / "net_linkages"
+    for sample_case in case_data:
+        fig = create_data_on_network_fig_facet_winddir(case_data, sample_case, qois)
+        fname = f"{sample_case.case_name}.png"
+        figures_path = figures_root / fname
+        fig.savefig(figures_path)

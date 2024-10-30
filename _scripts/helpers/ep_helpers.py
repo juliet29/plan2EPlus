@@ -1,7 +1,5 @@
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
-
-
 from enum import Enum
 
 
@@ -47,18 +45,18 @@ def get_surface_direction(idf: IDF, surface_name: str):
 def is_interior_wall(surf: EpBunch):
     return surf.Surface_Type == "wall" and surf.Outside_Boundary_Condition == "surface"
 
+def get_surface_by_name(idf: IDF, name):
+    return idf.getobject("BUILDINGSURFACE:DETAILED", name)
 
-def get_surface_of_subsurface(idf: IDF, subsurface: EpBunch):
-    return idf.getobject("BUILDINGSURFACE:DETAILED", subsurface.Building_Surface_Name)
+def get_partner_of_surface(idf: IDF, surf: EpBunch):
+    assert is_interior_wall
+    return get_surface_by_name(idf, surf.Outside_Boundary_Condition_Object)
 
 
-def get_subsurface_by_name(idf: IDF, name: str):
-    subsurfaces = idf.getsubsurfaces()
-    return [i for i in subsurfaces if name == i.Name][0]
+
 
 
 PARTNER = " Partner"
-
 
 def create_partner_name(name: str):
     return name + PARTNER
@@ -67,6 +65,15 @@ def create_partner_name(name: str):
 def reverse_partner_name(partner_name: str):
     return partner_name.replace(PARTNER, "")
 
+
+
+def get_surface_of_subsurface(idf: IDF, subsurface: EpBunch):
+    return idf.getobject("BUILDINGSURFACE:DETAILED", subsurface.Building_Surface_Name)
+
+
+def get_subsurface_by_name(idf: IDF, name: str):
+    subsurfaces = idf.getsubsurfaces()
+    return [i for i in subsurfaces if name == i.Name][0]
 
 def find_zone_subsurfaces(zone_name: str, subsurfaces: list[EpBunch]) -> list[str]:
     return [s.Name for s in subsurfaces if zone_name in s.Building_Surface_Name]
@@ -77,8 +84,6 @@ def create_zone_map(idf: IDF) -> dict[str, list[str]]:
     subsurfaces = idf.getsubsurfaces()
     return {z.Name: find_zone_subsurfaces(z.Name, subsurfaces) for z in zones}
 
-
-# TODO use for AFN..
 def create_zone_map_without_partners(idf: IDF):
     zone_map = create_zone_map(idf)
     for k, v in zone_map.items():

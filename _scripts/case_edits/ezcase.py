@@ -29,13 +29,6 @@ def initialize_case(path_to_outputs: Path):
     return EneryPlusCaseEditor(path_to_outputs)
 
 
-# TODO, Move creation to fx above.. 
-def get_path_to_outputs_ep(case: EneryPlusCaseEditor):
-    try:
-        return Path(case.path)
-    except:
-        raise Exception("Case has not been initialized!")
-
 
 def add_rooms(_idf: IDF, path_to_inputs: Path):
     idf = deepcopy(_idf)
