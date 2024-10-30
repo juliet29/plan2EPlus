@@ -40,24 +40,7 @@ def get_matching_edge(idf: IDF, G: nx.MultiDiGraph, subsurface_name: str, value:
     return node_a, node_b
 
 
-    # consider_reverse = True if value < 0 else False
-
-
-    # for e in G.edges:
-    #     if consider_reverse:
-    #         if G.edges[e].get("reverse"):
-    #             if G.edges[e].get("subsurfaces").upper() == subsurface_name:
-    #                 return e
-    #     else:
-    #         if G.edges[e].get("subsurfaces").upper() == subsurface_name:
-    #             if not G.edges[e].get("reverse"):
-    #                 return e
-
-    # raise Exception(f"No match for {subsurface_name} in {G.edges}")
-
-
 def get_min_max_values(medians: pl.DataFrame, col=None):
-    # is_medians_df(medians)
     if not col:
         numeric_values = medians.select(pl.selectors.numeric())
         min_val = numeric_values.min_horizontal().min()
@@ -102,8 +85,6 @@ def init_multigraph(idf: IDF, path_to_input: Path):
 def plot_zone_domains(idf: IDF, ax: Axes):
     zone_domains = get_zone_domains(idf)
     xlim, ylim = get_domains_lim(zone_domains)
-    # fig, ax = plt.subplots()
-
     for d in zone_domains:
         ax.add_artist(d.get_mpl_patch())
 
