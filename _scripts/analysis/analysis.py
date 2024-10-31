@@ -1,8 +1,10 @@
 
 import polars as pl
+from plan.helpers import create_room_map
 from setup.interfaces import CaseData
 from helpers.variable_interfaces import all_variables
 from setup.data_wrangle import create_dataframe_for_many_cases, join_any_data, create_dataframe_for_case, join_site_data
+from helpers.ep_helpers import get_zone_num
 
 
 def create_zone_vol_df_many(case_data: list[CaseData]):
@@ -44,3 +46,11 @@ def create_site_df(case: CaseData):
 
 # df_site = create_site_df(sc)
 # df_site.head()
+
+
+
+def convert_zone_space_name(room_map:dict[int, str], name):
+    ix =  get_zone_num(name)
+    room_name = room_map[ix]
+    label = f"{ix}-{room_name}"
+    return label
