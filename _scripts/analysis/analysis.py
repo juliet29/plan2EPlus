@@ -30,6 +30,9 @@ def create_site_df(case: CaseData):
     sq = all_variables.site
     qois = [sq.temp["db"],sq.solar["direct_rad"],sq.wind["speed"],sq.wind["direction"],]
 
+    dfs = [create_dataframe_for_case(case.case_name, case.sql, qoi) for qoi in qois]
+    return pl.concat(dfs, how="vertical")
+
     df = create_dataframe_for_case(case.case_name, case.sql, qois[0])
     for ix, qoi in enumerate(qois[1:]):
         df = join_site_data(df, case, qoi, ix)
