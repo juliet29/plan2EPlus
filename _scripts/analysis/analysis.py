@@ -1,4 +1,5 @@
 
+import polars as pl
 from setup.interfaces import CaseData
 from helpers.variable_interfaces import all_variables
 from setup.data_wrangle import create_dataframe_for_many_cases, join_any_data, create_dataframe_for_case, join_site_data
@@ -17,9 +18,12 @@ def create_zone_rate_df(case: CaseData):
     zq = all_variables.afn.zone
     qois = [zq["vent_heat_gain"], zq["vent_heat_loss"], zq["mix_heat_gain"],zq["mix_heat_loss"]]
 
-    df = create_dataframe_for_case(case.case_name, case.sql, qois[0])
-    for ix, qoi in enumerate(qois[1:]):
-        df = join_any_data(df, [case], qoi, ix)
+    dfs = [create_dataframe_for_case(case.case_name, case.sql, qoi) for qoi in qois]
+    return pl.concat(dfs, how="vertical")
+
+    # df = create_dataframe_for_case(case.case_name, case.sql, qois[0])
+    # for ix, qoi in enumerate(qois[1:]):
+    #     df = join_any_data(df, [case], qoi, ix)
     return df
 
 def create_site_df(case: CaseData):
