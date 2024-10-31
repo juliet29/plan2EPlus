@@ -61,7 +61,7 @@ def get_medians_data(
     qoi3 = "Site Wind Direction"
     df = create_dataframe_for_many_cases(case_data, qois[0])
     df1 = join_any_data(df, case_data, qois[1])
-    df2 = join_site_data(curr_case, qoi3, df1, 1)
+    df2 = join_site_data(df1, curr_case, qoi3, 1)
     df3 = df2.with_columns(linkage=pl.col("values") - pl.col("values_0"))
     df_case = df3.filter(pl.col("case_names") == curr_case.case_name)
 

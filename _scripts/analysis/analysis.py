@@ -19,8 +19,8 @@ def create_zone_rate_df(case: CaseData):
 
     df = create_dataframe_for_case(case.case_name, case.sql, qois[0])
     for ix, qoi in enumerate(qois[1:]):
-        df2 = join_any_data(df, [case], qoi, ix)
-    return df2
+        df = join_any_data(df, [case], qoi, ix)
+    return df
 
 def create_site_df(case: CaseData):
     sq = all_variables.site
@@ -28,7 +28,12 @@ def create_site_df(case: CaseData):
 
     df = create_dataframe_for_case(case.case_name, case.sql, qois[0])
     for ix, qoi in enumerate(qois[1:]):
-        df2 = join_site_data(df, case, qoi, ix)
-    return df2
+        df = join_site_data(df, case, qoi, ix)
+    return df
 
 
+# df_rate = create_zone_rate_df(sc)
+# df_rate.head()
+
+# df_site = create_site_df(sc)
+# df_site.head()

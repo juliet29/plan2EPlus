@@ -46,9 +46,9 @@ def create_long_dataframe(data: InitData):
         {
             "case_names": extend_data(data.case_name, len_data),
             "space_names": extend_data(data.space, len_data),
+            "datetimes": data.datetimes,
             "qoi": extend_data(data.qoi, len_data),
             "values": data.values,
-            "datetimes": data.datetimes,
         }
     )
 
@@ -81,9 +81,9 @@ def join_site_data(df: pl.DataFrame, case: CaseData, qoi: str,  ix=0):
         return pl.DataFrame(
             {
                 "case_names": extend_data(case_name, len_data),
+                "datetimes": data.datetimes,
                 "qoi": extend_data(data.qoi, len_data),
                 "values": data.values,
-                "datetimes": data.datetimes,
             }
         )
 
