@@ -72,9 +72,8 @@ def create_site_var(case: CaseData, qoi: str):
     return InitData(case.case_name, dd.space, dataset.values, dataset.datetimes, dd.qoi)
 
 
-def join_site_data(case: CaseData, qoi: str, df: pl.DataFrame, ix=0):
+def join_site_data(df: pl.DataFrame, case: CaseData, qoi: str,  ix=0):
     data = create_site_var(case, qoi)
-    # types for polars dataframe?
     cases = df["case_names"].unique()
     len_data = len(data.values)
 

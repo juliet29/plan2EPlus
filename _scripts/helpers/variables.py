@@ -1,9 +1,16 @@
 afn = {
     "zone": {
-        "ach": "AFN Zone Ventilation Air Change Rate",
         "vent_vol": "AFN Zone Ventilation Volume",
+        "mix_vol": "AFN Zone Mixing Volume",
         "vent_heat_gain": "AFN Zone Ventilation Sensible Heat Gain Rate",
         "vent_heat_loss": "AFN Zone Ventilation Sensible Heat Loss Rate",
+        "vent_heat_gain_latent": "AFN Zone Ventilation Latent Heat Gain Rate",
+        "vent_heat_loss_latent": "AFN Zone Ventilation Latent Heat Loss Rate",
+        "mix_heat_gain": "AFN Zone Mixing Sensible Heat Gain Rate",
+        "mix_heat_loss": "AFN Zone Mixing Sensible Heat Loss Rate",
+        "mix_heat_gain_latent": "AFN Zone Mixing Latent Heat Gain Rate",
+        "mix_heat_loss_latent": "AFN Zone Mixing Latent Heat Loss Rate",
+        "ach": "AFN Zone Ventilation Air Change Rate",
     },
     "node": {
         "temp": "AFN Node Temperature",
