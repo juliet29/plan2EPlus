@@ -5,14 +5,17 @@ import networkx as nx
 import numpy as np
 
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 from matplotlib.colors import Colormap, Normalize
 from matplotlib.cm import ScalarMappable
 from matplotlib.axes import Axes
 
-from helpers.ep_geom_helpers import get_zone_domains
-from helpers.geometry_interfaces import Domain
-from network.network import create_base_graph, create_multi_graph, get_partners_of_surface_or_subsurface, get_node_partners
+from analysis.helpers import get_min_max_values, true_min_max
+from analysis.plot_helpers import plot_nodes, plot_zone_domains, set_axis_ticks
+from network.network import (
+    get_partners_of_surface_or_subsurface,
+    get_node_partners,
+)
+from network.network import init_multigraph
 from setup.data_wrangle import (
     create_dataframe_for_many_cases,
     get_plot_labels,
@@ -24,33 +27,11 @@ from setup.setup import retrieve_cases
 from helpers.variable_interfaces import all_variables
 
 
-def get_domains_lim(zone_domains: list[Domain]):
-    PAD = 1.4 * 1.1
-    min_x = min([i.width.min for i in zone_domains]) - PAD
-    max_x = max([i.width.max for i in zone_domains]) + PAD
-    min_y = min([i.height.min for i in zone_domains]) - PAD
-    max_y = max([i.height.max for i in zone_domains]) + PAD
-    return (min_x, max_x), (min_y, max_y)
-
-
 def get_matching_edge(idf: IDF, G: nx.MultiDiGraph, subsurface_name: str, value: float):
     node_a, node_b = get_node_partners(idf, G, subsurface_name)
     if value < 0:
         return node_b, node_a
     return node_a, node_b
-
-
-def get_min_max_values(medians: pl.DataFrame, col=None):
-    if not col:
-        numeric_values = medians.select(pl.selectors.numeric())
-        min_val = numeric_values.min_horizontal().min()
-        max_val = numeric_values.max_horizontal().max()
-
-    else:
-        series = medians[col]
-        return series.min(), series.max()
-
-    return min_val, max_val
 
 
 def get_medians_data(
@@ -74,29 +55,6 @@ def get_medians_data(
     return df_case.group_by(pl.col("space_names")).agg(
         pl.col(["values", "values_0", "linkage"]).median()
     )
-
-
-def init_multigraph(idf: IDF, path_to_input: Path):
-    G, pos = create_base_graph(idf, path_to_input)
-    Gm = create_multi_graph(G)
-    return Gm, pos
-
-
-def plot_zone_domains(idf: IDF, ax: Axes):
-    zone_domains = get_zone_domains(idf)
-    xlim, ylim = get_domains_lim(zone_domains)
-    for d in zone_domains:
-        ax.add_artist(d.get_mpl_patch())
-
-    ax.set(xlim=xlim, ylim=ylim)
-
-    return ax
-
-
-def plot_nodes(Gm: nx.MultiDiGraph, pos, ax: Axes):
-    _ = nx.draw_networkx_nodes(Gm, pos, ax=ax)
-    _ = nx.draw_networkx_labels(Gm, pos, ax=ax, font_size=8)
-    return ax
 
 
 def plot_edges(
@@ -135,21 +93,6 @@ def plot_edges(
     return ax
 
 
-def set_axis_ticks(ax: Axes):
-    ax.xaxis.set_ticks_position("bottom")
-    ax.xaxis.set_major_locator(ticker.AutoLocator())
-    ax.yaxis.set_ticks_position("left")
-    ax.yaxis.set_major_locator(ticker.AutoLocator())
-
-    return ax
-
-
-def true_min_max(min_max_pairs: list[tuple[float, float]]):
-    min_val = min([m[0] for m in min_max_pairs])
-    max_val = max([m[1] for m in min_max_pairs])
-    return min_val, max_val
-
-
 def create_data_on_network_fig_facet_winddir(
     case_data: list[CaseData], curr_case: CaseData, qois: list[str] = []
 ):
@@ -157,7 +100,7 @@ def create_data_on_network_fig_facet_winddir(
         qoi1 = all_variables.afn.linkage["flow12"]
         qoi12 = all_variables.afn.linkage["flow21"]
         qois = [qoi1, qoi12]
-    
+
     print(curr_case.case_name)
     Gm, pos = init_multigraph(curr_case.idf, curr_case.path_to_input)
 
