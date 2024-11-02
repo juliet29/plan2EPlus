@@ -1,8 +1,7 @@
 import polars as pl
 from helpers.ep_helpers import get_zone_num
 from helpers.geometry_interfaces import Domain
-
-
+from sklearn.preprocessing import MinMaxScaler
 
 
 def get_domains_lim(zone_domains: list[Domain]):
@@ -14,7 +13,7 @@ def get_domains_lim(zone_domains: list[Domain]):
     return (min_x, max_x), (min_y, max_y)
 
 
-def get_min_max_values(medians: pl.DataFrame, col=None):
+def get_min_max(medians: pl.DataFrame, col=None):
     if not col:
         numeric_values = medians.select(pl.selectors.numeric())
         min_val = numeric_values.min_horizontal().min()
@@ -40,3 +39,10 @@ def convert_zone_space_name(room_map: dict[int, str], name):
         return f"{ix}-{room_name}"
     except:
         return name
+    
+
+def normalize_column(df:pl.DataFrame, col: str, range=(1,3)):
+    vals = df[col].to_numpy().reshape(-1, 1)
+    scaler = MinMaxScaler(feature_range=range)
+    scaler.fit(vals)
+    return scaler.transform(vals).reshape(1, -1)[0]

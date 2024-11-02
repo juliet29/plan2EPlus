@@ -52,3 +52,8 @@ def get_min_max_values(medians: pl.DataFrame, col=None):
         return series.min(), series.max()
 
     return min_val, max_val
+
+
+class ContainsAsEqualsString(str):
+    def __eq__(self, other):
+            return self.__contains__(other)

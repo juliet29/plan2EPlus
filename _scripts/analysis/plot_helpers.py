@@ -27,11 +27,36 @@ def plot_nodes_simple(Gm: nx.MultiDiGraph, pos, ax: Axes):
     _ = nx.draw_networkx_labels(Gm, pos, ax=ax, font_size=8)
     return ax
 
-def plot_nodes(Gm: nx.MultiDiGraph, pos, ax: Axes, nodes: Iterable[str], values:Iterable[float], cmap: Colormap, min_max:tuple):
+
+def plot_nodes(
+    Gm: nx.MultiDiGraph,
+    pos,
+    ax: Axes,
+    nodes: Iterable[str],
+    values: Iterable[float],
+    cmap: Colormap,
+    min_max: tuple,
+):
     vmin, vmax = min_max
     _ = nx.draw_networkx_nodes(Gm, pos, ax=ax, nodelist=nodes, node_color=values, cmap=cmap, vmin=vmin, vmax=vmax)  # type: ignore
     _ = nx.draw_networkx_labels(Gm, pos, ax=ax, font_size=8)
     return ax
+
+
+def plot_edges_widths(
+    Gm: nx.MultiDiGraph, pos, ax: Axes, edges: Iterable[str], values: Iterable[float]
+):
+    _ = nx.draw_networkx_edges(
+        Gm,
+        pos,
+        edgelist=edges,
+        width=values,  # type: ignore
+        # edge_color=values,
+        ax=ax,
+        alpha=0.7,
+    )
+    return ax
+
 
 def set_axis_ticks(ax: Axes):
     ax.xaxis.set_ticks_position("bottom")
@@ -41,10 +66,8 @@ def set_axis_ticks(ax: Axes):
 
     return ax
 
-def create_colorbar(fig, ax, cmap, min_max:tuple, qoi_info:str):
+
+def create_colorbar(fig, ax, cmap, min_max: tuple, qoi_info: str):
     norm = Normalize(*min_max)  # type: ignore
     fig.colorbar(ScalarMappable(norm=norm, cmap=cmap), ax=ax, label=qoi_info)
     return fig
-
-
-

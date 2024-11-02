@@ -22,7 +22,8 @@ def get_zone_num(name: str):
 def get_zone_name(num: int):
     return f"Block 0{num} Storey 0"
 
-def get_zone_by_name(idf: IDF, name:str):
+
+def get_zone_by_name(idf: IDF, name: str):
     return idf.getobject("ZONE", name)
 
 
@@ -48,18 +49,18 @@ def get_surface_direction(idf: IDF, surface_name: str):
 def is_interior_wall(surf: EpBunch):
     return surf.Surface_Type == "wall" and surf.Outside_Boundary_Condition == "surface"
 
+
 def get_surface_by_name(idf: IDF, name):
     return idf.getobject("BUILDINGSURFACE:DETAILED", name)
+
 
 def get_partner_of_surface(idf: IDF, surf: EpBunch):
     assert is_interior_wall
     return get_surface_by_name(idf, surf.Outside_Boundary_Condition_Object)
 
 
-
-
-
 PARTNER = " Partner"
+
 
 def create_partner_name(name: str):
     return name + PARTNER
@@ -67,7 +68,6 @@ def create_partner_name(name: str):
 
 def reverse_partner_name(partner_name: str):
     return partner_name.replace(PARTNER, "")
-
 
 
 def get_surface_of_subsurface(idf: IDF, subsurface: EpBunch):
@@ -78,6 +78,7 @@ def get_subsurface_by_name(idf: IDF, name: str):
     subsurfaces = idf.getsubsurfaces()
     return [i for i in subsurfaces if name == i.Name][0]
 
+
 def find_zone_subsurfaces(zone_name: str, subsurfaces: list[EpBunch]) -> list[str]:
     return [s.Name for s in subsurfaces if zone_name in s.Building_Surface_Name]
 
@@ -85,8 +86,9 @@ def find_zone_subsurfaces(zone_name: str, subsurfaces: list[EpBunch]) -> list[st
 def create_zone_map(idf: IDF) -> dict[str, list[str]]:
     zones = get_zones(idf)
     subsurfaces = idf.getsubsurfaces()
-    # modify to include walls.. 
+    # modify to include walls..
     return {z.Name: find_zone_subsurfaces(z.Name, subsurfaces) for z in zones}
+
 
 def create_zone_map_without_partners(idf: IDF):
     zone_map = create_zone_map(idf)
@@ -108,7 +110,8 @@ def get_subsurface_wall_num(name: str):
         return float(f"{r}.{s}")
     else:
         raise Exception(f"Invalid name: {name}")
-    
+
+
 def get_surface_wall_num(name: str):
     temp = name.split(" ")[-1]
     res = temp.split("_")
@@ -120,8 +123,9 @@ def get_surface_wall_num(name: str):
         return float(f"{r}.{s}")
     else:
         raise Exception(f"Invalid name: {name}")
-    
-def get_simple_name_for_subsurface_or_wall(name:str):
+
+
+def get_simple_name_for_subsurface_or_wall(name: str):
     try:
         wall_num = get_subsurface_wall_num(name)
         type = name.split(" ")[-1][:3].lower()
@@ -131,3 +135,6 @@ def get_simple_name_for_subsurface_or_wall(name:str):
     zone_num = get_zone_num(name)
     return f"b{zone_num}_{type}_{wall_num}"
 
+
+def get_object_type(obj: EpBunch):
+    return obj.objidd[0]["idfobj"]

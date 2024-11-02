@@ -26,10 +26,6 @@ def get_dataset_description(dataset: BaseCollection):
     return DataDescription(qoi, unit, analysis_period, spatial_data)
 
 
-# def create_plot_title(dataset: BaseCollection):
-#     title = f"{variable} [{unit}] <br><sup> {analysis_period} </sup>"
-#     return title
-
 
 def create_init_data(case_name, dataset):
     dd = get_dataset_description(dataset)

@@ -52,6 +52,14 @@ def retrieve_case_data(input_dir, output_dir, case_name):
 def retrieve_cases(outputs_folder=DEFAULT_OUTPUTS_FOLDER):
     return [retrieve_case_data(*i) for i in create_directories(outputs_folder)]
 
+def retrieve_test_case(output_dir, case_name="test"):
+    path_to_input = get_path_to_inputs(f"case_bol_5")
+    path_to_output = get_path_to_outputs(f"tests/{output_dir}")
+    idf = get_idf(path_to_output)
+    sql = get_sql_results(path_to_output)
+    return CaseData(case_name, idf, sql, path_to_input, path_to_output)
+
+
 # def get_sqls(case_data: list[CaseData]):
 #     return sqls
 

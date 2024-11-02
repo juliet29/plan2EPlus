@@ -9,7 +9,7 @@ from matplotlib.colors import Colormap, Normalize
 from matplotlib.cm import ScalarMappable
 from matplotlib.axes import Axes
 
-from analysis.helpers import get_min_max_values, true_min_max
+from analysis.helpers import get_min_max, true_min_max
 from analysis.plot_helpers import plot_nodes, plot_zone_domains, set_axis_ticks
 from network.network import (
     get_partners_of_surface_or_subsurface,
@@ -108,7 +108,7 @@ def create_data_on_network_fig_facet_winddir(
     medians = [
         get_medians_data(case_data, curr_case, qois, i) for i in low_wind_dir_vals
     ]
-    min_max_pairs = [get_min_max_values(i, "linkage") for i in medians]
+    min_max_pairs = [get_min_max(i, "linkage") for i in medians]
     min_val, max_val = true_min_max(min_max_pairs)  # type: ignore
 
     # colors = ["#9ee6f7", "#001f26"]
