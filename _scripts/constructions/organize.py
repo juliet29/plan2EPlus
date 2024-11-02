@@ -27,6 +27,8 @@ def organize_cons(cons: EpBunch, cons_assignment: dict):
             key = "roof"
         case "furnishings":
             key = "door"
+        case "window":
+            key = "window"
         case _:
             raise Exception(
                 f"{cons.Name.lower()} has no overlap with cons_assignment keys: {cons_assignment.keys()}"

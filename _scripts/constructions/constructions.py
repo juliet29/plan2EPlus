@@ -11,7 +11,7 @@ CONSTRUCTION_SET_TYPE = Literal["Light", "Medium", "Heavy"]
 
 def get_constructions_idf():
     path_to_constructions = Path.cwd() / "cases" / "constructions"
-    return IDF(path_to_constructions / "ASHRAE_2005_HOF_Materials.idf")
+    return IDF(path_to_constructions / "CombinedConstructs.idf")
 
 
 def get_cons_set_by_type(cons_set_type: CONSTRUCTION_SET_TYPE) -> list[EpBunch]:
