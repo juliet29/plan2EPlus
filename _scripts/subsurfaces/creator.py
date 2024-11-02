@@ -29,7 +29,7 @@ class SubsurfaceCreator:
     def get_surface_and_update_attrs(self):
         self.surface, self.attrs = get_approp_surface_and_attrs(self.idf, self.pair)
         # print(self.attrs.object_type)
-        self.attrs = assign_default_constructions(self.idf, self.attrs)
+        # self.attrs = assign_default_constructions(self.idf, self.attrs)
         # print(self.attrs.construction)
 
     def get_start_location(self):
@@ -65,8 +65,8 @@ class SubsurfaceCreator:
         self.obj0.Building_Surface_Name = self.surface.Name
         self.obj0.Name = self.name
 
-        assert self.attrs.construction
-        self.obj0.Construction_Name = self.attrs.construction.Name
+        # assert self.attrs.construction
+        self.obj0.Construction_Name = "" #self.attrs.construction.Name
 
     def make_partner_object(self):
         self.obj1 = self.idf.copyidfobject(self.obj0)

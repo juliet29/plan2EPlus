@@ -10,6 +10,7 @@ from plan.plan_to_eppy import add_eppy_blocks_to_case
 from plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
 from subsurfaces.creator import add_subsurfaces_to_case
 from airflow_network.creator import add_airflownetwork_to_case
+from constructions.constructions import CONSTRUCTION_SET_TYPE, assign_cons_set
 
 
 def get_path_to_inputs(inputs_dir: str):
@@ -39,7 +40,7 @@ def add_rooms(_idf: IDF, path_to_inputs: Path):
     idf = deepcopy(_idf)
     idf = add_eppy_blocks_to_case(idf, path_to_inputs)
     idf.intersect_match()
-    idf.set_default_constructions()
+    # idf.set_default_constructions()
     return idf
 
 
@@ -56,13 +57,22 @@ def add_airflownetwork(_idf: IDF):
     return idf
 
 
-def create_ezcase(outputs_dir, inputs_dir):
-    path_to_inputs = get_path_to_inputs(inputs_dir)
-    path_to_outputs = get_path_to_outputs(outputs_dir)
+def create_ezcase(outputs_dir, inputs_dir, cons_set_type: CONSTRUCTION_SET_TYPE = "Medium"):
+    if not outputs_dir.parent:
+        path_to_outputs = get_path_to_outputs(outputs_dir)
+    else:
+        path_to_outputs = outputs_dir
+    if not inputs_dir.parent:
+        path_to_inputs = get_path_to_inputs(inputs_dir)
+    else:
+        path_to_inputs = inputs_dir
+
     case = initialize_case(path_to_outputs)
 
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs)
+    case.idf = assign_cons_set(case.idf, cons_set_type)
+
     case.idf = add_airflownetwork(case.idf)
     case.idf = add_air_boundaries(case.idf, path_to_inputs)
 
