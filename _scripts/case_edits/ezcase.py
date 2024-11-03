@@ -58,13 +58,11 @@ def add_airflownetwork(_idf: IDF):
 
 
 def create_ezcase(outputs_dir, inputs_dir, cons_set_type: CONSTRUCTION_SET_TYPE = "Medium"):
-    if not outputs_dir.parent:
+    if isinstance(outputs_dir, str) and isinstance(inputs_dir, str):
         path_to_outputs = get_path_to_outputs(outputs_dir)
-    else:
-        path_to_outputs = outputs_dir
-    if not inputs_dir.parent:
         path_to_inputs = get_path_to_inputs(inputs_dir)
     else:
+        path_to_outputs = outputs_dir
         path_to_inputs = inputs_dir
 
     case = initialize_case(path_to_outputs)

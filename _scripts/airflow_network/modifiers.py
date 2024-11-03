@@ -2,6 +2,7 @@ from copy import deepcopy
 from geomeppy import IDF
 
 def add_simulation_control(idf: IDF):
+
     sim_control = idf.newidfobject(
         "AirflowNetwork:SimulationControl".upper()
     )

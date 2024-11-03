@@ -27,9 +27,6 @@ def retrieve_paths(input_dir, output_dir):
     return path_to_input, path_to_output
 
 
-def get_idf(path_to_output: Path):
-    idf_path = path_to_output / "out.idf"
-    return IDF(idf_path)
 
 def create_cases(outputs_folder=DEFAULT_OUTPUTS_FOLDER):
     def create_case(dirs):
@@ -42,6 +39,11 @@ def create_cases(outputs_folder=DEFAULT_OUTPUTS_FOLDER):
     for i in create_directories(outputs_folder):
         create_case(i)
     return True
+
+
+def get_idf(path_to_output: Path):
+    idf_path = path_to_output / "out.idf"
+    return IDF(idf_path)
 
 def retrieve_case_data(input_dir, output_dir, case_name):
     path_to_input, path_to_output = retrieve_paths(input_dir, output_dir)
