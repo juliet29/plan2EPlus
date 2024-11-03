@@ -1,6 +1,5 @@
 from itertools import product
-from setup.setup import get_case_names
-from constructions.constructions import CONSTRUCTION_SET_TYPE
+from setup.setup import get_case_names, retrieve_case_data
 from eppy.runner.run_functions import EnergyPlusRunError
 from case_edits.ezcase import create_ezcase
 
@@ -33,3 +32,6 @@ def create_materials_cases():
     for i in create_directories():
         create_case(i)
     return True
+
+def retrieve_cases():
+    return [retrieve_case_data(*i) for i in create_directories()]
