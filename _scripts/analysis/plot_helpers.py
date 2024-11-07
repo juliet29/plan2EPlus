@@ -1,4 +1,5 @@
 from typing import Iterable
+import random
 import matplotlib.ticker as ticker
 from matplotlib.colors import Colormap, Normalize
 from matplotlib.cm import ScalarMappable
@@ -6,6 +7,7 @@ import networkx as nx
 from analysis.helpers import get_domains_lim
 from helpers.ep_geom_helpers import get_zone_domains
 
+import polars as pl
 
 from geomeppy import IDF
 from matplotlib.axes import Axes
@@ -39,7 +41,7 @@ def plot_nodes(
 ):
     vmin, vmax = min_max
     _ = nx.draw_networkx_nodes(Gm, pos, ax=ax, nodelist=nodes, node_color=values, cmap=cmap, vmin=vmin, vmax=vmax)  # type: ignore
-    _ = nx.draw_networkx_labels(Gm, pos, ax=ax, font_size=8)
+    _ = nx.draw_networkx_labels(Gm, pos, ax=ax, font_size=8, font_weight="bold" )
     return ax
 
 
@@ -55,6 +57,16 @@ def plot_edges_widths(
         ax=ax,
         alpha=0.7,
     )
+    return ax
+
+
+def plot_edge_labels(
+    Gm: nx.MultiDiGraph, pos, ax: Axes, edges: pl.Series, values: pl.Series
+):
+    edges_map = {
+        tuple(k): round(v, 2) for k, v in zip(edges.to_list(), values.to_list())
+    }
+    _ = nx.draw_networkx_edge_labels(Gm, pos, edge_labels=edges_map, ax=ax, font_size=7, rotate=False)
     return ax
 
 

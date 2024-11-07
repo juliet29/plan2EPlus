@@ -65,7 +65,7 @@ def create_ezcase(outputs_dir, inputs_dir, cons_set_type: CONSTRUCTION_SET_TYPE 
         path_to_outputs = outputs_dir
         path_to_inputs = inputs_dir
 
-    case = initialize_case(path_to_outputs)
+    case = initialize_case(path_to_outputs) # type: ignore
 
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs)

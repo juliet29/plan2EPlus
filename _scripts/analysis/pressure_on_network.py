@@ -1,3 +1,4 @@
+from pathlib import Path
 import polars as pl
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -10,6 +11,7 @@ from analysis.dataframes import (
 from analysis.helpers import get_min_max, normalize_column
 from analysis.plot_helpers import (
     create_colorbar,
+    plot_edge_labels,
     plot_nodes,
     plot_zone_domains,
     plot_edges_widths,
@@ -27,7 +29,6 @@ def get_room_values(case: CaseData, time: datetime):
         & (pl.col("datetimes") == time)
     )
     res = dft.select("room_names", "values")
-    print(res)
     return res
 
 
@@ -50,13 +51,14 @@ def add_edges(case: CaseData, Gm, pos, fig, ax, time: datetime):
     res = get_linkage_values(case, time)
     edge_widths = normalize_column(res, "net_linkage", range=(1,4))
     ax = plot_edges_widths(Gm, pos, ax, res["directed_pairs"], edge_widths)
+    ax = plot_edge_labels(Gm, pos, ax, res["directed_pairs"], res["net_linkage"])
     return fig, ax
 
 
 def create_network_plot(case: CaseData, hour_min=(12,0)):
     time = datetime(2017, 7, 1, *hour_min)
     Gm, pos = init_multigraph(case.idf, case.path_to_input)
-    fig, ax = plt.subplots(nrows=1)
+    fig, ax = plt.subplots(nrows=1, figsize=(7, 6))
     ax = plot_zone_domains(case.idf, ax)
     fig, ax = add_nodes(case, Gm, pos, fig, ax, time)
     fig, ax = add_edges(case, Gm, pos, fig, ax, time)
@@ -65,3 +67,17 @@ def create_network_plot(case: CaseData, hour_min=(12,0)):
     stime = time.strftime("%H:%M")
     fig.suptitle(f"{case.case_name} @ {stime}")
     return fig
+
+def get_save_details():
+    FOLDER  = "network_medium"
+    return Path.cwd() / "figures" / FOLDER
+
+def network_plots_for_many_cases(cases: list[CaseData], hour_min=(12,
+0)):
+    hour, min = hour_min
+    time = f"{hour}_{min}"
+    figures_root = get_save_details()
+    for case in cases:
+        fig = create_network_plot(case, hour_min)
+        fig.savefig(figures_root / f"{case.case_name}_{time}")
+    
