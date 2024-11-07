@@ -29,7 +29,8 @@ def get_dataset_description(dataset: BaseCollection):
 
 def create_init_data(case_name, dataset):
     dd = get_dataset_description(dataset)
-    return InitData(case_name, dd.space, dataset.values, dataset.datetimes, dd.qoi)
+    qoi_w_unit = f"{dd.qoi} [{dd.unit}]"
+    return InitData(case_name, dd.space, dataset.values, dataset.datetimes, qoi_w_unit)
 
 
 def extend_data(val, len_data):

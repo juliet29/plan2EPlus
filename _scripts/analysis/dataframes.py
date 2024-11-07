@@ -1,16 +1,16 @@
-from pathlib import Path
-from geomeppy import IDF
 import polars as pl
-from analysis.helpers import convert_zone_space_name
-from network.network import create_base_graph, get_node_partners
-from plan.helpers import create_room_map
+from analysis.helpers import (
+    extract_times,
+    link_dfs_for_qois,
+    map_linkage_names_to_G,
+    map_zone_names,
+)
 from setup.interfaces import CaseData
 from helpers.variable_interfaces import all_variables
 from setup.data_wrangle import (
     create_dataframe_for_many_cases,
     join_any_data,
     create_dataframe_for_case,
-    join_site_data,
 )
 
 
@@ -50,29 +50,11 @@ def create_site_df(case: CaseData):
     return pl.concat(dfs, how="vertical")
 
 
-def link_dfs_for_qois(case: CaseData, qois: list[str]):
-    df = [create_dataframe_for_case(case.case_name, case.sql, qoi) for qoi in qois]
-    return pl.concat(df, how="vertical")
 
 
-def extract_times(df: pl.DataFrame):
-    return df.with_columns(time=pl.col("datetimes").dt.to_string("%H:%M"))
 
 
-def map_zone_names(path_to_input: Path, df: pl.DataFrame):
-    room_map = create_room_map(path_to_input)
-    fx = lambda name: convert_zone_space_name(room_map, name)
-    return df.with_columns(
-        room_names=pl.col("space_names").map_elements(fx, return_dtype=pl.String),
-    )
 
-
-def map_linkage_names_to_G(idf: IDF, path_to_input: Path, df: pl.DataFrame):
-    G, _ = create_base_graph(idf, path_to_input)
-    fx = lambda surf_name: get_node_partners(idf, G, surf_name)
-    return df.with_columns(
-        room_pairs=pl.col("space_names").map_elements(fx, return_dtype=pl.Object)
-    )
 
 
 ### above are df helpers.. ^
