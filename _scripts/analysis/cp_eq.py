@@ -4,6 +4,7 @@ from math import log, sin, cos, pow, radians
 # inc_rad => indident angle in radians, ~ angle between wind direction and and outward normal of wall under consideration.. 
 # side_ratio_fac => log(width of facade / width of adjacent facade)
 def calc_cp(inc_angle, side_ratio_fac=log(1)):
+    # TODO check that side_ratio_fac falls within bounds.. 
     inc_rad = radians(inc_angle)
     cos_inc_rad_over_2 = cos(inc_rad / 2)
     val = 0.6 * log(
