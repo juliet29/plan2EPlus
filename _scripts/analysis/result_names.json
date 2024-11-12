@@ -1,0 +1,25 @@
+[
+  {
+    "all_cases_v_time": {
+      "temp": "temp",
+      "vent": "incoming_vent"
+    },
+    "all_cases_summary": {
+      "table": "table",
+      "scatter": "avg_temp_vs_incoming_vent"
+    },
+    "all_cases_pressure": {
+      "subplot": "subplot",
+      "table": "table"
+    },
+    "one_case_v_time": {
+      "heat_gain_losss_vent_mix": "heat_gain_losss_vent_mix",
+      "exploded_hglvm_and_inflow": "exploded_hglvm"
+    },
+    "comparitive": {
+      "doors": "door_closed_open_random",
+      "windows": "default_50pm",
+      "materials": "heavy_light_med"
+    }
+  }
+]

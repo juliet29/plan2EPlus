@@ -5,19 +5,24 @@ from eppy.bunch_subclass import EpBunch
 from helpers.ep_helpers import WallNormal, get_zone_walls, get_zones
 from helpers.geometry_interfaces import Coordinate3D, Domain, Range
 
+
 def create_total_range(res: list[Domain]):
     mins = [i.width.min for i in res]
     maxes = [i.width.max for i in res]
     return Range(min(mins), max(maxes))
 
 
-def create_domain_for_rectangular_wall(surface: EpBunch):
+def get_coords(surface):  # TODO move to ep_geom_helpers
     coords = [Coordinate3D(*i) for i in surface.coords]  # type:ignore
     assert len(coords) == 4
     xs = sorted(set([i.x for i in coords]))
     ys = sorted(set([i.y for i in coords]))
     zs = sorted(set([i.z for i in coords]))
+    return xs, ys, zs
 
+
+def create_domain_for_rectangular_wall(surface: EpBunch):
+    xs, ys, zs = get_coords(surface)
     width = Range(*ys) if len(ys) > 1 else Range(*xs)
     height = Range(*zs)
     return Domain(width, height)
@@ -61,3 +66,4 @@ def create_domain_for_zone(idf: IDF, num: int):
 def get_zone_domains(idf: IDF):
     z = get_zones(idf)
     return [create_domain_for_zone(idf, ix) for ix, _ in enumerate(z)]
+

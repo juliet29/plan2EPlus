@@ -51,6 +51,9 @@ def add_site_qois_wide(df: pl.DataFrame, case: CaseData, qois: list[str]):
 
     return df.join(long_site_df, on=[ "datetimes", "space_names", "case_names"], )
 
+def create_wide_dataframe_for_many_qois_and_cases(cases: list[CaseData], qois: list[str]):
+    dfs = [create_wide_dataframe_for_many_qois(case, qois) for case in cases]
+    return pl.concat(dfs, how="vertical")
 
 
 # can i create a long df from a wide one with polars.. yes! using pivot... see cp work..

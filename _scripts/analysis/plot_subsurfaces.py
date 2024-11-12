@@ -8,24 +8,15 @@ from datetime import datetime
 import polars as pl
 from copy import deepcopy
 
+from helpers.ep_geom_helpers import get_coords
 from helpers.geometry_interfaces import Coord
 from helpers.ep_helpers import get_original_subsurfaces, get_surface_by_name
 from helpers.ep_geom_helpers import create_domain_for_rectangular_wall
 
-from helpers.geometry_interfaces import Coordinate3D
 from helpers.helpers import ContainsAsEqualsString
 from setup.data_wrangle2 import create_dataframe_for_case
 from setup.interfaces import CaseData
 from helpers.variable_interfaces import all_variables as vars
-
-
-def get_coords(surface):  # TODO move to ep_geom_helpers
-    coords = [Coordinate3D(*i) for i in surface.coords]  # type:ignore
-    assert len(coords) == 4
-    xs = sorted(set([i.x for i in coords]))
-    ys = sorted(set([i.y for i in coords]))
-    zs = sorted(set([i.z for i in coords]))
-    return xs, ys, zs
 
 
 class SubsurfaceLocation(NamedTuple):
@@ -89,6 +80,8 @@ def create_linecoords_for_airboundary(idf, construction_airboundary: EpBunch):
     wall_dom = create_domain_for_rectangular_wall(wall)
     return create_linecoords(wall_dom.width.min, wall_dom.width.max, wall)
 
+
+### split here.. 
 
 @dataclass
 class SurfacePlotStyles:
