@@ -77,7 +77,7 @@ class Domain:
     )
 
     def get_mpl_patch(self):
-        return Rectangle((self.width.min, self.height.min), self.width.size, self.height.size, fill=False, edgecolor="black", linestyle=":", alpha=0.5)
+        return Rectangle((self.width.min, self.height.min), self.width.size, self.height.size, fill=False, edgecolor="black", alpha=0.2)
 
     def create_coordinates(self):
         # following requirements for geomeppy block
