@@ -138,3 +138,7 @@ def get_simple_name_for_subsurface_or_wall(name: str):
 
 def get_object_type(obj: EpBunch):
     return obj.objidd[0]["idfobj"]
+
+
+def get_original_subsurfaces(idf):
+    return [i for i in idf.getsubsurfaces() if PARTNER not in i.Name]

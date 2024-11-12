@@ -5,6 +5,12 @@ from eppy.bunch_subclass import EpBunch
 from helpers.ep_helpers import WallNormal, get_zone_walls, get_zones
 from helpers.geometry_interfaces import Coordinate3D, Domain, Range
 
+def create_total_range(res: list[Domain]):
+    mins = [i.width.min for i in res]
+    maxes = [i.width.max for i in res]
+    return Range(min(mins), max(maxes))
+
+
 def create_domain_for_rectangular_wall(surface: EpBunch):
     coords = [Coordinate3D(*i) for i in surface.coords]  # type:ignore
     assert len(coords) == 4
@@ -24,10 +30,6 @@ def create_domain_for_subsurface(subsurface: EpBunch):
     y1 = y0 + float(subsurface.Height)
     return Domain(Range(x0, x1), Range(y0, y1))
 
-def create_total_range(res: list[Domain]):
-    mins = [i.width.min for i in res]
-    maxes = [i.width.max for i in res]
-    return Range(min(mins), max(maxes))
 
 def create_domain_for_zone(idf: IDF, num: int):
     def sort_and_group_walls():
