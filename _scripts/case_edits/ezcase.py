@@ -1,5 +1,8 @@
 from copy import deepcopy
+from typing import Optional
 from pathlib import Path
+from ladybug.analysisperiod import AnalysisPeriod
+from ladybug.epw import EPW
 
 from airflow_network.airboundary import (
     add_air_boundaries,
@@ -73,7 +76,10 @@ def create_ezcase(
     outputs_dir,
     inputs_dir,
     cons_set_type: CONSTRUCTION_SET_TYPE = "Medium",
-    win_change_data: WindowChangeData | None = None,
+    win_change_data: Optional[WindowChangeData] = None,
+    epw: Optional[EPW] = None,
+    analysis_period: Optional[AnalysisPeriod] = None,
+
 ):
     if isinstance(outputs_dir, str) and isinstance(inputs_dir, str):
         path_to_outputs, path_to_inputs = get_paths_from_dirs(outputs_dir, inputs_dir)
@@ -83,8 +89,12 @@ def create_ezcase(
 
     case = initialize_case(path_to_outputs)  # type: ignore
 
-    case.idf = add_rooms(case.idf, path_to_inputs)
+    if epw:
+        case.epw = epw
+    if analysis_period:
+        case.analysis_period = analysis_period
 
+    case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs, win_change_data)
     case.idf = assign_cons_set(case.idf, cons_set_type)
 

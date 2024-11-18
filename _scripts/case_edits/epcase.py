@@ -7,8 +7,8 @@ from typing import Optional
 from geomeppy import IDF
 from ladybug.epw import EPW
 from eppy.runner.run_functions import EnergyPlusRunError
-
 from case_edits.defaults import IDF_PATH, IDD_PATH, WEATHER_FILE
+from ladybug.analysisperiod import AnalysisPeriod
 
 
 IDF.setiddname(IDD_PATH)
@@ -22,6 +22,8 @@ class EneryPlusCaseEditor:
         self.starting_path = starting_path
         self.is_changed_idf = True
         self.is_failed_simulation = False
+        self.analysis_period: AnalysisPeriod | None = None
+        self.epw : EPW | None = None
         
         self.get_idf()
         self.update_weather_and_run_period()
@@ -69,21 +71,32 @@ class EneryPlusCaseEditor:
             print("idf has not changed - no run")
 
 
-
-
     def update_weather_and_run_period(self):
-        self.idf.epw = WEATHER_FILE
-        epw = EPW(self.idf.epw)
-        loc = self.idf.newidfobject("SITE:LOCATION")
+        if not self.epw:
+            self.epw = EPW(WEATHER_FILE)
+        self.idf = update_idf_location(self.idf, self.epw)
+
+
+        if not self.analysis_period:
+            self.analysis_period = AnalysisPeriod(st_month=7, end_month=7, st_day=1, end_day=1)
+        self.idf = update_idf_run_period(self.idf, self.analysis_period)
+
+
+def update_idf_location(idf:IDF, epw: EPW):
+        loc = idf.newidfobject("SITE:LOCATION")
         loc.Name = epw.location.city
         loc.Latitude = epw.location.latitude
         loc.Longitude = epw.location.longitude
         loc.Time_Zone = epw.location.time_zone
         loc.Elevation = epw.location.elevation
+        return idf
 
-        ap1 = self.idf.newidfobject("RUNPERIOD")
-        ap1.Name = "SummerDay"
-        ap1.Begin_Month = 7
-        ap1.Begin_Day_of_Month = 1
-        ap1.End_Month = 7
-        ap1.End_Day_of_Month = 1
+def update_idf_run_period(idf:IDF, ap:AnalysisPeriod):
+    rp = idf.newidfobject("RUNPERIOD")
+    rp.Name = "Summer"
+    rp.Begin_Month = ap.st_month
+    rp.End_Month = ap.end_month
+    rp.Begin_Day_of_Month = ap.st_day
+    rp.End_Day_of_Month = ap.end_day
+    return idf
+
