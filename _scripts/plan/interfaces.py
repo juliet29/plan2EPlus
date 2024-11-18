@@ -71,3 +71,8 @@ class RoomFromJSON:
     def get_coordinates(self):
         left, top, *_ = self.convert_numbers()
         return RoomCoordinates(self.id, Coord(left, top))
+
+
+class WindowChangeData(NamedTuple):
+    is_window_changed: bool = False
+    value: float = 0

@@ -15,6 +15,7 @@ from plan.interfaces import (
     GraphEdgeJSON,
     GRAPH,
     SUBSURFACES,
+    WindowChangeData,
 )
 from plan.helpers import load_data_from_json, create_room_map
 
@@ -87,9 +88,24 @@ def handle_edge(
     )
 
 
-def get_subsurface_pairs_from_case(path_to_inputs: Path):
+def modify_window_database(
+    databases: list[dict[int, SubsurfaceAttributes]], value: float
+):
+    windows_db = databases[0]
+    for attrs in windows_db.values():
+        attrs.dimensions.modify_area(value)
+    return databases
+
+
+def get_subsurface_pairs_from_case(
+    path_to_inputs: Path, win_change_data: WindowChangeData | None = None
+):
     room_map = create_room_map(path_to_inputs)
     databases = load_attributes(path_to_inputs)
+
+    if win_change_data:
+        databases = modify_window_database(databases, win_change_data.value)
+
     graph_data = load_data_from_json(path_to_inputs, GRAPH)
     edges: list[GraphEdgeJSON] = graph_data["links"]
     return [

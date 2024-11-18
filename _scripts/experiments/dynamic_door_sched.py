@@ -130,4 +130,12 @@ def add_dynamic_vent_sched_to_doors(idf: IDF, idf_path:Path):
     doors = [i for i in  idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"] if "Door" in i.Surface_Name ]
     for door in doors:
         idf = add_venting_sched_object(idf, idf_path.parent, door)
-    return door
+    return idf
+
+
+def close_doors(idf:IDF):
+    doors = [i for i in  idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"] if "Door" in i.Surface_Name ]
+    for door in doors:
+        door.Ventilation_Control_Mode = "NoVent"
+
+    return idf   
