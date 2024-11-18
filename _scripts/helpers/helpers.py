@@ -1,5 +1,5 @@
 from typing import Dict
-from itertools import chain, groupby, tee
+from itertools import chain, groupby, tee, zip_longest
 from typing import Any, Callable, Dict, Iterable, List, TypeVar, Union
 
 import polars as pl
@@ -21,7 +21,7 @@ def sort_and_group_objects(lst: Iterable[T], fx: Callable[[T], Any]) -> List[Lis
     return [list(g) for _, g in groupby(sorted_objs, fx)]
 
 
-def chain_flatten(lst: Iterable[Iterable[T]]) -> Iterable[T]:
+def chain_flatten(lst: Iterable[Iterable[T]]) -> List[T]:
     return list(chain.from_iterable(lst))
 
 
@@ -56,4 +56,11 @@ def get_min_max_values(medians: pl.DataFrame, col=None):
 
 class ContainsAsEqualsString(str):
     def __eq__(self, other):
-            return self.__contains__(other)
+        return self.__contains__(other)
+
+
+def grouper(iterable, n):
+    "Collect data into non-overlapping fixed-length chunks or blocks."
+    # grouper('ABCDEFG', 3, incomplete='ignore') → ABC DEF
+    iterators = [iter(iterable)] * n
+    return list(zip_longest(*iterators, fillvalue=None))

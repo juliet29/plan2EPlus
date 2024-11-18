@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import NamedTuple
+from typing import Callable, NamedTuple
 from helpers.ep_helpers import WallNormal
 from eppy.bunch_subclass import EpBunch
 
@@ -17,6 +17,25 @@ class Dimensions:
 
     def __getitem__(self, i):
         return (self.width, self.height)[i]
+    
+    @property
+    def area(self):
+        return self.width * self.height
+    
+
+    def modify(self, fx:Callable[[float], float]):
+        return self.__class__(fx(self.width), fx(self.height))
+    
+    def modify_area(self, factor:float):
+        # preserves aspect ratio 
+        sqrt_val = factor**(1/2)
+        return self.__class__.modify(self, lambda x: sqrt_val*x)
+
+    
+
+    
+    
+
 
 
 class NinePointsLocator(Enum):
