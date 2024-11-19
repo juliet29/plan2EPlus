@@ -74,8 +74,9 @@ class EneryPlusCaseEditor:
     def update_weather_and_run_period(self):
         if not self.epw:
             self.epw = EPW(WEATHER_FILE)
+            print(f"No epw! Now its {self.epw}")
+        self.idf.epw = self.epw.file_path
         self.idf = update_idf_location(self.idf, self.epw)
-
 
         if not self.analysis_period:
             self.analysis_period = AnalysisPeriod(st_month=7, end_month=7, st_day=1, end_day=1)

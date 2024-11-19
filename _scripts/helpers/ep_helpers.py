@@ -3,6 +3,9 @@ from eppy.bunch_subclass import EpBunch
 from enum import Enum
 
 
+# TODO -> convert these to be associated with the EPBUnch, https://eppy.readthedocs.io/en/latest/_modules/eppy/bunch_subclass.html#addfunctions
+
+
 class WallNormal(Enum):
     # direction of outward normal of the wall..
     # https://eppy.readthedocs.io/en/latest/eppy.geometry.html#eppy.geometry.surface.azimuth
@@ -37,6 +40,8 @@ def get_zone_walls(idf: IDF, num: int) -> list[EpBunch]:
         for i in idf.idfobjects["BUILDINGSURFACE:DETAILED"]
         if get_zone_name(num) in i.Name and "Wall" in i.Name
     ]
+# can alse do zone.zonesubusrfaces then filter to walls .. 
+
 
 
 def get_surface_direction(idf: IDF, surface_name: str):

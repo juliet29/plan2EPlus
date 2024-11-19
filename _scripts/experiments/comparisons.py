@@ -56,21 +56,14 @@ def compare_door_schedule(input_case_name):
     def create_cases(ctype):
         output_dir, input_dir = create_dirs(output_folder, input_case_name, ctype)
 
+        ezcase = create_ezcase(output_dir, input_dir, epw=epw, analysis_period=ap)
         match ctype:
             case "CLOSED":
-                ezcase = create_ezcase(
-                    output_dir, input_dir, epw=epw, analysis_period=ap
-                )
                 ezcase.idf = close_doors(ezcase.idf)
             case "DYNAMIC":
-                ezcase = create_ezcase(
-                    output_dir, input_dir, epw=epw, analysis_period=ap
-                )
                 ezcase.idf = add_dynamic_vent_sched_to_doors(
                     ezcase.idf, ezcase.idf_path
                 )
-            case _:
-                raise Exception("Invalid case")
         run_case(ezcase)
 
     output_folder = "doors"

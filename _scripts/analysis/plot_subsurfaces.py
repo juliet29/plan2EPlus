@@ -170,7 +170,7 @@ def update_styles_for_opening_status(
         try:
             surf.style.linestyle = get_linestyle_for_status(test_name)
         except:
-            pass
+            print(f"{surf.surface.Name} NOT IN AFN.. ")
 
     return surf_data
 
