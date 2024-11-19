@@ -9,6 +9,7 @@ from ladybug.epw import EPW
 from eppy.runner.run_functions import EnergyPlusRunError
 from case_edits.defaults import IDF_PATH, IDD_PATH, WEATHER_FILE
 from ladybug.analysisperiod import AnalysisPeriod
+from rich import print as rprint
 
 
 IDF.setiddname(IDD_PATH)
@@ -63,9 +64,10 @@ class EneryPlusCaseEditor:
             print("idf has changed - running case")
             try:
                 self.idf.run(output_directory=os.path.join(self.path, "results"))
+                rprint(f"[bold green] Simulation for case `{self.path}` succeeded [/] \n")
             except EnergyPlusRunError:
                 self.is_failed_simulation = True
-                print(f"Simulation for case `{self.path}` failed - see error logs")
+                rprint(f"[bold red] Simulation for case `{self.path}` failed - see error logs [/] \n")
     
         else:
             print("idf has not changed - no run")

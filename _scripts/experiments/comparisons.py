@@ -5,14 +5,14 @@ from plan.interfaces import WindowChangeData
 from setup.setup import get_case_names
 from case_edits.ezcase import create_ezcase
 from case_edits.epcase import EneryPlusCaseEditor
-from dynamic_door_sched import add_dynamic_vent_sched_to_doors, close_doors
+from experiments.dynamic_door_sched import add_dynamic_vent_sched_to_doors, close_doors
 from eppy.runner.run_functions import EnergyPlusRunError
 from ladybug.epw import EPW
 from ladybug.analysisperiod import AnalysisPeriod
 
 
-EXP_GROUP = "Nov18"
-RUN_CONTROL = False
+EXP_GROUP = "241119"
+RUN_CONTROL = True
 epw_path = Path.cwd() / "weather_data" / "USA_CA_Palo.Alto.AP.724937_TMYx.epw"
 epw = EPW(epw_path)
 ap = AnalysisPeriod(st_month=6, end_month=10, timestep=4)
@@ -24,26 +24,26 @@ def get_input_dir(input_case_name):
 
 def create_dirs(output_folder, input_case_name, ctype):
     output_case_name = f"{input_case_name}_{ctype}"
-    output_dir = f"{output_folder}_{EXP_GROUP}/{output_case_name}"
+    output_dir = f"{EXP_GROUP}_{output_folder}/{output_case_name}"
     input_dir = get_input_dir(input_case_name)
-    return output_dir, input_dir
+    return output_dir, input_dir, output_case_name
 
 
-def run_case(ezcase: EneryPlusCaseEditor, run_control=RUN_CONTROL):
+def run_case(ezcase: EneryPlusCaseEditor, output_case_name="", run_control=RUN_CONTROL, ): 
     if run_control:
         try:
             ezcase.run_idf(force_run=True)
         except EnergyPlusRunError:
-            raise Exception
+            raise Exception(f"------{output_case_name.upper()} FAILED!!!!!---")
 
 
 def compare_materials(input_case_name):
     def create_cases(ctype):
-        output_dir, input_dir = create_dirs(output_folder, input_case_name, ctype)
+        output_dir, input_dir, output_case_name = create_dirs(output_folder, input_case_name, ctype)
         ezcase = create_ezcase(
             output_dir, input_dir, cons_set_type=ctype, epw=epw, analysis_period=ap
         )
-        run_case(ezcase)
+        run_case(ezcase, output_case_name)
         return
 
     output_folder = "materials"
@@ -54,7 +54,7 @@ def compare_materials(input_case_name):
 
 def compare_door_schedule(input_case_name):
     def create_cases(ctype):
-        output_dir, input_dir = create_dirs(output_folder, input_case_name, ctype)
+        output_dir, input_dir, output_case_name = create_dirs(output_folder, input_case_name, ctype)
 
         ezcase = create_ezcase(output_dir, input_dir, epw=epw, analysis_period=ap)
         match ctype:
@@ -64,7 +64,7 @@ def compare_door_schedule(input_case_name):
                 ezcase.idf = add_dynamic_vent_sched_to_doors(
                     ezcase.idf, ezcase.idf_path
                 )
-        run_case(ezcase)
+        run_case(ezcase, output_case_name)
 
     output_folder = "doors"
     ctypes = ["CLOSED", "DYNAMIC"]
@@ -74,7 +74,7 @@ def compare_door_schedule(input_case_name):
 
 def compare_window_size(input_case_name):
     def create_cases(ctype):
-        output_dir, input_dir = create_dirs(output_folder, input_case_name, ctype)
+        output_dir, input_dir, output_case_name = create_dirs(output_folder, input_case_name, ctype)
         ezcase = create_ezcase(
             output_dir,
             input_dir,
@@ -82,7 +82,7 @@ def compare_window_size(input_case_name):
             epw=epw,
             analysis_period=ap,
         )
-        run_case(ezcase)
+        run_case(ezcase, output_case_name)
 
     output_folder = "windows"
     ctypes = [1.3, 0.7]

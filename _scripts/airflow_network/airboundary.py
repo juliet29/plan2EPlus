@@ -79,7 +79,7 @@ def add_missing_zone_surfaces(idf: IDF, zone: str):
     zone_subsurfs = find_zone_subsurfaces(zone, idf.getsubsurfaces())
     afn_surfaces = [i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]]
     for subsurf in zone_subsurfs:
-        if subsurf not in afn_surfaces and PARTNER not in subsurf:
+        if subsurf not in afn_surfaces and PARTNER not in subsurf and "Window" in subsurf:
             print(f"Subsurf {subsurf} not in  original AFN. Adding now.. " ) 
             idf = add_subsurface(idf, subsurf)
     return idf
