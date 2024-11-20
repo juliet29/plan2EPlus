@@ -32,22 +32,22 @@ def retrieve_cases_from_folder(path_to_dir:Path):
 def get_experiment_folders(exp_group="241119"):
     return [i for i in path_to_output_cases.iterdir() if i.is_dir() and exp_group in i.name]
 
-def retrieve_control_cases():
-    exp_folders = get_experiment_folders()
+def retrieve_control_cases(exp_group="241119"):
+    exp_folders = get_experiment_folders(exp_group)
     [mat_folder] = [i for i in exp_folders if "materials" in i.name]
     return [i for i in retrieve_cases_from_folder(mat_folder) if "Medium" in i.case_name]
 
 COMPARISON_GROUPS = Literal["windows", "materials", "doors"]
 
 
-def retrieve_comparison_groups(comparison_group:COMPARISON_GROUPS):
-    exp_folders = get_experiment_folders()
+def retrieve_comparison_groups(comparison_group:COMPARISON_GROUPS, exp_group="241119"):
+    exp_folders = get_experiment_folders(exp_group)
     [folder] = [i for i in exp_folders if comparison_group in i.name]
     comparison_cases = [i for i in retrieve_cases_from_folder(folder)]
     if comparison_group == "materials":
         return comparison_cases
     else:
-        control_cases = retrieve_control_cases()
+        control_cases = retrieve_control_cases(exp_group)
         return comparison_cases + control_cases
 
 

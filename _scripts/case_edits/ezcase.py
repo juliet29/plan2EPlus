@@ -42,10 +42,6 @@ def get_path_to_outputs(outputs_dir: str):
     return path_to_outputs
 
 
-def initialize_case(path_to_outputs: Path):
-    return EneryPlusCaseEditor(path_to_outputs)
-
-
 def add_rooms(_idf: IDF, path_to_inputs: Path):
     idf = deepcopy(_idf)
     idf = add_eppy_blocks_to_case(idf, path_to_inputs)
@@ -89,13 +85,8 @@ def create_ezcase(
         path_to_outputs = outputs_dir
         path_to_inputs = inputs_dir
 
-    case = initialize_case(path_to_outputs)  # type: ignore
+    case = EneryPlusCaseEditor(path_to_outputs, epw=epw, analysis_period=analysis_period)  # type: ignore
 
-    print(epw, analysis_period)
-    if epw:
-        case.epw = epw
-    if analysis_period:
-        case.analysis_period = analysis_period
 
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs, win_change_data)

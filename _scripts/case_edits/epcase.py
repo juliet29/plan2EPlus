@@ -18,14 +18,14 @@ IDF.setiddname(IDD_PATH)
 
 
 class EneryPlusCaseEditor:
-    def __init__(self, path_to_outputs:Path, starting_path:Optional[Path]=None) -> None: 
+    def __init__(self, path_to_outputs:Path, starting_path:Optional[Path]=None, epw: EPW | None =None, analysis_period: AnalysisPeriod | None = None) -> None: 
         self.path = path_to_outputs
         self.case_name = self.path.name
         self.starting_path = starting_path
         self.is_changed_idf = True
         self.is_failed_simulation = False
-        self.analysis_period: AnalysisPeriod | None = None
-        self.epw : EPW | None = None
+        self.analysis_period: AnalysisPeriod | None = analysis_period
+        self.epw = epw
         
         self.get_idf()
         self.update_weather_and_run_period()
@@ -64,7 +64,7 @@ class EneryPlusCaseEditor:
         if self.is_changed_idf or force_run:
             print("idf has changed - running case")
             try:
-                self.idf.run(output_directory=os.path.join(self.path, "results"))
+                self.idf.run(output_directory=os.path.join(self.path, "results"), verbose="q")
                 rprint(f"[bold green] Simulation for case ` {self.path.parent.name}/{self.path.name}` succeeded [/] \n")
             except EnergyPlusRunError:
                 self.is_failed_simulation = True
