@@ -167,10 +167,13 @@ def update_styles_for_opening_status(
     statuses = get_opening_statuses(case, time)
     for surf in surf_data:
         test_name = surf.surface.Name.upper()
-        try:
-            surf.style.linestyle = get_linestyle_for_status(test_name)
-        except:
-            print(f"{surf.surface.Name} NOT IN AFN.. ")
+        if "WINDOW" in test_name or "DOOR" in test_name:
+            try:
+                surf.style.linestyle = get_linestyle_for_status(test_name)
+            except:
+                surf.style.color = "slategrey" 
+                surf.style.linestyle = CLOSED_LINESTYLE
+                print(f"{surf.surface.Name} NOT IN AFN.. ")
 
     return surf_data
 

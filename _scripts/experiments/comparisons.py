@@ -12,12 +12,18 @@ from ladybug.analysisperiod import AnalysisPeriod
 from helpers.dates import today
 
 
+
+
 EXP_GROUP = f"{today}_summer"
 RUN_CONTROL = False
 epw_path = Path.cwd() / "weather_data" / "USA_CA_Palo.Alto.AP.724937_TMYx.epw"
 epw = EPW(epw_path)
 ap = AnalysisPeriod(st_month=6, end_month=10, timestep=4)
 
+exp_groups = {
+    "yesterday_one_day": "241119",
+    "today_summer": "241120_summer"
+}
 
 def get_input_dir(input_case_name):
     return f"case_{input_case_name}"
