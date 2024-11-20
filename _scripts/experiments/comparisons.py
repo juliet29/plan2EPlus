@@ -12,7 +12,7 @@ from ladybug.analysisperiod import AnalysisPeriod
 from helpers.dates import today
 
 
-EXP_GROUP = f"{today}"
+EXP_GROUP = f"{241119}" #f"{today}"
 RUN_CONTROL = True
 epw_path = Path.cwd() / "weather_data" / "USA_CA_Palo.Alto.AP.724937_TMYx.epw"
 epw = EPW(epw_path)
@@ -93,9 +93,9 @@ def compare_window_size(input_case_name):
 
 def execute_experiment():
     for input_case_name in get_case_names():
-        compare_materials(input_case_name)
+        # compare_materials(input_case_name)
         compare_window_size(input_case_name)
-        compare_door_schedule(input_case_name)
+        # compare_door_schedule(input_case_name)
 
 
 

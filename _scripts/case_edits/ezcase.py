@@ -91,6 +91,7 @@ def create_ezcase(
 
     case = initialize_case(path_to_outputs)  # type: ignore
 
+    print(epw, analysis_period)
     if epw:
         case.epw = epw
     if analysis_period:

@@ -26,7 +26,7 @@ def retrieve_case_from_path(path_to_output:Path):
 
 def retrieve_cases_from_folder(path_to_dir:Path):
     case_paths = [i for i in path_to_dir.iterdir()]
-    return [retrieve_case_from_path(i) for i in case_paths]
+    return [retrieve_case_from_path(i) for i in case_paths if i.is_dir()]
 
 
 def get_experiment_folders(exp_group="241119"):

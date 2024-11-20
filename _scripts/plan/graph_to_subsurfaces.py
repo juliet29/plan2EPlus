@@ -92,8 +92,10 @@ def modify_window_database(
     databases: list[dict[int, SubsurfaceAttributes]], value: float
 ):
     windows_db = databases[0]
+    # print(windows_db)
     for attrs in windows_db.values():
-        attrs.dimensions.modify_area(value)
+        attrs.dimensions = attrs.dimensions.modify_area(value)
+    # print(windows_db)
     return databases
 
 
@@ -104,6 +106,7 @@ def get_subsurface_pairs_from_case(
     databases = load_attributes(path_to_inputs)
 
     if win_change_data:
+        # print(f"changed window data.. {win_change_data}")
         databases = modify_window_database(databases, win_change_data.value)
 
     graph_data = load_data_from_json(path_to_inputs, GRAPH)
