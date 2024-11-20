@@ -9,9 +9,10 @@ from experiments.dynamic_door_sched import add_dynamic_vent_sched_to_doors, clos
 from eppy.runner.run_functions import EnergyPlusRunError
 from ladybug.epw import EPW
 from ladybug.analysisperiod import AnalysisPeriod
+from helpers.dates import today
 
 
-EXP_GROUP = "241119"
+EXP_GROUP = f"{today}"
 RUN_CONTROL = True
 epw_path = Path.cwd() / "weather_data" / "USA_CA_Palo.Alto.AP.724937_TMYx.epw"
 epw = EPW(epw_path)
@@ -95,6 +96,9 @@ def execute_experiment():
         compare_materials(input_case_name)
         compare_window_size(input_case_name)
         compare_door_schedule(input_case_name)
+
+
+
 
 
 # can pass area factor though ezcase.. , 6 cases

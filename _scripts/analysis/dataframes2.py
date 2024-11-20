@@ -14,9 +14,9 @@ def get_redwood_case():
     return case
 
 
-# TODO zone temp data..
-def get_col_regex(name):
-    return pl.col(f"^{name}.*$")
+# # TODO zone temp data..
+# def get_col_regex(name):
+#     return pl.col(f"^{name}.*$")
 
 
 def create_linkage_df(case: CaseData) -> pl.DataFrame:
@@ -44,3 +44,6 @@ def create_linkage_df(case: CaseData) -> pl.DataFrame:
 def get_external_node_df(case: CaseData):
     df =  create_wide_dataframe_for_many_qois(case, [vars.afn.node["wind_pressure"]])
     return add_site_qois_wide(df, case, [vars.site.wind["speed"], vars.site.wind["direction"]])
+
+
+# def create_vol_df_for_many_cases():

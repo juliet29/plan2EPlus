@@ -1,5 +1,6 @@
 
 
+from math import e
 import os
 import filecmp
 from pathlib import Path
@@ -64,7 +65,7 @@ class EneryPlusCaseEditor:
             print("idf has changed - running case")
             try:
                 self.idf.run(output_directory=os.path.join(self.path, "results"))
-                rprint(f"[bold green] Simulation for case `{self.path}` succeeded [/] \n")
+                rprint(f"[bold green] Simulation for case ` {self.path.parent.name}/{self.path.name}` succeeded [/] \n")
             except EnergyPlusRunError:
                 self.is_failed_simulation = True
                 rprint(f"[bold red] Simulation for case `{self.path}` failed - see error logs [/] \n")

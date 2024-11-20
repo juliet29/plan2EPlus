@@ -11,9 +11,10 @@ from setup.data_wrangle import get_plot_labels
 from analysis.dataframes import create_zone_vol_df_many
 from setup.interfaces import CaseData
 from setup.materials_setup import retrieve_cases
+from helpers.dates import today
 
 def get_save_details():
-    FOLDER  = "medium_volumes"
+    FOLDER  = f"{today}_medium_volumes"
     return Path.cwd() / "figures" / FOLDER
 
 def init_df():
@@ -25,7 +26,7 @@ def init_df():
 
 
 
-def hist_and_ecdf_plots(df_vol:pl.DataFrame, sc: CaseData, values, qoi):
+def hist_and_ecdf_plots(df_vol:pl.DataFrame, sc: CaseData, values, qoi, is_saved=False):
     sns.set_style("darkgrid")
     df_filter = df_vol.filter(pl.col(values) > 0)
     _, qoi_info = get_plot_labels(sc, df_vol[qoi][0])
@@ -35,13 +36,15 @@ def hist_and_ecdf_plots(df_vol:pl.DataFrame, sc: CaseData, values, qoi):
         fig, ax = plt.subplots()
         g = sns.histplot(df_filter, x=values,  hue="case_names", kde=True, multiple="stack", ax=ax)
         g.set_xlabel(qoi_info)
-        fig.savefig(figures_root / f"dist_{qoi}")
+        if is_saved:
+            fig.savefig(figures_root / f"dist_{qoi}")
 
     def ecdf_plot():
         fig, ax = plt.subplots()
         g = sns.ecdfplot(df_vol, x=values,  hue="case_names", alpha=0.5, linewidth=5, linestyle="dotted", ax=ax)
         g.set_xlabel(qoi_info)
-        fig.savefig(figures_root / f"ecdf_{qoi}")
+        if is_saved:
+            fig.savefig(figures_root / f"ecdf_{qoi}")
 
 
     hist_plot()
@@ -57,9 +60,11 @@ def aggregate_and_compare(df_vol:pl.DataFrame):
     ])
     return df_agg
 
-def plot_combined_vent_vs_temp(df_vol:pl.DataFrame):
+def plot_combined_vent_vs_temp(df_vol:pl.DataFrame, is_saved=False):
     df_agg = aggregate_and_compare(df_vol)
     figures_root = get_save_details()
-    g = (so.Plot(df_agg, x="temp", y="combined_vent", color="case_names", ).add(so.Dot(pointsize=20, marker="X")).scale(color="flare").save(figures_root / f"vent_v_temp")) # type: ignore
+    g = (so.Plot(df_agg, x="temp", y="combined_vent", color="case_names", ).add(so.Dot(pointsize=20, marker="X")).scale(color="flare"))# type: ignore
+    if is_saved:
+        g.save(figures_root / f"vent_v_temp") 
     return df_agg, g
   
