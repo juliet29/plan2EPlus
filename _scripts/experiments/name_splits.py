@@ -1,7 +1,9 @@
 import polars as pl
 
+from experiments.retrieve import COMPARISON_GROUPS
 
-def split_by_case_type(df):
+
+def split_by_case_type(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         case_type=pl.when(pl.col("case_names").str.contains("amb"))
         .then(pl.lit("amb"))
@@ -11,7 +13,7 @@ def split_by_case_type(df):
     )
 
 
-def split_by_materials(df):
+def split_by_materials(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         exp_type=pl.when(pl.col("case_names").str.contains("Light"))
         .then(pl.lit("Light"))
@@ -21,7 +23,7 @@ def split_by_materials(df):
     )
 
 
-def split_by_doors(df):
+def split_by_doors(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         exp_type=pl.when(pl.col("case_names").str.contains("CLOSED"))
         .then(pl.lit("CLOSED"))
@@ -31,7 +33,7 @@ def split_by_doors(df):
     )
 
 
-def split_by_windows(df):
+def split_by_windows(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         exp_type=pl.when(pl.col("case_names").str.contains("1.3"))
         .then(pl.lit("+30%"))
@@ -39,6 +41,17 @@ def split_by_windows(df):
         .then(pl.lit("-30%"))
         .otherwise(pl.lit("Control"))
     )
+
+def get_split_fx(comparison_group: COMPARISON_GROUPS):
+    match comparison_group:
+        case "doors":
+            return split_by_doors
+        case "windows":
+            return split_by_windows
+        case "materials":
+            return split_by_materials
+        case _:
+            raise Exception("Invalid group ")
 
 
 

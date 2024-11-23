@@ -40,14 +40,16 @@ def plot_nodes(
     min_max: tuple,
 ):
     vmin, vmax = min_max
-    _ = nx.draw_networkx_nodes(Gm, pos, ax=ax, nodelist=nodes, node_color=values, cmap=cmap, vmin=vmin, vmax=vmax)  # type: ignore
-    _ = nx.draw_networkx_labels(Gm, pos, ax=ax, font_size=8, font_weight="bold" )
+    _ = nx.draw_networkx_nodes(Gm, pos, ax=ax, nodelist=nodes, node_color=values, cmap=cmap, vmin=vmin, vmax=vmax, node_size=400)  # type: ignore
+    _ = nx.draw_networkx_labels(Gm, pos, ax=ax, font_size=8, font_weight="bold", bbox=dict(facecolor='white', edgecolor="black", boxstyle='round'))
     return ax
 
 
 def plot_edges_widths(
     Gm: nx.MultiDiGraph, pos, ax: Axes, edges: Iterable[str], values: Iterable[float]
+
 ):
+   
     _ = nx.draw_networkx_edges(
         Gm,
         pos,
@@ -55,7 +57,9 @@ def plot_edges_widths(
         width=values,  # type: ignore
         # edge_color=values,
         ax=ax,
-        alpha=0.7,
+        alpha=1,
+        arrowsize=30
+        # min_target_margin=15
     )
     return ax
 

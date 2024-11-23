@@ -17,6 +17,7 @@ from analysis.plot_helpers import (
     plot_edges_widths,
     set_axis_ticks,
 )
+from analysis.plot_subsurfaces import plot_surfaces
 from setup.interfaces import CaseData
 from network.network import init_multigraph
 
@@ -51,16 +52,17 @@ def add_edges(case: CaseData, Gm, pos, fig, ax, time: datetime):
     res = get_linkage_values(case, time)
     edge_widths = normalize_column(res, "net_linkage", range=(1,4))
     ax = plot_edges_widths(Gm, pos, ax, res["directed_pairs"], edge_widths)
-    ax = plot_edge_labels(Gm, pos, ax, res["directed_pairs"], res["net_linkage"])
+    # ax = plot_edge_labels(Gm, pos, ax, res["directed_pairs"], res["net_linkage"])
     return fig, ax
 
 
 def create_network_plot(case: CaseData, hour_min=(12,0)):
     time = datetime(2017, 7, 1, *hour_min)
     Gm, pos = init_multigraph(case.idf, case.path_to_input)
-    fig, ax = plt.subplots(nrows=1, figsize=(7, 6))
+    fig, ax = plt.subplots(nrows=1, figsize=(8, 6))
     ax = plot_zone_domains(case.idf, ax)
     fig, ax = add_nodes(case, Gm, pos, fig, ax, time)
+    ax, data = plot_surfaces(case, time, ax)
     fig, ax = add_edges(case, Gm, pos, fig, ax, time)
     ax = set_axis_ticks(ax)
 
