@@ -9,7 +9,8 @@ from experiments.retrieve import retrieve_comparison_groups, COMPARISON_GROUPS
 from analysis2.all_cases_v_time import create_space_and_site_dfs
 from setup.data_wrangle2 import create_wide_dataframe_for_many_qois_and_cases
 from experiments.name_splits import get_split_fx, split_by_doors, split_by_materials, split_by_case_type, split_by_windows
-from helpers.dates import today
+from helpers.dates import today, create_save_details
+
 
 
 
@@ -21,6 +22,10 @@ def get_save_details():
     if not path.exists():
         path.mkdir()
     return path
+
+# TODO convert 
+# def get_save_details(comparison):
+#     return create_save_details(comparison)
 
 
 @functools.lru_cache

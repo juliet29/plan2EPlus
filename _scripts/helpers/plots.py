@@ -2,11 +2,6 @@ from typing import TypedDict
 import plotly.graph_objects as go
 import numpy as np
 
-
-
-
-
-
 class ShapeDict(TypedDict):
     type: str
     xref: str
@@ -72,7 +67,7 @@ def create_colorbar(
         mode="markers",
         marker=dict(
             colorscale=color_scheme,
-            showscale=True,
+        showscale=True,
             cmin=min,
             cmax=max,
             colorbar=dict(
@@ -91,3 +86,7 @@ def create_range_limits(trace_dict: dict, buffer=10):
     yrange = [trace_dict["y0"] - buffer, trace_dict["y1"] + buffer]
 
     return xrange, yrange
+
+
+
+
