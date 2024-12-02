@@ -11,8 +11,8 @@ from setup.data_wrangle import create_dataframe_for_case
 from setup.interfaces import CaseData
 
 
-def get_domains_lim(zone_domains: list[Domain]):
-    PAD = 1.4 * 1.1
+def get_domains_lim(zone_domains: list[Domain], PAD_BASE = 1.4):
+    PAD = PAD_BASE * 1.1
     min_x = min([i.width.min for i in zone_domains]) - PAD
     max_x = max([i.width.max for i in zone_domains]) + PAD
     min_y = min([i.height.min for i in zone_domains]) - PAD

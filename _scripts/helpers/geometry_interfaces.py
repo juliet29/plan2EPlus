@@ -90,6 +90,14 @@ class Domain:
 
     def create_centroid(self):
         return Coord(self.width.midpoint(), self.height.midpoint())
+    
+    @property
+    def area(self):
+        return self.width.size * self.height.size
+
+    @property
+    def aspect_ratio(self):
+        return self.width.size / self.height.size
 
 
 
