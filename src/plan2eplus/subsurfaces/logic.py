@@ -108,6 +108,7 @@ def get_approp_surface_and_attrs(
     surf = get_connecting_surface(idf, pair)
     if not surf:
         raise Exception("No surface found")
+    # TODO here will check idf.subsurface changes.. 
     pair.attrs = ensure_subsurface_within_surface(surf, pair)
     return surf, pair.attrs
 

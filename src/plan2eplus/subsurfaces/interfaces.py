@@ -3,7 +3,7 @@ from enum import Enum
 from typing import NamedTuple
 
 from plan2eplus.helpers.geometry_interfaces import Dimensions
-from ..helpers.ep_helpers import WallNormal
+from ..helpers.geometry_interfaces import WallNormal
 from eppy.bunch_subclass import EpBunch
 
 

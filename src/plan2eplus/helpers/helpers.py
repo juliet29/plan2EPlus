@@ -20,6 +20,16 @@ def sort_and_group_objects(lst: Iterable[T], fx: Callable[[T], Any]) -> List[Lis
     sorted_objs = sorted(lst, key=fx)
     return [list(g) for _, g in groupby(sorted_objs, fx)]
 
+def sort_and_group_objects_dict(lst: Iterable[T], fx: Callable[[T], Any]) -> List[List[T]]:
+    sorted_objs = sorted(lst, key=fx)
+    d = {}
+    for k, g in groupby(sorted_objs, fx):
+        d[k] = [i for i in list(g)]
+
+    return d
+
+
+
 
 def chain_flatten(lst: Iterable[Iterable[T]]) -> List[T]:
     return list(chain.from_iterable(lst))

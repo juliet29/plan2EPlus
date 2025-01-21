@@ -1,21 +1,7 @@
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
-from enum import Enum
 
-
-# TODO -> convert these to be associated with the EPBUnch, https://eppy.readthedocs.io/en/latest/_modules/eppy/bunch_subclass.html#addfunctions
-
-
-class WallNormal(Enum):
-    # direction of outward normal of the wall..
-    # https://eppy.readthedocs.io/en/latest/eppy.geometry.html#eppy.geometry.surface.azimuth
-    NORTH = 0.0
-    EAST = 90.0
-    SOUTH = 180.0
-    WEST = 270.0
-
-    def __getitem__(self, i):
-        return getattr(self, i)
+from plan2eplus.helpers.geometry_interfaces import WallNormal
 
 
 def get_zone_num(name: str):
@@ -40,7 +26,9 @@ def get_zone_walls(idf: IDF, num: int) -> list[EpBunch]:
         for i in idf.idfobjects["BUILDINGSURFACE:DETAILED"]
         if get_zone_name(num) in i.Name and "Wall" in i.Name
     ]
-# can alse do zone.zonesubusrfaces then filter to walls .. 
+
+
+# can alse do zone.zonesubusrfaces then filter to walls ..
 
 
 

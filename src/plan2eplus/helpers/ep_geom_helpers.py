@@ -2,8 +2,8 @@ from itertools import groupby
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
-from helpers.ep_helpers import WallNormal, get_zone_walls, get_zones
-from helpers.geometry_interfaces import Coordinate3D, Domain, Range
+from .ep_helpers import get_zone_walls, get_zones
+from .geometry_interfaces import Coordinate3D, Domain, Range, WallNormal
 
 
 def create_total_range(res: list[Domain]):
@@ -66,4 +66,3 @@ def create_domain_for_zone(idf: IDF, num: int):
 def get_zone_domains(idf: IDF):
     z = get_zones(idf)
     return [create_domain_for_zone(idf, ix) for ix, _ in enumerate(z)]
-

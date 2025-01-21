@@ -1,11 +1,10 @@
 from copy import deepcopy
+
 from geomeppy import IDF
 
-from subsurfaces.constructions import assign_default_constructions
-from helpers.ep_helpers import is_interior_wall, create_partner_name
-from subsurfaces.interfaces import SubsurfacePair
-
-from subsurfaces.logic import (
+from ..helpers.ep_helpers import create_partner_name, is_interior_wall
+from .interfaces import SubsurfacePair
+from .logic import (
     create_starting_coord,
     get_approp_surface_and_attrs,
 )

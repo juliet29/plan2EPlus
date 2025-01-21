@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import Callable
 import numpy as np
 from ..helpers.plots import ShapeDict
@@ -128,3 +129,19 @@ class Dimensions:
         # preserves aspect ratio
         sqrt_val = factor ** (1 / 2)
         return self.__class__.modify(self, lambda x: sqrt_val * x)
+
+
+# TODO -> convert these to be associated with the EPBUnch, https://eppy.readthedocs.io/en/latest/_modules/eppy/bunch_subclass.html#addfunctions
+
+
+class WallNormal(Enum):
+    # direction of outward normal of the wall..
+    # https://eppy.readthedocs.io/en/latest/eppy.geometry.html#eppy.geometry.surface.azimuth
+    NORTH = 0.0
+    EAST = 90.0
+    SOUTH = 180.0
+    WEST = 270.0
+
+    def __getitem__(self, i):
+        return getattr(self, i)
+    

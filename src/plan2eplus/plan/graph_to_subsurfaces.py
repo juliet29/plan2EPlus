@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ..helpers.ep_helpers import WallNormal
+from ..helpers.geometry_interfaces import WallNormal
 from ..helpers.helpers import key_from_value
 from ..subsurfaces.interfaces import (
     Dimensions,
@@ -89,7 +89,7 @@ def modify_window_database(
     windows_db = databases[0]
     # print(windows_db)
     for attrs in windows_db.values():
-        # TODO WindowChange Data name needs to be more expressive.. 
+        # TODO WindowChange Data name needs to be more expressive..
         attrs.dimensions = attrs.dimensions.modify_area(value)
     # print(windows_db)
     return databases
@@ -101,7 +101,9 @@ def get_subsurface_pairs_from_case(
     room_map = create_room_map(path_to_inputs)
     databases = load_attributes(path_to_inputs)
 
-    if win_change_data: # TODO => fix this with modifications config.. goal is to parametrically alter window sizes.. 
+    if (
+        win_change_data
+    ):  # TODO => fix this with modifications config.. goal is to parametrically alter window sizes..
         databases = modify_window_database(databases, win_change_data.value)
 
     graph_data = load_data_from_json(path_to_inputs, GRAPH)
