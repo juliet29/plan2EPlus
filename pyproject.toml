@@ -1,0 +1,29 @@
+[project]
+name = "plan2eplus"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Juliet Nwagwu Ume-Ezeoke", email = "jnwagwu@stanford.edu" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "eppy>=0.5.63",
+    "geomeppy>=0.11.8",
+    "ipykernel>=6.29.5",
+    "ladybug>=0.0.2",
+    "ladybug-core>=0.43.22",
+    "networkx>=3.4.2",
+    "plotly>=5.24.1",
+    "polars>=1.20.0",
+    "pyprojroot>=0.3.0",
+    "rich>=13.9.4",
+    "tomli>=2.2.1",
+]
+
+[project.scripts]
+plan2eplus = "plan2eplus:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
