@@ -4,6 +4,9 @@ from pathlib import Path
 from ladybug.analysisperiod import AnalysisPeriod
 from ladybug.epw import EPW
 
+from plan2eplus.config import PATH_TO_OUTPUT_CASES
+from plan2eplus.config import PATH_TO_INPUT_CASES
+
 from ..airflow_network.airboundary import add_air_boundaries
 from .epcase import EneryPlusCaseEditor
 from geomeppy import IDF
@@ -16,19 +19,16 @@ from ..subsurfaces.creator import add_subsurfaces_to_case
 from ..airflow_network.creator import add_airflownetwork_to_case
 from ..constructions.constructions import CONSTRUCTION_SET_TYPE, assign_cons_set
 
-path_to_output_cases = Path.cwd() / "cases"
-path_to_input_data = Path.cwd().parent / "svg2plan/outputs2/"
-
 
 def get_path_to_inputs(inputs_dir: str):
-    path_to_root = path_to_input_data
+    path_to_root = PATH_TO_INPUT_CASES
     path_to_inputs = path_to_root / inputs_dir
     assert path_to_inputs.exists()
     return path_to_inputs
 
 
 def get_path_to_outputs(outputs_dir: str):
-    path_to_root = path_to_output_cases
+    path_to_root = PATH_TO_OUTPUT_CASES
     path_to_outputs = path_to_root / outputs_dir
     if not path_to_outputs.exists():
         try:

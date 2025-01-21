@@ -1,9 +1,17 @@
+from dataclasses import dataclass
 from ..helpers.geometry_interfaces import Dimensions
+from ..helpers.ep_geom_helpers import WallNormal
 from .interfaces import RoomFromJSON
 
-
+@dataclass
 class RoomDefinition(Dimensions):
     label: str | None = ""
+
+@dataclass
+class EdgeDetails:
+    source: int | str
+    target: int | str
+    direction: dict[str, WallNormal]
 
 
 def initial_room(room_def: RoomDefinition): 
@@ -24,3 +32,7 @@ def create_two_room_layout(defn_a:RoomDefinition, defn_b:RoomDefinition):
     # todo => should create graph as go along.. 
     # but what if just have input file? 
     # can use shapely to get adjacencies in simple way.. 
+
+
+
+# TODO if they are importing a json file, need to first check that the file is valid, and highlight places where it is not.. s

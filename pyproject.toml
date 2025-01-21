@@ -18,6 +18,7 @@ dependencies = [
     "polars>=1.20.0",
     "pyprojroot>=0.3.0",
     "rich>=13.9.4",
+    "scipy>=1.15.1",
     "tomli>=2.2.1",
 ]
 

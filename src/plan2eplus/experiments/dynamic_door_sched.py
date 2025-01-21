@@ -6,8 +6,8 @@ import polars as pl
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
-from helpers.helpers import chain_flatten
-from helpers.helpers import grouper
+from ..helpers.helpers import chain_flatten
+from ..helpers.helpers import grouper
 from ladybug.analysisperiod import AnalysisPeriod
 
 HOURS_PER_DAY: int = 24
