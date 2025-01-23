@@ -1,6 +1,6 @@
 from typing import Callable, NamedTuple
-from subsurfaces.interfaces import Dimensions
-from helpers.geometry_interfaces import Coord, Domain, Range
+from .interfaces import Dimensions
+from ..helpers.geometry_interfaces import Coord, Domain, Range
 
 
 class PlacementPoint(NamedTuple):

@@ -10,6 +10,7 @@ from plan2eplus.config import PATH_TO_INPUT_CASES
 from ..airflow_network.airboundary import add_air_boundaries
 from .epcase import EneryPlusCaseEditor
 from geomeppy import IDF
+from .extended_idf import ExtendedIDF
 
 from ..helpers.output_requests import add_all_output_requests
 from ..plan.plan_to_eppy import add_eppy_blocks_from_file
@@ -83,6 +84,7 @@ def create_ezcase(
         path_to_outputs = outputs_dir
         path_to_inputs = inputs_dir
 
+    print(path_to_inputs)
     case = EneryPlusCaseEditor(path_to_outputs, epw=epw, analysis_period=analysis_period)  # type: ignore
 
     case.idf = add_rooms(case.idf, path_to_inputs)

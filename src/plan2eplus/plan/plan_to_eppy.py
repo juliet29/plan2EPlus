@@ -24,7 +24,8 @@ def convert_room_to_eppy_block(room: RoomFromJSON, height: float):
 def add_eppy_blocks(_idf: ExtendedIDF, plan: list[RoomFromJSON]):
     idf = deepcopy(_idf)
     for room in plan:
-        block = convert_room_to_eppy_block(room, _idf.modifications.height)
+        # block = convert_room_to_eppy_block(room, _idf.modifications.height)
+        block = convert_room_to_eppy_block(room, 3.05)
         idf.add_block(**block)
 
     return idf

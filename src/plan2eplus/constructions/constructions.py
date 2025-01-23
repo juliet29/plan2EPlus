@@ -3,8 +3,8 @@ from typing import Literal
 from eppy.bunch_subclass import EpBunch
 from eppy.constructions import thermal_properties
 from geomeppy import IDF
-from constructions.materials import get_construction_set_materials
-from constructions.organize import assign_material_to_surface, organize_cons_set
+from .materials import get_construction_set_materials
+from .organize import assign_material_to_surface, organize_cons_set
 
 CONSTRUCTION_SET_TYPE = Literal["Light", "Medium", "Heavy"]
 

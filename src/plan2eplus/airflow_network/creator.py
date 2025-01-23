@@ -1,5 +1,5 @@
-from airflow_network.logic import get_afn_zones_and_subsurfaces
-from airflow_network.modifiers import add_simulation_control, add_subsurface, add_zone
+from .logic import get_afn_zones_and_subsurfaces
+from .modifiers import add_simulation_control, add_subsurface, add_zone
 
 
 from geomeppy import IDF

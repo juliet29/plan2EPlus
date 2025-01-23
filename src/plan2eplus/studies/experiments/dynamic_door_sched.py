@@ -6,8 +6,8 @@ import polars as pl
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
-from ..helpers.helpers import chain_flatten
-from ..helpers.helpers import grouper
+from ...helpers.helpers import chain_flatten
+from ...helpers.helpers import grouper
 from ladybug.analysisperiod import AnalysisPeriod
 
 HOURS_PER_DAY: int = 24
@@ -94,7 +94,7 @@ def create_year_sched():
 
     year_sched = before_sched + ap_sched + after_sched
 
-    assert len(before_sched) + len(ap.hoys_int) +  len(after_sched) == len(year_sched)
+    assert len(before_sched) + len(ap.hoys_int) + len(after_sched) == len(year_sched)
 
     return year_sched
 
@@ -102,7 +102,7 @@ def create_year_sched():
 def create_door_status_csv(path: Path, file_name: str):
     file_path = path / f"{file_name}.csv"
     sched = create_year_sched()
-    df= pl.DataFrame(data={"door_state": sched})
+    df = pl.DataFrame(data={"door_state": sched})
     df.write_csv(file=file_path)
 
     return file_path
@@ -119,23 +119,30 @@ def add_venting_sched_object(idf: IDF, path: Path, afn_surface: EpBunch):
     o.Rows_to_Skip_at_Top = 1
     o.Column_Number = 1
 
-
     afn_surface.Venting_Availability_Schedule_Name = o.Name
     afn_surface.Ventilation_Control_Mode = "Constant"
 
     return idf
 
 
-def add_dynamic_vent_sched_to_doors(idf: IDF, idf_path:Path):
-    doors = [i for i in  idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"] if "Door" in i.Surface_Name ]
+def add_dynamic_vent_sched_to_doors(idf: IDF, idf_path: Path):
+    doors = [
+        i
+        for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]
+        if "Door" in i.Surface_Name
+    ]
     for door in doors:
         idf = add_venting_sched_object(idf, idf_path.parent, door)
     return idf
 
 
-def close_doors(idf:IDF):
-    doors = [i for i in  idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"] if "Door" in i.Surface_Name ]
+def close_doors(idf: IDF):
+    doors = [
+        i
+        for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]
+        if "Door" in i.Surface_Name
+    ]
     for door in doors:
         door.Ventilation_Control_Mode = "NoVent"
 
-    return idf   
+    return idf

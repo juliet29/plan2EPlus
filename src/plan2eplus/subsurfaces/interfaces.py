@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import NamedTuple
+from typing import Literal, NamedTuple
 
 from plan2eplus.helpers.geometry_interfaces import Dimensions
 from ..helpers.geometry_interfaces import WallNormal
@@ -10,6 +10,8 @@ from eppy.bunch_subclass import EpBunch
 class SubsurfaceObjects(Enum):
     DOOR = 0
     WINDOW = 1
+
+# SubsurfaceObjects = Literal["DOOR" | "WINDOW"]
 
 
 class NinePointsLocator(Enum):

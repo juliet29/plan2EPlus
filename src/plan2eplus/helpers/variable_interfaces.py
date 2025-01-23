@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from helpers.variables import afn, surface, site, zone
-from helpers.helpers import chain_flatten
+from .variables import afn, surface, site, zone
+from .helpers import chain_flatten
 
 def get_values(d:dict):
         return chain_flatten([list(v.values()) for v in d.values()])

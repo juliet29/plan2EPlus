@@ -2,10 +2,10 @@ from copy import deepcopy
 import polars as pl
 from ladybug.datacollection import BaseCollection
 
-from helpers.read_sql import get_collection_for_variable
-from setup.plots import get_name_for_spatial_data
-from setup.setup import CaseData
-from setup.interfaces import DataDescription, InitData
+from ...helpers.read_sql import get_collection_for_variable
+# from .plots import get_name_for_spatial_data
+from .setup import CaseData
+from .interfaces import DataDescription, InitData
 
 
 def get_name_for_spatial_data(dataset: BaseCollection):
@@ -24,7 +24,6 @@ def get_dataset_description(dataset: BaseCollection):
     analysis_period = str(dataset.header.analysis_period)  # what if tehre are two?
     spatial_data = get_name_for_spatial_data(dataset)
     return DataDescription(qoi, unit, analysis_period, spatial_data)
-
 
 
 def create_init_data(case_name, dataset):
@@ -69,7 +68,7 @@ def create_site_var(case: CaseData, qoi: str):
     return InitData(case.case_name, dd.space, dataset.values, dataset.datetimes, dd.qoi)
 
 
-def join_site_data(df: pl.DataFrame, case: CaseData, qoi: str,  ix=0):
+def join_site_data(df: pl.DataFrame, case: CaseData, qoi: str, ix=0):
     data = create_site_var(case, qoi)
     cases = df["case_names"].unique()
     len_data = len(data.values)

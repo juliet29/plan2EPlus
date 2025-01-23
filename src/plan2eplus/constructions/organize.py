@@ -1,6 +1,6 @@
 from eppy.bunch_subclass import EpBunch
-from helpers.ep_helpers import get_object_type
-from helpers.helpers import ContainsAsEqualsString
+from ..helpers.ep_helpers import get_object_type
+from ..helpers.helpers import ContainsAsEqualsString
 
 
 def init_cons_assignment():

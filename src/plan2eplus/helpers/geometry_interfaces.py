@@ -4,6 +4,7 @@ from typing import Callable
 import numpy as np
 from ..helpers.plots import ShapeDict
 from matplotlib.patches import Rectangle
+from shapely import Polygon
 
 
 @dataclass
@@ -108,6 +109,12 @@ class Domain:
     @property
     def aspect_ratio(self):
         return self.width.size / self.height.size
+    
+    def get_shapely_rectangle(self):
+        coords = self.create_coordinates()
+        return Polygon(coords)
+
+
 
 
 @dataclass

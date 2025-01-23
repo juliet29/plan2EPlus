@@ -2,7 +2,7 @@ from pathlib import Path
 from geomeppy import IDF, extractor
 import re
 
-from constructions.materials import get_construction_set_materials
+from .materials import get_construction_set_materials
 
 def find_desired_window_constructions(idf: IDF):
     pattern = re.compile("Sgl Clr \dmm")

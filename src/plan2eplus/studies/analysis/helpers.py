@@ -1,23 +1,13 @@
 from pathlib import Path
 from geomeppy import IDF
 import polars as pl
-from helpers.ep_helpers import get_zone_num
+from ...helpers.ep_helpers import get_zone_num
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
-from helpers.geometry_interfaces import Domain
-from network.network import create_base_graph, get_node_partners
-from plan.helpers import create_room_map
-from setup.data_wrangle import create_dataframe_for_case
-from setup.interfaces import CaseData
-
-
-def get_domains_lim(zone_domains: list[Domain], PAD_BASE = 1.4):
-    PAD = PAD_BASE * 1.1
-    min_x = min([i.width.min for i in zone_domains]) - PAD
-    max_x = max([i.width.max for i in zone_domains]) + PAD
-    min_y = min([i.height.min for i in zone_domains]) - PAD
-    max_y = max([i.height.max for i in zone_domains]) + PAD
-    return (min_x, max_x), (min_y, max_y)
+from ..network.network import create_base_graph, get_node_partners
+from ...plan.helpers import create_room_map
+from ..setup.data_wrangle import create_dataframe_for_case
+from ..setup.interfaces import CaseData
 
 
 def get_min_max(medians: pl.DataFrame, col=None):

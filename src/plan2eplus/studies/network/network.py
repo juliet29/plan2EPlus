@@ -4,20 +4,20 @@ from typing import Optional
 from geomeppy import IDF
 
 import networkx as nx
-from helpers.helpers import set_union
-from helpers.ep_helpers import (
+from ...helpers.helpers import set_union
+from ...helpers.ep_helpers import (
     get_partner_of_surface,
     get_subsurface_by_name,
     get_subsurface_wall_num,
     get_surface_by_name,
 )
-from network.cardinal_positions import create_cardinal_positions, NodePositions
-from plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
-from plan.helpers import create_room_map
-from helpers.ep_helpers import get_surface_direction, get_zones, WallNormal
-from helpers.ep_geom_helpers import create_domain_for_zone
-from subsurfaces.interfaces import SubsurfacePair
-from subsurfaces.logic import get_connecting_surface
+from .cardinal_positions import create_cardinal_positions, NodePositions
+from ...plan.graph_to_subsurfaces import get_subsurface_pairs_from_case
+from ...plan.helpers import create_room_map
+from ...helpers.ep_helpers import get_surface_direction, get_zones, WallNormal
+from ...helpers.ep_geom_helpers import create_domain_for_zone
+from ...subsurfaces.interfaces import SubsurfacePair
+from ...subsurfaces.logic import get_connecting_surface
 from typing import NamedTuple, TypedDict, Literal
 
 
@@ -100,7 +100,7 @@ def get_node_partners(idf: IDF, G: nx.DiGraph, surf_name: str):
 
 
 def add_edges(idf: IDF, G: nx.DiGraph):
-    # not using AFN linkages because some subsurfaces might not be linkages.. 
+    # not using AFN linkages because some subsurfaces might not be linkages..
     all_subsurf = [i.Name for i in idf.getsubsurfaces() if "Partner" not in i.Name]
     afn_surfaces = [
         i.Surface_Name for i in idf.idfobjects["AIRFLOWNETWORK:MULTIZONE:SURFACE"]
@@ -143,6 +143,7 @@ def create_edge_label_dict(G: nx.DiGraph):
 
 ## -- ^^^ this goes elsewhere -------
 
+
 def create_multi_graph(G: nx.DiGraph):
     G_rev = G.reverse()
     for e in G_rev.edges:
@@ -151,10 +152,12 @@ def create_multi_graph(G: nx.DiGraph):
 
     return Gm
 
+
 def init_multigraph(idf: IDF, path_to_input: Path):
     G, pos = create_base_graph(idf, path_to_input)
     Gm = create_multi_graph(G)
     return Gm, pos
+
 
 def create_afn_graph(idf: IDF, G: nx.DiGraph):
     def is_node_afn_zone(node):
@@ -180,5 +183,3 @@ def create_afn_graph(idf: IDF, G: nx.DiGraph):
     ), "Graph induced on subsurfaces should include all AFN zones"
 
     return G_afn
-
-

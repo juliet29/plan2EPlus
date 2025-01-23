@@ -4,13 +4,23 @@ import matplotlib.ticker as ticker
 from matplotlib.colors import Colormap, Normalize
 from matplotlib.cm import ScalarMappable
 import networkx as nx
-from analysis.helpers import get_domains_lim
-from helpers.ep_geom_helpers import get_zone_domains
+
+from plan2eplus.helpers.geometry_interfaces import Domain
+from ...helpers.ep_geom_helpers import get_zone_domains
 
 import polars as pl
 
 from geomeppy import IDF
 from matplotlib.axes import Axes
+
+
+def get_domains_lim(zone_domains: list[Domain], PAD_BASE=1.4):
+    PAD = PAD_BASE * 1.1
+    min_x = min([i.width.min for i in zone_domains]) - PAD
+    max_x = max([i.width.max for i in zone_domains]) + PAD
+    min_y = min([i.height.min for i in zone_domains]) - PAD
+    max_y = max([i.height.max for i in zone_domains]) + PAD
+    return (min_x, max_x), (min_y, max_y)
 
 
 def plot_zone_domains(idf: IDF, ax: Axes):
@@ -41,15 +51,21 @@ def plot_nodes(
 ):
     vmin, vmax = min_max
     _ = nx.draw_networkx_nodes(Gm, pos, ax=ax, nodelist=nodes, node_color=values, cmap=cmap, vmin=vmin, vmax=vmax, node_size=400)  # type: ignore
-    _ = nx.draw_networkx_labels(Gm, pos, ax=ax, font_size=8, font_weight="bold", bbox=dict(facecolor='white', edgecolor="black", boxstyle='round'))
+    _ = nx.draw_networkx_labels(
+        Gm,
+        pos,
+        ax=ax,
+        font_size=8,
+        font_weight="bold",
+        bbox=dict(facecolor="white", edgecolor="black", boxstyle="round"),
+    )
     return ax
 
 
 def plot_edges_widths(
     Gm: nx.MultiDiGraph, pos, ax: Axes, edges: Iterable[str], values: Iterable[float]
-
 ):
-   
+
     _ = nx.draw_networkx_edges(
         Gm,
         pos,
@@ -58,7 +74,7 @@ def plot_edges_widths(
         # edge_color=values,
         ax=ax,
         alpha=1,
-        arrowsize=30
+        arrowsize=30,
         # min_target_margin=15
     )
     return ax
@@ -70,7 +86,9 @@ def plot_edge_labels(
     edges_map = {
         tuple(k): round(v, 2) for k, v in zip(edges.to_list(), values.to_list())
     }
-    _ = nx.draw_networkx_edge_labels(Gm, pos, edge_labels=edges_map, ax=ax, font_size=7, rotate=False)
+    _ = nx.draw_networkx_edge_labels(
+        Gm, pos, edge_labels=edges_map, ax=ax, font_size=7, rotate=False
+    )
     return ax
 
 

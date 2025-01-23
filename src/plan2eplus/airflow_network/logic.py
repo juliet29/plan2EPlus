@@ -1,6 +1,6 @@
 from geomeppy import IDF
-from helpers.helpers import set_difference, list_all_dict_values
-from helpers.ep_helpers import create_zone_map_without_partners
+from ..helpers.helpers import set_difference, list_all_dict_values
+from ..helpers.ep_helpers import create_zone_map_without_partners
 
 
 def get_afn_zones_and_subsurfaces(idf: IDF):

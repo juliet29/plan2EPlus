@@ -1,6 +1,6 @@
 from re import L
 from geomeppy import IDF
-from helpers.variable_interfaces import all_variables, get_vars
+from .variable_interfaces import all_variables, get_vars
 
 
 def check_existing_variable(idf: IDF, new_var_name):

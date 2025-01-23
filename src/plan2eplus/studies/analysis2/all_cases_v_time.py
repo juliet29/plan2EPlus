@@ -4,25 +4,27 @@ from pathlib import Path
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from helpers.variable_interfaces import all_variables as vars
-from analysis.helpers import extract_times
-from analysis.plot_helpers import set_axis_ticks
-from setup.data_wrangle2 import (
+from ...helpers.variable_interfaces import all_variables as vars
+from ..analysis.helpers import extract_times
+from ..analysis.plot_helpers import set_axis_ticks
+from ..setup.data_wrangle2 import (
     create_wide_dataframe_for_many_qois,
     create_wide_dataframe_for_many_qois_and_cases,
 )
-from setup.interfaces import InitData, CaseData
-from helpers.dates import today, create_save_details
+from ..setup.interfaces import InitData, CaseData
+from ...helpers.dates import today, create_save_details
 
 
 # def get_save_details():
 #     FOLDER  = f"{today}_control_case_compare"
 #     return Path.cwd() / "figures" / FOLDER
 
+
 def get_save_details():
     return create_save_details("control_case_compare")
 
-# TODO move to dataframes.. 
+
+# TODO move to dataframes..
 def create_space_and_site_dfs(
     cases: list[CaseData], space_qois: list[str], site_qois: list[str]
 ):
@@ -99,7 +101,7 @@ def site_and_qoi_plot(df, df_site, qoi_group: QOIGroup, is_saved=False):
     if is_saved:
         figures_root = get_save_details()
         f.savefig(figures_root / f"{qoi_group.zone}_line")
-    
+
     return g
 
 
@@ -126,13 +128,10 @@ def site_and_qoi_plot_two_ax(df, df_site, qoi_group: QOIGroup, is_saved=False):
 
 def boxplot(df, qoi_group: QOIGroup, is_saved=False):
     f, ax = plt.subplots()
-    g =  sns.boxplot(
-        data=df, x="case_names", y=qoi_group.zone, hue="case_names", ax=ax
-    )
+    g = sns.boxplot(data=df, x="case_names", y=qoi_group.zone, hue="case_names", ax=ax)
     if is_saved:
         figures_root = get_save_details()
         f.savefig(figures_root / f"{qoi_group.zone}_box")
-
 
 
 def temp_plots(cases: list[CaseData], is_saved=False):

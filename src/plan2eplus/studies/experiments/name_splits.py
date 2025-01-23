@@ -1,6 +1,6 @@
 import polars as pl
 
-from experiments.retrieve import COMPARISON_GROUPS
+from .retrieve import COMPARISON_GROUPS
 
 
 def split_by_case_type(df: pl.DataFrame) -> pl.DataFrame:
@@ -42,6 +42,7 @@ def split_by_windows(df: pl.DataFrame) -> pl.DataFrame:
         .otherwise(pl.lit("Control"))
     )
 
+
 def get_split_fx(comparison_group: COMPARISON_GROUPS):
     match comparison_group:
         case "doors":
@@ -52,7 +53,3 @@ def get_split_fx(comparison_group: COMPARISON_GROUPS):
             return split_by_materials
         case _:
             raise Exception("Invalid group ")
-
-
-
-

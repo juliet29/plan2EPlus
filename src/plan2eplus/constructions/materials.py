@@ -1,5 +1,5 @@
 from eppy.bunch_subclass import EpBunch
-from helpers.helpers import chain_flatten
+from ..helpers.helpers import chain_flatten
 
 
 def get_layer_fields():

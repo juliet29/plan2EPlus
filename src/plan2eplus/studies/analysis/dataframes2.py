@@ -1,10 +1,13 @@
 import polars as pl
 import polars.selectors as cs
-from setup.interfaces import CaseData
-from setup.materials_setup import retrieve_cases
-from setup.data_wrangle2 import create_wide_dataframe_for_many_qois, add_site_qois_wide
-from analysis.helpers import map_zone_names, extract_times, map_linkage_names_to_G
-from helpers.variable_interfaces import all_variables as vars
+from ..setup.interfaces import CaseData
+from ..setup.materials_setup import retrieve_cases
+from ..setup.data_wrangle2 import (
+    create_wide_dataframe_for_many_qois,
+    add_site_qois_wide,
+)
+from .helpers import map_zone_names, extract_times, map_linkage_names_to_G
+from ...helpers.variable_interfaces import all_variables as vars
 
 
 def get_redwood_case():
@@ -26,7 +29,9 @@ def create_linkage_df(case: CaseData) -> pl.DataFrame:
         av.linkage["flow21"],
     ]
     df = create_wide_dataframe_for_many_qois(case, qois)
-    df = df.with_columns(net_linkage=(cs.contains(qois[0]) - cs.contains(qois[1]))) # TODO check this calculation may be wrong
+    df = df.with_columns(
+        net_linkage=(cs.contains(qois[0]) - cs.contains(qois[1]))
+    )  # TODO check this calculation may be wrong
 
     df = map_linkage_names_to_G(case.idf, case.path_to_input, df)
 
@@ -42,8 +47,10 @@ def create_linkage_df(case: CaseData) -> pl.DataFrame:
 
 
 def get_external_node_df(case: CaseData):
-    df =  create_wide_dataframe_for_many_qois(case, [vars.afn.node["wind_pressure"]])
-    return add_site_qois_wide(df, case, [vars.site.wind["speed"], vars.site.wind["direction"]])
+    df = create_wide_dataframe_for_many_qois(case, [vars.afn.node["wind_pressure"]])
+    return add_site_qois_wide(
+        df, case, [vars.site.wind["speed"], vars.site.wind["direction"]]
+    )
 
 
 # def create_vol_df_for_many_cases():

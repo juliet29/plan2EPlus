@@ -1,13 +1,15 @@
 from copy import deepcopy
+
 from eppy.bunch_subclass import EpBunch
 from geomeppy import IDF
-
-from subsurfaces.interfaces import Dimensions, PairOnly
-from helpers.ep_geom_helpers import create_domain_for_rectangular_wall
-from subsurfaces.interfaces import SubsurfacePair, SubsurfaceObjects
-from helpers.ep_helpers import WallNormal
-from helpers.ep_helpers import get_zone_walls, get_zone_name
-from subsurfaces.placement import create_nine_points_for_domain
+from ..helpers.ep_geom_helpers import create_domain_for_rectangular_wall
+from ..helpers.ep_helpers import WallNormal, get_zone_name, get_zone_walls
+from .interfaces import (
+    Dimensions,
+    PairOnly,
+    SubsurfacePair,
+)
+from .placement import create_nine_points_for_domain
 
 
 class MoreThanOneIntersectionError(Exception):

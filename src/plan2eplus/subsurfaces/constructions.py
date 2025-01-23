@@ -1,5 +1,5 @@
 from geomeppy import IDF
-from subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceObjects
+from ..subsurfaces.interfaces import SubsurfaceAttributes, SubsurfaceObjects
 
 
 def assign_default_constructions(idf: IDF, attrs: SubsurfaceAttributes):

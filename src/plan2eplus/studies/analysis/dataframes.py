@@ -1,13 +1,13 @@
 import polars as pl
-from analysis.helpers import (
+from .helpers import (
     extract_times,
     link_dfs_for_qois,
     map_linkage_names_to_G,
     map_zone_names,
 )
-from setup.interfaces import CaseData
-from helpers.variable_interfaces import all_variables
-from setup.data_wrangle import (
+from ..setup.interfaces import CaseData
+from ...helpers.variable_interfaces import all_variables
+from ..setup.data_wrangle import (
     create_dataframe_for_many_cases,
     join_any_data,
     create_dataframe_for_case,
@@ -48,13 +48,6 @@ def create_site_df(case: CaseData):
 
     dfs = [create_dataframe_for_case(case.case_name, case.sql, qoi) for qoi in qois]
     return pl.concat(dfs, how="vertical")
-
-
-
-
-
-
-
 
 
 ### above are df helpers.. ^

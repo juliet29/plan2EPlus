@@ -1,8 +1,9 @@
-from helpers.ep_helpers import WallNormal
+from ...helpers.ep_helpers import WallNormal
 from copy import deepcopy
-from helpers.geometry_interfaces import Domain, Range
+from ...helpers.geometry_interfaces import Domain, Range
 
 NodePositions = dict[str, tuple[float, float]]
+
 
 def get_bounds_of_positioned_graph(pos: NodePositions):
     x_values = [coord[0] for coord in pos.values()]
