@@ -56,3 +56,32 @@ def retrieve_comparison_groups(comparison_group: COMPARISON_GROUPS, exp_group="2
     else:
         control_cases = retrieve_control_cases(exp_group)
         return comparison_cases + control_cases
+
+
+
+# gt_tbl = (
+#     GT(
+#         gtcars[["mfr", "model", "hp", "trq", "msrp"]].head(5),
+#     )
+#     .tab_header(
+#         title="Some Cars from the gtcars Dataset",
+#         subtitle="Five Cars are shown here"
+#     )
+#     .tab_spanner(
+#         label="Make and Model",
+#         columns=["mfr", "model"],
+#         id="make_model"
+#     )
+#     .tab_spanner(
+#         label="Performance",
+#         columns=["hp", "trq", "msrp"]
+#     )
+#     .tab_spanner(
+#         label="Everything but the cost",
+#         columns=["mfr", "model", "hp", "trq"]
+#     )
+#     .fmt_integer(columns=["hp", "trq"])
+#     .fmt_currency(columns="msrp")
+#     .tab_source_note("Cars are all 2015 models.")
+#     .tab_source_note("Horsepower and Torque values are estimates.")
+# )
