@@ -12,6 +12,15 @@ def split_by_case_type(df: pl.DataFrame) -> pl.DataFrame:
         .otherwise(pl.lit("red"))
     )
 
+def split_by_case_type_and_alias(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        case_type=pl.when(pl.col("case_names").str.contains("amb"))
+        .then(pl.lit("A"))
+        .when(pl.col("case_names").str.contains("bol"))
+        .then(pl.lit("B"))
+        .otherwise(pl.lit("C"))
+    )
+
 
 def split_by_materials(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
