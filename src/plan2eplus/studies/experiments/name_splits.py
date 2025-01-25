@@ -1,16 +1,9 @@
+from typing import Callable
 import polars as pl
 
 from .retrieve import COMPARISON_GROUPS
 
 
-def split_by_case_type(df: pl.DataFrame) -> pl.DataFrame:
-    return df.with_columns(
-        case_type=pl.when(pl.col("case_names").str.contains("amb"))
-        .then(pl.lit("amb"))
-        .when(pl.col("case_names").str.contains("bol"))
-        .then(pl.lit("bol"))
-        .otherwise(pl.lit("red"))
-    )
 
 def split_by_case_type_and_alias(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
@@ -52,7 +45,7 @@ def split_by_windows(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def get_split_fx(comparison_group: COMPARISON_GROUPS):
+def get_split_fx(comparison_group: COMPARISON_GROUPS) -> Callable[[pl.DataFrame], pl.DataFrame]:
     match comparison_group:
         case "doors":
             return split_by_doors
@@ -60,5 +53,17 @@ def get_split_fx(comparison_group: COMPARISON_GROUPS):
             return split_by_windows
         case "materials":
             return split_by_materials
+        case _:
+            raise Exception("Invalid group ")
+
+
+def get_chart_details(comparison_group: COMPARISON_GROUPS):
+    match comparison_group:
+        case "doors":
+            return ("Door Status", ["OPEN", "DYNAMIC", "CLOSED"])
+        case "windows":
+            return ("Window Area", ["+30%", "Control", "-30%"])
+        case "materials":
+            return ("Material Type", ["Light", "Medium", "Heavy"])
         case _:
             raise Exception("Invalid group ")
