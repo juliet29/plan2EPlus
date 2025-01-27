@@ -65,9 +65,9 @@ def create_table(df: pl.DataFrame, comparison_group: COMPARISON_GROUPS):
         GT(stats_df)
         .tab_header(title=title)
         # .tab_stub(rowname_col="study_type")
-        .tab_spanner(label="Vent. Vol. [m³/s]", columns=other_cols[0:3])
+        .tab_spanner(label="Vent. Vol. [m³]", columns=other_cols[0:3])
         .tab_spanner(
-            label="Mixing Vol. [m³/s]",
+            label="Mixing Vol. [m³]",
             columns=other_cols[3:6],
         )
         .tab_spanner(label="Temp. [ºC]", columns=other_cols[6:])

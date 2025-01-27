@@ -29,8 +29,8 @@ def create_exp_chart(
 
     x_encoding = alt.X("case_type:N", title="Plan")
     y_encodings = [
-        alt.Y(r"AFN Zone Ventilation Volume \[m3\]", title="Vent. Vol. [m³/s]"),
-        alt.Y(r"AFN Zone Mixing Volume \[m3\]", title="Mixing Vol. [m³/s]"),
+        alt.Y(r"AFN Zone Ventilation Volume \[m3\]", title="Vent. Vol. [m³]"),
+        alt.Y(r"AFN Zone Mixing Volume \[m3\]", title="Mixing Vol. [m³]"),
         alt.Y(r"Zone Mean Air Temperature \[C\]", title="Temp [ºC]"),
     ]
 
