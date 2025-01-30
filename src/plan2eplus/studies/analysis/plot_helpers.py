@@ -103,5 +103,5 @@ def set_axis_ticks(ax: Axes):
 
 def create_colorbar(fig, ax, cmap, min_max: tuple, qoi_info: str):
     norm = Normalize(*min_max)  # type: ignore
-    fig.colorbar(ScalarMappable(norm=norm, cmap=cmap), ax=ax, label=qoi_info)
+    fig.colorbar(ScalarMappable(norm=norm, cmap=cmap), ax=ax, label=qoi_info, location='bottom')
     return fig

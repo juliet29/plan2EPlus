@@ -3,6 +3,7 @@ import polars as pl
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
+import functools
 
 from .dataframes import (
     create_linkage_df,
@@ -19,7 +20,7 @@ from .plot_helpers import (
 )
 from .plot_subsurfaces import plot_surfaces
 from ..setup.interfaces import CaseData
-from network.network import init_multigraph
+from ..network.network import init_multigraph
 
 
 def get_room_values(case: CaseData, time: datetime):
@@ -58,6 +59,7 @@ def add_edges(case: CaseData, Gm, pos, fig, ax, time: datetime):
     return fig, ax
 
 
+# @functools.lru_cache
 def create_network_plot(case: CaseData, hour_min=(12, 0)):
     time = datetime(2017, 7, 1, *hour_min)
     Gm, pos = init_multigraph(case.idf, case.path_to_input)
@@ -70,7 +72,34 @@ def create_network_plot(case: CaseData, hour_min=(12, 0)):
 
     stime = time.strftime("%H:%M")
     fig.suptitle(f"{case.case_name} @ {stime}")
-    return fig
+    return fig, ax
+
+
+def name_mapper(name):
+    match name:
+        case "amb_b1_Medium":
+            return "A"
+        case "bol_5_Medium":
+            return "B"
+        case "red_b1_Medium":
+            return "C"
+
+
+def create_network_subplot(case: CaseData, fig, ax, hour_min=(12, 0)):
+    time = datetime(2017, 7, 1, *hour_min)
+    Gm, pos = init_multigraph(case.idf, case.path_to_input)
+    # fig, ax = plt.subplots(nrows=1, figsize=(8, 6))
+    ax = plot_zone_domains(case.idf, ax)
+    fig, ax = add_nodes(case, Gm, pos, fig, ax, time)
+    ax, data = plot_surfaces(case, time, ax)
+    fig, ax = add_edges(case, Gm, pos, fig, ax, time)
+    ax = set_axis_ticks(ax)
+
+    stime = time.strftime("%H:%M")
+    # fig.suptitle(f"{case.case_name} @ {stime}")
+    ax.set_title(name_mapper(case.case_name))
+    print(f"Time studied is: {stime}")
+    return fig, ax
 
 
 def get_save_details():
@@ -85,3 +114,8 @@ def network_plots_for_many_cases(cases: list[CaseData], hour_min=(12, 0)):
     for case in cases:
         fig = create_network_plot(case, hour_min)
         fig.savefig(figures_root / f"{case.case_name}_{time}")
+
+
+def save_subplot(fig):
+    figures_root = get_save_details()
+    fig.savefig(figures_root / "subplot_save", dpi=300,  bbox_inches='tight')

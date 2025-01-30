@@ -10,7 +10,7 @@ from ..experiments.retrieve import COMPARISON_GROUPS
 
 
 def get_save_details():
-    return create_save_details("exp_res2")
+    return create_save_details("exp_res2_shapes")
 
 
 def create_exp_chart(
@@ -23,7 +23,11 @@ def create_exp_chart(
     base = (
         alt.Chart(df)
         .mark_point()
-        .encode(color=alt.Color("exp_type").title(legend_title).sort(sort_order))
+        .encode(
+            # color=alt.Color("exp_type").title(legend_title).sort(sort_order).legend(None),
+            shape=alt.Shape("exp_type").title(legend_title).sort(sort_order),
+            # detail=alt.Detail("exp_type:N").title(legend_title),
+        )
         .properties(width=100, height=150)
     )
 
