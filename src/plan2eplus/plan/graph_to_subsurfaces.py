@@ -66,7 +66,7 @@ def get_attr(details: DetailsJSON, databases: list[dict[int, SubsurfaceAttribute
 def get_node_mapping(node: str, room_map: dict[int, str]):
     try:
         return key_from_value(room_map, node)
-    except KeyError:
+    except (KeyError, ValueError):
         return WallNormal[node]
 
 
