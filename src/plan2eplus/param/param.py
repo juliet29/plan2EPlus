@@ -23,12 +23,15 @@ class SurfaceMapping(Enum):
     ALL = 0 # need to assert only 1 object 
     NSEW = 1 # need to have 4
     NS_EW = 2 # need to have 2 
+    ## so the ones above ^^^ are just for ext??? 
     EXT_INT = 3 # need to have 2, and this is only valid for doors, unless there are interior windows.. but also rn, only doing int doors.. 
+
 
 
 def split_walls_by_azimuth(idf:ExtendedIDF):
     WallDir = namedtuple("WallDir", ["wall", "dir"])
-    walls_and_dirs = [WallDir(i.Name, WallNormal(round(float(i.azimuth)))) for i in idf.getsurfaces()] # TODO make this cleaner.. 
+    exterior_walls = [i for i in idf.getsurfaces() if i.Outside_Boundary_Condition == "outdoors" and i.Surface_Type == "wall"]
+    walls_and_dirs = [WallDir(i.Name, WallNormal(round(float(i.azimuth)))) for i in exterior_walls] # TODO make this cleaner.. 
     return sort_and_group_objects_dict(walls_and_dirs, lambda x: x.dir.value)
 
 
@@ -46,10 +49,10 @@ def split_walls_by_azimuth(idf:ExtendedIDF):
 # now have function that takes in the idf and gets the required objects..
 # function at base compares pairs to see if they match the walls..
 
-
+# for constructions, have something separate where consider roofs and floors.. 
 
 def apply_modifications(idf:ExtendedIDF, attributes:list[SubsurfaceAttributes], mapping:SurfaceMapping):
-    if SurfaceMapping.NSEW | SurfaceMapping.NS_EW:
+    if SurfaceMapping.NSEW or SurfaceMapping.NS_EW:
         surface_split = 0 # split walls by azimuth.. 
     match mapping:
         case SurfaceMapping.ALL:
@@ -61,3 +64,5 @@ def apply_modifications(idf:ExtendedIDF, attributes:list[SubsurfaceAttributes], 
             # and assign 
         case SurfaceMapping.EXT_INT:
             pass
+
+    return idf

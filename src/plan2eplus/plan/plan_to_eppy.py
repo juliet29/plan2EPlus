@@ -1,10 +1,12 @@
 from copy import deepcopy
 from pathlib import Path
+from typing import Optional
 
 from geomeppy import IDF
 from .helpers import get_plans_from_file
 from .interfaces import RoomFromJSON
 from ..case_edits.extended_idf import ExtendedIDF
+
 
 
 def get_room_height():
@@ -21,7 +23,7 @@ def convert_room_to_eppy_block(room: RoomFromJSON, height: float):
     }
 
 
-def add_eppy_blocks(_idf: ExtendedIDF, plan: list[RoomFromJSON]):
+def add_eppy_blocks(_idf: IDF, plan: list[RoomFromJSON]): 
     idf = deepcopy(_idf)
     for room in plan:
         # block = convert_room_to_eppy_block(room, _idf.modifications.height)
@@ -31,6 +33,6 @@ def add_eppy_blocks(_idf: ExtendedIDF, plan: list[RoomFromJSON]):
     return idf
 
 
-def add_eppy_blocks_from_file(_idf: IDF, path_to_input: Path):
-    plan = get_plans_from_file(path_to_input)
+def add_eppy_blocks_from_file(_idf: IDF, path_to_input: Path, plan_name:Optional[str]=None):
+    plan = get_plans_from_file(path_to_input, plan_name)
     return add_eppy_blocks(_idf, plan)

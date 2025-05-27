@@ -30,7 +30,7 @@ class NinePointsLocator(Enum):
 
 @dataclass
 class SubsurfaceAttributes:
-    object_type: SubsurfaceObjects
+    object_type: SubsurfaceObjects # TODO whey couldnt this be a literal? 
     construction: EpBunch | None
     dimensions: Dimensions
     location_in_wall: NinePointsLocator

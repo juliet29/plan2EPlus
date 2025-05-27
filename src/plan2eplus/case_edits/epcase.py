@@ -15,6 +15,7 @@ from rich import print as rprint
 IDF.setiddname(IDD_PATH)
 
 
+
 class EneryPlusCaseEditor:
     def __init__(
         self,
@@ -78,6 +79,8 @@ class EneryPlusCaseEditor:
 
         else:
             print("idf has not changed - no run")
+
+        return True 
 
     def update_weather_and_run_period(self):
         if not self.epw:

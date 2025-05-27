@@ -5,7 +5,7 @@ from ladybug.analysisperiod import AnalysisPeriod
 from ladybug.epw import EPW
 
 from plan2eplus.config import PATH_TO_OUTPUT_CASES
-from plan2eplus.config import PATH_TO_INPUT_CASES
+from plan2eplus.config import PATH_TO_SVG2PLAN_CASES
 
 from ..airflow_network.airboundary import add_air_boundaries
 from .epcase import EneryPlusCaseEditor
@@ -22,7 +22,7 @@ from ..constructions.constructions import CONSTRUCTION_SET_TYPE, assign_cons_set
 
 
 def get_path_to_inputs(inputs_dir: str):
-    path_to_root = PATH_TO_INPUT_CASES
+    path_to_root = PATH_TO_SVG2PLAN_CASES
     path_to_inputs = path_to_root / inputs_dir
     assert path_to_inputs.exists()
     return path_to_inputs
@@ -40,9 +40,9 @@ def get_path_to_outputs(outputs_dir: str):
     return path_to_outputs
 
 
-def add_rooms(_idf: IDF, path_to_inputs: Path):
+def add_rooms(_idf: IDF, path_to_inputs: Path, plan_name:Optional[str]=None):
     idf = deepcopy(_idf)
-    idf = add_eppy_blocks_from_file(idf, path_to_inputs)
+    idf = add_eppy_blocks_from_file(idf, path_to_inputs, plan_name)
     idf.intersect_match()
     # idf.set_default_constructions()
     return idf
@@ -71,8 +71,8 @@ def get_paths_from_dirs(outputs_dir, inputs_dir):
 
 # TODO
 def create_ezcase(
-    outputs_dir,
-    inputs_dir,
+    outputs_dir: Path | str,
+    inputs_dir: Path | str,
     cons_set_type: CONSTRUCTION_SET_TYPE = "Medium",
     win_change_data: Optional[WindowChangeData] = None,
     epw: Optional[EPW] = None,
@@ -80,12 +80,16 @@ def create_ezcase(
 ):
     if isinstance(outputs_dir, str) and isinstance(inputs_dir, str):
         path_to_outputs, path_to_inputs = get_paths_from_dirs(outputs_dir, inputs_dir)
-    else:
+    elif isinstance(outputs_dir, Path) and isinstance(inputs_dir, Path):
         path_to_outputs = outputs_dir
         path_to_inputs = inputs_dir
+    else:
+        raise Exception("Mismatched input types")
 
     print(path_to_inputs)
-    case = EneryPlusCaseEditor(path_to_outputs, epw=epw, analysis_period=analysis_period)  # type: ignore
+    case = EneryPlusCaseEditor(
+        path_to_outputs, epw=epw, analysis_period=analysis_period
+    )  # type: ignore
 
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs, win_change_data)
