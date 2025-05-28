@@ -5,12 +5,13 @@ from eppy.constructions import thermal_properties
 from geomeppy import IDF
 from .materials import get_construction_set_materials
 from .organize import assign_material_to_surface, organize_cons_set
+from plan2eplus.config import BASE_PATH
 
 CONSTRUCTION_SET_TYPE = Literal["Light", "Medium", "Heavy"]
 
 
 def get_constructions_idf():
-    path_to_constructions = Path.cwd() / "cases" / "constructions"
+    path_to_constructions = BASE_PATH / "cases" / "constructions"
     return IDF(path_to_constructions / "CombinedConstructs.idf")
 
 

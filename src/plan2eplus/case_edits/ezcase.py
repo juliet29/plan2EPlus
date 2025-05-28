@@ -69,6 +69,20 @@ def get_paths_from_dirs(outputs_dir, inputs_dir):
     return path_to_outputs, path_to_inputs
 
 
+# def finish_creating_case():
+#     pass
+
+def finish_creating_ezcase(case: EneryPlusCaseEditor, path_to_inputs: Path, cons_set_type: CONSTRUCTION_SET_TYPE = "Medium", air_boundaries=False):
+    case.idf = assign_cons_set(case.idf, cons_set_type)
+
+    case.idf = add_airflownetwork(case.idf)
+    if air_boundaries:
+        case.idf = add_air_boundaries(case.idf, path_to_inputs)
+    case.idf = add_all_output_requests(case.idf)
+    case.compare_and_save()
+
+    return case
+
 # TODO
 def create_ezcase(
     outputs_dir: Path | str,
@@ -78,6 +92,7 @@ def create_ezcase(
     epw: Optional[EPW] = None,
     analysis_period: Optional[AnalysisPeriod] = None,
 ):
+    # TODO this should be a function, and dont they dont need to be the same type.. 
     if isinstance(outputs_dir, str) and isinstance(inputs_dir, str):
         path_to_outputs, path_to_inputs = get_paths_from_dirs(outputs_dir, inputs_dir)
     elif isinstance(outputs_dir, Path) and isinstance(inputs_dir, Path):
@@ -93,14 +108,10 @@ def create_ezcase(
 
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs, win_change_data)
-    case.idf = assign_cons_set(case.idf, cons_set_type)
 
-    case.idf = add_airflownetwork(case.idf)
-    case.idf = add_air_boundaries(case.idf, path_to_inputs)
+    return finish_creating_ezcase(case, path_to_inputs, cons_set_type)
+    # return case
 
-    case.idf = add_all_output_requests(case.idf)
-    case.compare_and_save()
-    return case
 
 
 def test():
