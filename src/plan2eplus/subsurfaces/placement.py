@@ -32,10 +32,10 @@ def create_nine_points_for_domain(init_domain: Domain, buffer=0.01):
 
     d = zero_adjust_domain(init_domain)
     w_min = d.horz_range.buffered_min(buffer)
-    w_mid = d.horz_range.midpoint()
+    w_mid = d.horz_range.midpoint
     w_max = d.horz_range.buffered_max(buffer)
     h_min = d.vert_range.buffered_min(buffer)
-    h_mid = d.vert_range.midpoint()
+    h_mid = d.vert_range.midpoint
     h_max = d.vert_range.buffered_max(buffer)
 
     nine_points = {

@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable
+from typing import Callable, NamedTuple
 import numpy as np
 from ..helpers.plots import ShapeDict
 from matplotlib.patches import Rectangle
 from shapely import Polygon
+
+# TODO organize classes -> dunder methods, then class methods, then properties, then other things..
 
 
 @dataclass
@@ -58,6 +60,7 @@ class Range:
     def buffered_max(self, val):
         return self.max - val * self.size
 
+    @property
     def midpoint(self):
         return (self.min + self.max) / 2
 
@@ -65,25 +68,49 @@ class Range:
         return np.isclose(self.min, other.min) and np.isclose(self.max, other.max)
 
 
+class PerimeterMidpoints(NamedTuple):
+    top: Coord
+    bottom: Coord
+    left: Coord
+    right: Coord
+
+    @property
+    def as_pairs(self):
+        return [self.top.pair, self.bottom.pair, self.left.pair, self.right.pair]
+
+
 @dataclass(frozen=True)
 class Domain:
-    horz_range: (
-        Range  # TODO width is not an appropriate name, bc start and end matter..
-    )
+    horz_range: Range
     vert_range: Range
 
-    def get_dict_for_plotting(self, color="blue", label="") -> ShapeDict:
-        return ShapeDict(
-            type="rect",
-            xref="x",
-            yref="y",
-            fillcolor=color,
-            x0=self.horz_range.min,
-            y0=self.vert_range.min,
-            x1=self.horz_range.max,
-            y1=self.vert_range.max,
-            label=dict(text=label),
-        )
+    @classmethod
+    def from_coords_list(cls, coords: list[Coord]):
+        xs = sorted(set([i.x for i in coords]))
+        ys = sorted(set([i.y for i in coords]))
+        horz_range = Range(xs[0], xs[-1])
+        vert_range = Range(ys[0], ys[-1])
+        return cls(horz_range, vert_range)
+
+    @property
+    def centroid(self):
+        return Coord(self.horz_range.midpoint, self.vert_range.midpoint)
+
+    @property
+    def area(self):
+        return self.horz_range.size * self.vert_range.size
+
+    @property
+    def aspect_ratio(self):
+        return self.horz_range.size / self.vert_range.size
+
+    @property
+    def perimeter_midpoints(self):
+        top = (self.horz_range.midpoint, self.vert_range.max)
+        bottom = (self.horz_range.midpoint, self.vert_range.min)
+        left = (self.horz_range.min, self.vert_range.midpoint)
+        right = (self.horz_range.max, self.vert_range.midpoint)
+        return PerimeterMidpoints(*[Coord(*i) for i in [top, bottom, left, right]])
 
     def get_mpl_patch(self):
         return Rectangle(
@@ -102,30 +129,7 @@ class Domain:
         tr = (self.horz_range.max, self.vert_range.max)
         tl = (self.horz_range.min, self.vert_range.max)
         bl = (self.horz_range.min, self.vert_range.min)
-        return [br, tr, tl, bl]
-
-    def create_centroid(self):
-        return Coord(self.horz_range.midpoint(), self.vert_range.midpoint())
-
-    @property
-    def area(self):
-        return self.horz_range.size * self.vert_range.size
-
-    @property
-    def aspect_ratio(self):
-        return self.horz_range.size / self.vert_range.size
-
-    def get_shapely_rectangle(self):
-        coords = self.create_coordinates()
-        return Polygon(coords)
-
-    @classmethod
-    def from_coords_list(cls, coords: list[Coord]):
-        xs = sorted(set([i.x for i in coords]))
-        ys = sorted(set([i.y for i in coords]))
-        horz_range = Range(xs[0], xs[-1])
-        vert_range = Range(ys[0], ys[-1])
-        return cls(horz_range, vert_range)
+        return [br, tr, tl, bl]  # TODO probably put this in another data structure?
 
     # todo the extents should be here..
 

@@ -44,7 +44,7 @@ def create_graph_for_zone(idf: IDF, path_to_input: Path):
         room_name = room_map[ix]
         label = f"{ix}-{room_name}"
         G.add_node(label, num=ix, room_name=room_name, zone_name=zone.Name)
-        positions[label] = create_domain_for_zone(idf, ix).create_centroid().pair
+        positions[label] = create_domain_for_zone(idf, ix).centroid.pair
         # positions
     return G, positions
 
@@ -178,8 +178,8 @@ def create_afn_graph(idf: IDF, G: nx.DiGraph):
     edges = [e for e in G.edges if is_edge_afn_surface(e)]
     G_afn = nx.edge_subgraph(G, edges)
 
-    assert (
-        G_zones.nodes < G_afn.nodes
-    ), "Graph induced on subsurfaces should include all AFN zones"
+    assert G_zones.nodes < G_afn.nodes, (
+        "Graph induced on subsurfaces should include all AFN zones"
+    )
 
     return G_afn

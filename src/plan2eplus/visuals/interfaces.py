@@ -1,4 +1,9 @@
 from dataclasses import dataclass
+
+from geomeppy import IDF
+from matplotlib import pyplot as plt
+from matplotlib.axes import Axes
+from plan2eplus.helpers.ep_helpers import get_zones
 from plan2eplus.helpers.geometry_interfaces import Domain, Range, WallNormal
 from eppy.bunch_subclass import EpBunch
 from plan2eplus.helpers.ep_helpers import get_zone_num
@@ -58,6 +63,12 @@ class Zone(GeometryObject):
         floor = [s for s in self.surfaces if s.dname.surface_type == "Floor"]
         assert len(floor) == 1
         return get_surface_domain(floor[0].ep_object, "Z")
+    
+    def plot_zone_midpoints(self, ax: Axes | None = None):
+        if not ax:
+            _, ax = plt.subplots()
+        x,y = zip(*self.domain.perimeter_midpoints.as_pairs)
+        ax.scatter(x,y)
 
     def __repr__(self) -> str:
         return f"{self.nickname}"
@@ -101,18 +112,57 @@ class Subsurface(LinearGeometryObject):
 
 
 @dataclass
-class PlanZones:
-    zones: dict[str, Zone]
+class PlanZones: # can just call Plan.. 
+    idf: IDF
 
     @property
-    def zone_list(self):
-        return self.zones.values()
+    def zones(self):
+        return [Zone(obj) for obj in get_zones(self.idf)]
+
+    @property
+    def zone_dict(self):
+        return [Zone(obj) for obj in get_zones(self.idf)]
+    
+    @property 
+    def domains(self):
+        return [i.domain for i in self.zones]
 
     def get_zone_by_num(self, num: int):
-        for v in self.zones.values():
+        for v in self.zones:
             if v.dname.zone_number == num:
                 return v
         raise Exception("Invalid zone number")
+    
+    def get_plan_extents(self, PAD_BASE=1.4):
+        PAD = PAD_BASE * 1.1
+        min_x = min([i.horz_range.min for i in self.domains]) - PAD
+        max_x = max([i.horz_range.max for i in self.domains]) + PAD
+        min_y = min([i.vert_range.min for i in self.domains]) - PAD
+        max_y = max([i.vert_range.max for i in self.domains]) + PAD
+        return (min_x, max_x), (min_y, max_y)
+    
+    # TODO more intense plotting things maybe go elsewhere?
+    def plot_zone_domains(self, ax: Axes | None = None):
+        if not ax:
+            _, ax = plt.subplots()
+        xlim, ylim = self.get_plan_extents()
+        
+        for d in self.domains:
+            ax.add_artist(d.get_mpl_patch())
+    
+        ax.set(xlim=xlim, ylim=ylim)
+        self.zones[0].plot_zone_midpoints(ax)
+
+        plt.show()
+
+    
+        return ax
+    
+    
+    
+
+    
+
 
     # def get_zone_wall_on_facade(
     #     self, surfaces: dict[str, Surface], zone_num: int, drn: WallNormal
