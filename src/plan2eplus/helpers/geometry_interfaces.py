@@ -24,6 +24,9 @@ class Coord:
 class Coordinate3D(Coord):
     z: float
 
+    def get_pair(self, l1, l2):
+        return Coord(self.__dict__[l1], self.__dict__[l2])
+
 
 class InvalidRangeException(Exception):
     def __init__(self, min, max) -> None:
@@ -64,8 +67,10 @@ class Range:
 
 @dataclass(frozen=True)
 class Domain:
-    width: Range
-    height: Range
+    horz_range: (
+        Range  # TODO width is not an appropriate name, bc start and end matter..
+    )
+    vert_range: Range
 
     def get_dict_for_plotting(self, color="blue", label="") -> ShapeDict:
         return ShapeDict(
@@ -73,18 +78,18 @@ class Domain:
             xref="x",
             yref="y",
             fillcolor=color,
-            x0=self.width.min,
-            y0=self.height.min,
-            x1=self.width.max,
-            y1=self.height.max,
+            x0=self.horz_range.min,
+            y0=self.vert_range.min,
+            x1=self.horz_range.max,
+            y1=self.vert_range.max,
             label=dict(text=label),
         )
 
     def get_mpl_patch(self):
         return Rectangle(
-            (self.width.min, self.height.min),
-            self.width.size,
-            self.height.size,
+            (self.horz_range.min, self.vert_range.min),
+            self.horz_range.size,
+            self.vert_range.size,
             fill=False,
             edgecolor="black",
             alpha=0.2,
@@ -93,32 +98,40 @@ class Domain:
     def create_coordinates(self):
         # following requirements for geomeppy block
         # ccw from bottom right
-        br = (self.width.max, self.height.min)
-        tr = (self.width.max, self.height.max)
-        tl = (self.width.min, self.height.max)
-        bl = (self.width.min, self.height.min)
+        br = (self.horz_range.max, self.vert_range.min)
+        tr = (self.horz_range.max, self.vert_range.max)
+        tl = (self.horz_range.min, self.vert_range.max)
+        bl = (self.horz_range.min, self.vert_range.min)
         return [br, tr, tl, bl]
 
     def create_centroid(self):
-        return Coord(self.width.midpoint(), self.height.midpoint())
+        return Coord(self.horz_range.midpoint(), self.vert_range.midpoint())
 
     @property
     def area(self):
-        return self.width.size * self.height.size
+        return self.horz_range.size * self.vert_range.size
 
     @property
     def aspect_ratio(self):
-        return self.width.size / self.height.size
-    
+        return self.horz_range.size / self.vert_range.size
+
     def get_shapely_rectangle(self):
         coords = self.create_coordinates()
         return Polygon(coords)
 
+    @classmethod
+    def from_coords_list(cls, coords: list[Coord]):
+        xs = sorted(set([i.x for i in coords]))
+        ys = sorted(set([i.y for i in coords]))
+        horz_range = Range(xs[0], xs[-1])
+        vert_range = Range(ys[0], ys[-1])
+        return cls(horz_range, vert_range)
 
+    # todo the extents should be here..
 
 
 @dataclass
-class Dimensions:
+class Dimensions:  # TODO why is this different from a Domain?
     width: float
     height: float
 
@@ -151,4 +164,3 @@ class WallNormal(Enum):
 
     def __getitem__(self, i):
         return getattr(self, i)
-    

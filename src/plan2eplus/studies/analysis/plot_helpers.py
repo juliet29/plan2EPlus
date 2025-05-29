@@ -16,10 +16,10 @@ from matplotlib.axes import Axes
 
 def get_domains_lim(zone_domains: list[Domain], PAD_BASE=1.4):
     PAD = PAD_BASE * 1.1
-    min_x = min([i.width.min for i in zone_domains]) - PAD
-    max_x = max([i.width.max for i in zone_domains]) + PAD
-    min_y = min([i.height.min for i in zone_domains]) - PAD
-    max_y = max([i.height.max for i in zone_domains]) + PAD
+    min_x = min([i.horz_range.min for i in zone_domains]) - PAD
+    max_x = max([i.horz_range.max for i in zone_domains]) + PAD
+    min_y = min([i.vert_range.min for i in zone_domains]) - PAD
+    max_y = max([i.vert_range.max for i in zone_domains]) + PAD
     return (min_x, max_x), (min_y, max_y)
 
 
@@ -50,7 +50,17 @@ def plot_nodes(
     min_max: tuple,
 ):
     vmin, vmax = min_max
-    _ = nx.draw_networkx_nodes(Gm, pos, ax=ax, nodelist=nodes, node_color=values, cmap=cmap, vmin=vmin, vmax=vmax, node_size=400)  # type: ignore
+    _ = nx.draw_networkx_nodes(
+        Gm,
+        pos,
+        ax=ax,
+        nodelist=nodes,
+        node_color=values,
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+        node_size=400,
+    )  # type: ignore
     _ = nx.draw_networkx_labels(
         Gm,
         pos,
@@ -65,7 +75,6 @@ def plot_nodes(
 def plot_edges_widths(
     Gm: nx.MultiDiGraph, pos, ax: Axes, edges: Iterable[str], values: Iterable[float]
 ):
-
     _ = nx.draw_networkx_edges(
         Gm,
         pos,
@@ -103,5 +112,7 @@ def set_axis_ticks(ax: Axes):
 
 def create_colorbar(fig, ax, cmap, min_max: tuple, qoi_info: str):
     norm = Normalize(*min_max)  # type: ignore
-    fig.colorbar(ScalarMappable(norm=norm, cmap=cmap), ax=ax, label=qoi_info, location='bottom')
+    fig.colorbar(
+        ScalarMappable(norm=norm, cmap=cmap), ax=ax, label=qoi_info, location="bottom"
+    )
     return fig

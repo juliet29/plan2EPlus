@@ -26,17 +26,17 @@ def push_left_half(init_pt: Coord, dim: Dimensions):
 
 def create_nine_points_for_domain(init_domain: Domain, buffer=0.01):
     def zero_adjust_domain(d: Domain):
-        new_width = Range(0, d.width.size)
-        new_height = Range(0, d.height.size)
+        new_width = Range(0, d.horz_range.size)
+        new_height = Range(0, d.vert_range.size)
         return Domain(new_width, new_height)
 
     d = zero_adjust_domain(init_domain)
-    w_min = d.width.buffered_min(buffer)
-    w_mid = d.width.midpoint()
-    w_max = d.width.buffered_max(buffer)
-    h_min = d.height.buffered_min(buffer)
-    h_mid = d.height.midpoint()
-    h_max = d.height.buffered_max(buffer)
+    w_min = d.horz_range.buffered_min(buffer)
+    w_mid = d.horz_range.midpoint()
+    w_max = d.horz_range.buffered_max(buffer)
+    h_min = d.vert_range.buffered_min(buffer)
+    h_mid = d.vert_range.midpoint()
+    h_max = d.vert_range.buffered_max(buffer)
 
     nine_points = {
         "top_left": PlacementPoint(

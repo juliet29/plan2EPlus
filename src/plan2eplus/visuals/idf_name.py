@@ -1,0 +1,58 @@
+import re
+from typing import Literal, NamedTuple
+
+SurfaceTypes = Literal["Wall", "Floor", "Roof"]
+
+
+class IDFName(NamedTuple):
+    zone_name: str
+    storey_name: str
+    surface_type: SurfaceTypes | str
+    n_direction: str
+    n_position: str
+    object_type: str
+
+    @property
+    def zone_number(self):
+        assert self.zone_name
+        return int(self.zone_name.split(" ")[1])
+
+    @property
+    def direction_number(self):
+        assert self.n_direction
+        return int(self.n_direction)
+
+    @property
+    def position_number(self):
+        if self.n_position:
+            return int(self.n_position.split("_")[1])
+        else:
+            return 0
+
+
+def decompose_idf_name(name: str):
+    def match(pattern: re.Pattern[str]):
+        m = pattern.search(name)
+        if m:
+            return m.group()
+        else:
+            return ""
+
+    # TODO write tests..
+    block = re.compile(r"Block \d{2}")
+    storey = re.compile(r"Storey \d{0,2}")
+    surface_type = re.compile(r"(Wall|Floor|Roof)")
+    n_direction = re.compile(r"\d{4}")
+    n_position = re.compile(r"_\d{1,2}\b")
+    object_type = re.compile(r"(Window|Door)")
+
+    s = IDFName(
+        match(block),
+        match(storey),
+        match(surface_type),
+        match(n_direction),
+        match(n_position),
+        match(object_type),
+    )
+
+    return s

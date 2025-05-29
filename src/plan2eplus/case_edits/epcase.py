@@ -3,9 +3,9 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from ..config import IDD_PATH, IDF_PATH
+from ..constants import IDD_PATH, IDF_PATH
 
-from ..config import WEATHER_FILE
+from ..constants import WEATHER_FILE
 from eppy.runner.run_functions import EnergyPlusRunError
 from geomeppy import IDF
 from ladybug.analysisperiod import AnalysisPeriod
@@ -85,7 +85,8 @@ class EneryPlusCaseEditor:
     def update_weather_and_run_period(self):
         if not self.epw:
             self.epw = EPW(WEATHER_FILE)
-            print(f"No epw! Now its {self.epw}")
+            # TODO log! 
+            # print(f"No epw! Now its {self.epw}") 
         self.idf.epw = self.epw.file_path
         self.idf = update_idf_location(self.idf, self.epw)
 

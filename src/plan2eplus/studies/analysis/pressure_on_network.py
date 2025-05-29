@@ -3,7 +3,6 @@ import polars as pl
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
-import functools
 
 from .dataframes import (
     create_linkage_df,
@@ -12,7 +11,6 @@ from .dataframes import (
 from .helpers import get_min_max, normalize_column
 from .plot_helpers import (
     create_colorbar,
-    plot_edge_labels,
     plot_nodes,
     plot_zone_domains,
     plot_edges_widths,

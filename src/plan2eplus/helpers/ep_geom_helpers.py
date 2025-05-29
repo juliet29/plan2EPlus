@@ -7,12 +7,12 @@ from .geometry_interfaces import Coordinate3D, Domain, Range, WallNormal
 
 
 def create_total_range(res: list[Domain]):
-    mins = [i.width.min for i in res]
-    maxes = [i.width.max for i in res]
+    mins = [i.horz_range.min for i in res]
+    maxes = [i.horz_range.max for i in res]
     return Range(min(mins), max(maxes))
 
 
-def get_coords(surface):  # TODO move to ep_geom_helpers
+def get_coords(surface):
     coords = [Coordinate3D(*i) for i in surface.coords]  # type:ignore
     assert len(coords) == 4
     xs = sorted(set([i.x for i in coords]))

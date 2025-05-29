@@ -1,5 +1,5 @@
 from pprint import pprint
-from plan2eplus.config import PATH_TO_GRAPH2PLAN_CASES, PATH_TO_OUTPUT_CASES
+from plan2eplus.constants import PATH_TO_GRAPH2PLAN_CASES, PATH_TO_OUTPUT_CASES
 from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
 from plan2eplus.case_edits.ezcase import add_rooms, finish_creating_ezcase
 from geomeppy import IDF
@@ -19,8 +19,7 @@ from plan2eplus.subsurfaces.interfaces import (
     SubsurfaceObjects,
     SubsurfacePair,
 )
-from plan2eplus.studies.analysis.plot_helpers import plot_zone_domains
-import matplotlib.pyplot as plt
+
 
 output_path = PATH_TO_OUTPUT_CASES / "250527_threeplan"
 input_path = PATH_TO_GRAPH2PLAN_CASES / "three_plan"
@@ -64,16 +63,9 @@ def test_connectivity_case():
     case.idf = add_subsurfaces_to_case(case.idf, pairs)
     finish_creating_ezcase(case, input_path)
 
-
-    fig, ax = plt.subplots()
-    plot_zone_domains(case.idf, ax)
-    plt.show()
-
     case.idf.printidf()
     case.run_idf(force_run=True)
 
-
-    return fig
 
 
 if __name__ == "__main__":

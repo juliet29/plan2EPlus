@@ -4,8 +4,8 @@ from pathlib import Path
 from ladybug.analysisperiod import AnalysisPeriod
 from ladybug.epw import EPW
 
-from plan2eplus.config import PATH_TO_OUTPUT_CASES
-from plan2eplus.config import PATH_TO_SVG2PLAN_CASES
+from plan2eplus.constants import PATH_TO_OUTPUT_CASES
+from plan2eplus.constants import PATH_TO_SVG2PLAN_CASES
 
 from ..airflow_network.airboundary import add_air_boundaries
 from .epcase import EneryPlusCaseEditor

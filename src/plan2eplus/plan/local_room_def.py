@@ -24,7 +24,7 @@ def initial_room(room_def: RoomDefinition):
 
 def adjacent_right(adj_room: RoomFromJSON, room_def: RoomDefinition):
     top = adj_room.top
-    left = adj_room.create_domain().width.max
+    left = adj_room.create_domain().horz_range.max
     id = adj_room.id
     return RoomFromJSON(
         id, room_def.label, left, top, str(room_def.width), str(room_def.height)

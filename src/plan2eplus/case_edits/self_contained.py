@@ -1,4 +1,4 @@
-from plan2eplus.config import IDD_PATH, IDF_PATH
+from plan2eplus.constants import IDD_PATH, IDF_PATH
 from plan2eplus.case_edits.extended_idf import ExtendedIDF
 from plan2eplus.helpers.ep_geom_helpers import WallNormal
 from plan2eplus.plan.local_room_def import RoomDefinition, create_two_room_layout

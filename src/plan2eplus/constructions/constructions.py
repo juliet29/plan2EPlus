@@ -5,7 +5,7 @@ from eppy.constructions import thermal_properties
 from geomeppy import IDF
 from .materials import get_construction_set_materials
 from .organize import assign_material_to_surface, organize_cons_set
-from plan2eplus.config import BASE_PATH
+from plan2eplus.constants import BASE_PATH
 
 CONSTRUCTION_SET_TYPE = Literal["Light", "Medium", "Heavy"]
 

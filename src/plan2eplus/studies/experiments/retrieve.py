@@ -1,7 +1,7 @@
 from enum import Enum
 from pathlib import Path
 from typing import Literal
-from ...config import PATH_TO_OUTPUT_CASES
+from ...constants import PATH_TO_OUTPUT_CASES
 from ...case_edits.ezcase import get_path_to_inputs 
 
 # from .comparisons import EXP_GROUP

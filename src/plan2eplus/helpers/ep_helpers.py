@@ -3,6 +3,7 @@ from eppy.bunch_subclass import EpBunch
 
 from plan2eplus.helpers.geometry_interfaces import WallNormal
 
+## Zones ---- 
 
 def get_zone_num(name: str):
     return int(name.split(" ")[1])
@@ -19,6 +20,15 @@ def get_zone_by_name(idf: IDF, name: str):
 def get_zones(idf: IDF) -> list[EpBunch]:
     return [i for i in idf.idfobjects["ZONE"]]
 
+## Surfaces ---- 
+
+
+
+def get_surfaces(idf: IDF) -> list[EpBunch]:
+    return [
+        i
+        for i in idf.idfobjects["BUILDINGSURFACE:DETAILED"]
+    ]
 
 def get_zone_walls(idf: IDF, num: int) -> list[EpBunch]:
     return [

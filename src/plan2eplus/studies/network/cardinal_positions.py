@@ -17,14 +17,14 @@ def get_bounds_of_positioned_graph(pos: NodePositions):
 def create_cardinal_positions(_positions: NodePositions, PAD=1.4):
     positions = deepcopy(_positions)
     c = get_bounds_of_positioned_graph(positions)
-    mid_x = c.width.midpoint()
-    mid_y = c.height.midpoint()
+    mid_x = c.horz_range.midpoint()
+    mid_y = c.vert_range.midpoint()
 
     res = [
-        (mid_x, c.height.max + PAD),
-        (mid_x, c.height.min - PAD),
-        (c.width.min - PAD, mid_y),
-        (c.width.max + PAD, mid_y),
+        (mid_x, c.vert_range.max + PAD),
+        (mid_x, c.vert_range.min - PAD),
+        (c.horz_range.min - PAD, mid_y),
+        (c.horz_range.max + PAD, mid_y),
     ]
 
     drns = [WallNormal.NORTH, WallNormal.SOUTH, WallNormal.WEST, WallNormal.EAST]

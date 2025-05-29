@@ -1,8 +1,7 @@
-from ast import excepthandler
 from dataclasses import dataclass
 from geomeppy import IDF
 from matplotlib.lines import Line2D
-from typing import Callable, Literal, NamedTuple
+from typing import Callable, NamedTuple
 from eppy.bunch_subclass import EpBunch
 from datetime import datetime
 import polars as pl
@@ -51,6 +50,7 @@ def create_linecoords(start_val: float, end_val: float, wall: EpBunch):
         if len(i) == 1
     ]
 
+    a, b = None, None
     if res.axis_name == "x":
         a = Coord(res.location_in_other_axis, start_val)
         b = Coord(res.location_in_other_axis, end_val)
@@ -58,14 +58,17 @@ def create_linecoords(start_val: float, end_val: float, wall: EpBunch):
         a = Coord(start_val, res.location_in_other_axis)
         b = Coord(end_val, res.location_in_other_axis)
 
-    return LineCoords(a, b)
+    if a and b:
+        return LineCoords(a, b)
+    else:
+        raise Exception("could not retriev values to create line")
 
 
 def create_linecoords_for_subsurface(idf, subsurface: EpBunch):
     wall = get_surface_by_name(idf, subsurface.Building_Surface_Name)
     assert wall
     wall_dom = create_domain_for_rectangular_wall(wall)
-    subsurface_start = wall_dom.width.min + float(subsurface.Starting_X_Coordinate)
+    subsurface_start = wall_dom.horz_range.min + float(subsurface.Starting_X_Coordinate)
     subsurface_end = subsurface_start + float(subsurface.Length)
     return create_linecoords(subsurface_start, subsurface_end, wall)
 
@@ -78,7 +81,7 @@ def create_linecoords_for_airboundary(idf, construction_airboundary: EpBunch):
     wall = get_surface_by_name(idf, get_airboundary_wall(construction_airboundary.Name))
     assert wall
     wall_dom = create_domain_for_rectangular_wall(wall)
-    return create_linecoords(wall_dom.width.min, wall_dom.width.max, wall)
+    return create_linecoords(wall_dom.horz_range.min, wall_dom.horz_range.max, wall)
 
 
 ### split here..
