@@ -3,6 +3,16 @@ from eppy.bunch_subclass import EpBunch
 
 from plan2eplus.helpers.geometry_interfaces import WallNormal
 
+## IDF and objects generally 
+def show_idf_keys(idf: IDF):
+    print(idf.idfobjects.keys())
+
+
+def show_object_attributes(ep_object: EpBunch):
+    print(ep_object.__dict__)
+
+
+
 ## Zones ---- 
 
 def get_zone_num(name: str):

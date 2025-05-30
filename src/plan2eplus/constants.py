@@ -30,3 +30,5 @@ PATH_TO_GRAPH2PLAN_CASES = (
 
 
 SRC_PATH = BASE_PATH / "src/plan2eplus"
+
+MATERIALS_PATH = BASE_PATH / "cases/constructions"

@@ -1,6 +1,7 @@
 from typing import Dict
 from itertools import chain, groupby, tee, zip_longest
 from typing import Any, Callable, Dict, Iterable, List, TypeVar, Union
+import re
 
 import polars as pl
 
@@ -74,3 +75,24 @@ def grouper(iterable, n):
     # grouper('ABCDEFG', 3, incomplete='ignore') → ABC DEF
     iterators = [iter(iterable)] * n
     return list(zip_longest(*iterators, fillvalue=None))
+
+
+def regex_tester(pattern_str:str, test_name:str):
+    print(f"Looking for {test_name}")
+    pattern = re.compile(pattern_str)
+    m = pattern.search(test_name)
+    print(m)
+
+    if m:
+        print(m.group())
+        return m.group()
+    else:
+        print("No match found!")
+    
+def regex_match(pattern_str:str, value:str):
+    pattern = re.compile(pattern_str)
+    m = pattern.search(value)
+    if m:
+        return m.group()
+    else:
+        return None
