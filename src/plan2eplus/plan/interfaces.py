@@ -65,7 +65,7 @@ class RoomFromJSON:
 
     # TODO remove from here.. 
     def create_zone_name(self):
-        return f"0{self.id}"
+        return f"0{self.id} `{self.label}`" # TODO - make zero padded.. 
 
     def get_coordinates(self):
         left, top, *_ = self.convert_numbers()

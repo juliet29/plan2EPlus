@@ -6,6 +6,7 @@ SurfaceTypes = Literal["Wall", "Floor", "Roof"]
 
 class IDFName(NamedTuple):
     zone_name: str
+    plan_name: str
     storey_name: str
     surface_type: SurfaceTypes | str
     n_direction: str
@@ -40,14 +41,17 @@ def decompose_idf_name(name: str):
 
     # TODO write tests..
     block = re.compile(r"Block \d{2}")
+    plan_name = re.compile(r"`(.*)`")
     storey = re.compile(r"Storey \d{0,2}")
     surface_type = re.compile(r"(Wall|Floor|Roof)")
     n_direction = re.compile(r"\d{4}")
     n_position = re.compile(r"_\d{1,2}\b")
     object_type = re.compile(r"(Window|Door)")
 
+
     s = IDFName(
         match(block),
+        match(plan_name),
         match(storey),
         match(surface_type),
         match(n_direction),

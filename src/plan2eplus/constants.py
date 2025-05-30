@@ -27,3 +27,6 @@ PATH_TO_SVG2PLAN_CASES = (
 PATH_TO_GRAPH2PLAN_CASES = (
     BASE_PATH.parent / "graph2plan/outputs"
 ) 
+
+
+SRC_PATH = BASE_PATH / "src/plan2eplus"

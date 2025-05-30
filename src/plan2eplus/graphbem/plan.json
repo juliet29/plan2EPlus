@@ -1,0 +1,8 @@
+[
+  [
+    { "id": 0, "label": "corner_ventilation", "left": "0.00", "top": "0.00", "width": "4.00", "height": "4.00", "color": "" },
+    { "id": 1, "label": "single_sided_ventilation", "left": "4.00", "top": "0.00", "width": "4.00", "height": "4.00", "color": "" },
+    { "id": 2, "label": "dual_room_ventilation", "left": "0.00", "top": "4.00", "width": "8.00", "height": "4.00", "color": "" },
+    { "id": 3, "label": "cross_ventilation", "left": "8.00", "top": "4.00", "width": "4.00", "height": "8.00", "color": "" }
+  ]
+]

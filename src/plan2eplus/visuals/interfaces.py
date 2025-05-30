@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 from geomeppy import IDF
 from matplotlib import pyplot as plt
@@ -12,6 +13,7 @@ from plan2eplus.helpers.ep_helpers import get_zone_num
 from rich import print as rprint
 
 from plan2eplus.helpers.helpers import chain_flatten
+from plan2eplus.plan.graph_to_subsurfaces import create_room_map
 from plan2eplus.visuals.idf_name import decompose_idf_name
 from plan2eplus.visuals.projections import compute_unit_normal, get_surface_domain
 
@@ -42,37 +44,17 @@ class LinearGeometryObject(GeometryObject):
     @property
     def linear_component(self):
         return self.domain.horz_range
+    
 
 
 @dataclass
-class Zone(GeometryObject):
+class Subsurface(LinearGeometryObject):
     @property
     def nickname(self):
-        return f"B{self.dname.zone_number}"
-
-    @property
-    def surfaces(self):
-        return [Surface(obj) for obj in self.ep_object.zonesurfaces]  # type: ignore # TODO eppy type issue
-
-    @property
-    def subsurfaces(self):
-        return chain_flatten([s.subsurfaces for s in self.surfaces if s.subsurfaces])
-
-    @property
-    def domain(self):
-        floor = [s for s in self.surfaces if s.dname.surface_type == "Floor"]
-        assert len(floor) == 1
-        return get_surface_domain(floor[0].ep_object, "Z")
-    
-    def plot_zone_midpoints(self, ax: Axes | None = None):
-        if not ax:
-            _, ax = plt.subplots()
-        x,y = zip(*self.domain.perimeter_midpoints.as_pairs)
-        ax.scatter(x,y)
+        return f"{self.dname.object_type}-B{self.dname.zone_number}-{self.dname.surface_type}-{self.dname.direction_number}-{self.dname.position_number}"
 
     def __repr__(self) -> str:
         return f"{self.nickname}"
-
 
 @dataclass
 class Surface(LinearGeometryObject):
@@ -85,6 +67,8 @@ class Surface(LinearGeometryObject):
     @property
     def nickname(self):
         return f"B{self.dname.zone_number}-{self.dname.surface_type}-{self.direction.name}({self.dname.direction_number})-{self.dname.position_number}"
+    
+
 
     @property
     def subsurfaces(self):
@@ -94,21 +78,45 @@ class Surface(LinearGeometryObject):
         return f"{self.nickname}"
 
 
+
+
 @dataclass
-class Subsurface(LinearGeometryObject):
-    surface: Surface | None = None
-
-    # ideally get direction of wall its on..
-
+class Zone(GeometryObject):
     @property
     def nickname(self):
-        return f"{self.dname.object_type}-B{self.dname.zone_number}-{self.dname.surface_type}-{self.dname.direction_number}-{self.dname.position_number}"
+        return f"B{self.dname.zone_number}"
+    
+
+    @property
+    def surfaces(self):
+        return [Surface(obj) for obj in self.ep_object.zonesurfaces]  # type: ignore # TODO eppy type issue
+
+    @property
+    def subsurfaces(self):
+        return chain_flatten([s.subsurfaces for s in self.surfaces if s.subsurfaces])
+
+    @property
+    def domain(self):
+        floor = [s for s in self.surfaces if s.dname.surface_type == "Floor"]
+        assert len(floor) == 1, rprint(f"Invalid floor for zone  -> {floor}")
+        return get_surface_domain(floor[0].ep_object, "Z")
+
+# TODO all plotting stuff extends the object and goes in a different file 
+
+    def plot_zone_midpoints(self, ax: Axes | None = None):
+        if not ax:
+            _, ax = plt.subplots()
+        x,y = zip(*self.domain.perimeter_midpoints.as_pairs)
+        ax.scatter(x,y)
+
+    def plot_zone_name(self, ax: Axes | None = None):
+        if not ax:
+            _, ax = plt.subplots()
+        ax.text(*self.domain.centroid, s=f"{self.nickname}-{self.dname.plan_name}", fontsize="x-small" )
 
     def __repr__(self) -> str:
         return f"{self.nickname}"
 
-    # surface: str
-    # domain: Domain
 
 
 @dataclass
@@ -141,7 +149,8 @@ class PlanZones: # can just call Plan..
         max_y = max([i.vert_range.max for i in self.domains]) + PAD
         return (min_x, max_x), (min_y, max_y)
     
-    # TODO more intense plotting things maybe go elsewhere?
+    
+    # TODO all plotting stuff extends the object and goes in a different file 
     def plot_zone_domains(self, ax: Axes | None = None):
         if not ax:
             _, ax = plt.subplots()
@@ -151,7 +160,8 @@ class PlanZones: # can just call Plan..
             ax.add_artist(d.get_mpl_patch())
     
         ax.set(xlim=xlim, ylim=ylim)
-        self.zones[0].plot_zone_midpoints(ax)
+        for zone in self.zones:
+            zone.plot_zone_name(ax)
 
         plt.show()
 
@@ -160,45 +170,3 @@ class PlanZones: # can just call Plan..
     
     
     
-
-    
-
-
-    # def get_zone_wall_on_facade(
-    #     self, surfaces: dict[str, Surface], zone_num: int, drn: WallNormal
-    # ):
-    #     zone_surfaces = self.get_zone_surfaces(zone_num, surfaces)
-    #     return [z for z in zone_surfaces if z.direction == drn]
-    #     # TODO want to find the middle coordinate..
-
-
-# @dataclass
-# class Plan:
-#     zones: dict[str, Zone]
-#     surfaces: dict[str, Surface]
-#     subsurfaces: dict[str, Subsurface]
-#     # room_map: dict
-
-#     def __post_init__(self):
-#         for surface in self.surfaces.values():
-#             surface.zone = self.zones[surface.ep_object.Zone_Name]
-
-#         for subsurface in self.subsurfaces.values():
-#             subsurface.surface = self.surfaces[
-#                 subsurface.ep_object.Building_Surface_Name
-#             ]
-#         # for zone in self.zones.values():
-#         #     potential_surfaces = []
-
-#     @property
-#     def domain(self):
-#         pass  # created from Zones
-#         # TODO refactor plot_helpers.get_domains_lim -> min, max here.. `plan2eplus/src/plan2eplus/studies/analysis/plot_helpers.py:17`
-
-#     def __repr__(self) -> str:
-#         z = f"zones: {[i.nickname for i in self.zones.values()]}\n"
-#         s = f"surfaces: {[i.nickname for i in self.surfaces.values()]}\n"
-#         ss = f"subsurfaces: {[i.nickname for i in self.subsurfaces.values()]}\n"
-#         return z + s + ss
-
-#     # now goes through and populates connections?

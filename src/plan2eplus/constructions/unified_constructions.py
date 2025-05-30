@@ -5,7 +5,7 @@ import re
 from .materials import get_construction_set_materials
 
 def find_desired_window_constructions(idf: IDF):
-    pattern = re.compile("Sgl Clr \dmm")
+    pattern = re.compile(r"Sgl Clr \dmm")
     return [i for i in idf.idfobjects["CONSTRUCTION"] if pattern.match(i.Name)]
 
 
