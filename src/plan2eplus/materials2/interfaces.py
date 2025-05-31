@@ -1,3 +1,4 @@
+from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum
 import re
@@ -15,36 +16,54 @@ from plan2eplus.helpers.helpers import regex_match, regex_tester
 # class RoughnessLevel(Enum):
 #     MediumRough = 0
 
-RoughnessLevel = Literal['VeryRough', 'Rough', 'MediumRough', 'MediumSmooth', 'Smooth', 'VerySmooth']
+RoughnessLevel = Literal[
+    "VeryRough", "Rough", "MediumRough", "MediumSmooth", "Smooth", "VerySmooth"
+]
+
+
+def test_material_regex():
+    test1 = "WINDOWMATERIAL:GLAZING:EQUIVALENTLAYER"
+    test2 = "MATERIAL:AIRGAP"
+    test3 = "MATERIAL"
+    test4 = "MATERIALPROPERTY:PHASECHANGEHYSTERESIS"  # anticase
+
+    regex_tester(r"(MATERIAL:|\bMATERIAL\b)", test4)
+
 
 @dataclass
 class Material:
     name: str
     key: str
     ep_object: EpBunch
-    # TODO all the possible things should be stored hear, possibly they have units as well.. ~ metric.. 
+    # TODO all the possible things should be stored hear, possibly they have units as well.. ~ metric..
 
     def __repr__(self) -> str:
         return f"Material(name={self.name} key={self.key})"
 
     @classmethod
-    def from_idf_object(cls, mat:EpBunch):
+    def from_idf_object(cls, mat: EpBunch):
         return cls(mat.Name, mat.key, mat)
-        
-MaterialType = U = TypeVar('MaterialType', bound=Material)
+
+    def _add_to_idf(self, idf: IDF):
+        # idf = deepcopy(_idf)
+        # TODO protected -> only construction can call..
+        idf.idfobjects[self.key.upper()].append(self.ep_object)
+        return idf
+
+    # can make assertions about the shape of the EpBunch OR wrap desired functions in class methods..
+
+
+MaterialType = U = TypeVar("MaterialType", bound=Material)
 
 
 @dataclass
 class WallMaterial(Material):
     ...
-    # for now since don't need the differentiation, can go super simple.. 
+    # for now since don't need the differentiation, can go super simple..
 
-@dataclass
-class AirGap(Material):
-    ...
     # name: str
     # roughness: RoughnessLevel
-    # # TODO can replace this with the epobject .. not doing anything special with these properties.., can add them as needed.. 
+    # # TODO can replace this with the epobject .. not doing anything special with these properties.., can add them as needed..
     # thickness: float
     # conductivity: float
     # density: float
@@ -55,46 +74,84 @@ class AirGap(Material):
 
     # @classmethod
     # def from_idf_object(cls, mat:EpBunch):
-    #     return WallMaterial(mat.Name, mat.Roughness, mat.Thickness, mat.Conductivity,mat.Density, mat.Specific_Heat) # type: ignore # TODO eplus error.. 
-    # TODO also have epobject, in case want r-values, etc.. 
+    #     return WallMaterial(mat.Name, mat.Roughness, mat.Thickness, mat.Conductivity,mat.Density, mat.Specific_Heat) # type: ignore # TODO eplus error..
+    # TODO also have epobject, in case want r-values, etc..
+
+
+@dataclass
+class AirGap(Material): ...
+
 
 # NoMass
 # WindowGas
-# Air Gap 
-# Windo Glazing.. 
+# Air Gap
+# Windo Glazing..
+
 
 @dataclass
 class Construction:
     name: str
-    layers: list[type[Material]] # TODO fix -> should be generic material.. 
+    layers: list[Material]  # TODO fix -> should be generic material..
 
     @classmethod
-    def from_str_list(cls, name:str, str_list:list[str], materials_dict:dict[str, MaterialType]):
+    def from_str_list(
+        cls, name: str, str_list: list[str], materials_dict: dict[str, MaterialType]
+    ):
         layers = []
         for val in str_list:
             try:
                 layers.append(materials_dict[val])
-            except:
-                raise Exception(f"{val} is not in {materials_dict.keys()}")
+            except KeyError:
+                raise Exception(
+                    f"{val} is not in {sorted(list(materials_dict.keys()))}"
+                )
         return cls(name, layers)
 
-    def to_idf_object(self):
-        pass
+    def add_materials_to_idf(self, idf: IDF, material: Material):
+        existing_material = idf.getobject(material.key.upper(), material.name)
+        if not existing_material:
+            idf = material._add_to_idf(idf=idf)
+
+    def to_idf_object(self, _idf: IDF):
+        """Object looks like => Name, Outside_Layer, Layer_2, Layer_2+1, ..., Layer_n"""
+
+        idf = deepcopy(_idf)
+        layer_names = [i.name for i in self.layers]
+        other_keys = ["Outside_Layer"] + [
+            f"Layer_{ix + 2}" for ix in range(len(self.layers) - 1)
+        ]
+        const_dict = {k: v for k, v in zip(other_keys, layer_names)}
+        const_dict["Name"] = self.name
+
+        idf.newidfobject("CONSTRUCTION", **const_dict)
+
+        for mat in self.layers:
+            self.add_materials_to_idf(idf, mat)
+
+        return idf
 
 
-def find_material_keys(idf:IDF):
+
+
+class ConstructionSet:
+    ...
+    # responsible for assigning itself to different materials..
+
+
+# TODO go to a different file
+def find_material_keys(idf: IDF):
     material_keys = []
-
     pattern_str = r"(MATERIAL:|\bMATERIAL\b)"
 
     for key in idf.idfobjects.keys():
-        if regex_match(pattern_str, key): # TODO could prevent this repetition.. 
+        if regex_match(pattern_str, key):  # TODO could prevent this repetition..
             material_keys.append(key)
 
     return material_keys
-        # material_keys.append
+    # material_keys.append
 
-def create_material_dict(idf:IDF):
+
+def create_material_dict(idf: IDF) -> dict[str, Material]:
     all_materials = []
     material_keys = find_material_keys(idf)
     for key in material_keys:
@@ -102,13 +159,21 @@ def create_material_dict(idf:IDF):
         if mats:
             for mat in mats:
                 all_materials.append(Material.from_idf_object(mat))
-    
-    mat_dict = {m.name : m for m in all_materials}
+
+    mat_dict = {m.name: m for m in all_materials}
     return mat_dict
 
 
+def get_default_material_dict():
+    main_materials_idf = MATERIALS_PATH / "ASHRAE_2005_HOF_Materials.idf"
+    case = EneryPlusCaseEditor(
+        path_to_outputs=DUMMY_OUTPUT_PATH, starting_path=main_materials_idf
+    )
+    return create_material_dict(case.idf)
+
+
 # TODO read in wall materials from IDF
-# TODO create constructions and add to IDF 
+# TODO create constructions and add to IDF
 
 if __name__ == "__main__":
     print("\n---materials ---")
@@ -117,42 +182,22 @@ if __name__ == "__main__":
         path_to_outputs=DUMMY_OUTPUT_PATH, starting_path=main_materials_idf
     )
     mat_dict = create_material_dict(case.idf)
-    rprint(mat_dict.keys())
-    # mats = case.idf.idfobjects["Material".upper()]
-    # # rprint(case.idf.idfobjects.keys())
 
-    # test1 = 'WINDOWMATERIAL:GLAZING:EQUIVALENTLAYER'
-    # test2 = 'MATERIAL:AIRGAP'
-    # test3 = "MATERIAL"
-    # test4 = "MATERIALPROPERTY:PHASECHANGEHYSTERESIS" # anticase
-
-    # regex_tester(r"(MATERIAL:|\bMATERIAL\b)", test4)
-    # # rprint(mats[0].__dict__)
-    # rprint(mats[0].key)
-    # rprint(WallMaterial.from_idf_object(mats[0]))
-    # # mats[0]
-
-
-    # materials = [WallMaterial.from_idf_object(i) for i in mats]
-    # md = {i.name : i for i in materials}
-    # rprint(md)
-    # have to do for air 
-
-    # MyExteriorWall = Construction.from_str_list("My Exterior Wall", ["G01 16mm gypsum board",  "G01 16mm gypsum board" ], md)
-    # rprint(MyExteriorWall)
-    # TODO read from csv... 
-    # TODO must add airgaps also.. 
-
-    
-    # mat = case.idf.getobject("Material", "F06 EIFS finish")
-    # rprint(mat)
+    MyExteriorWall = Construction.from_str_list(
+        "My Exterior Wall",
+        [
+            "G01 16mm gypsum board",
+            "F04 Wall air space resistance",
+            "G01 16mm gypsum board",
+        ],
+        mat_dict,
+    )
+    new_idf = MyExteriorWall.to_idf_object(case.idf)
+    # rprint(new_idf.idfobjects["CONSTRUCTION"])
+    # rprint(new_idf.idfobjects["MATERIAL"])
 
 
-# 
-def test_material_regex():
-    test1 = 'WINDOWMATERIAL:GLAZING:EQUIVALENTLAYER'
-    test2 = 'MATERIAL:AIRGAP'
-    test3 = "MATERIAL"
-    test4 = "MATERIALPROPERTY:PHASECHANGEHYSTERESIS" # anticase
-    
-    regex_tester(r"(MATERIAL:|\bMATERIAL\b)", test4)
+    # case.idf.getobject("Material".upper(), "a fake material")
+
+
+#
