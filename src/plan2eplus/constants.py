@@ -7,6 +7,9 @@ IDD_PATH = ENERGY_PLUS_LOCATION / "Energy+.idd"
 
 
 BASE_PATH = pyprojroot.find_root(pyprojroot.has_dir(".git"))
+
+
+
 IDF_PATH = BASE_PATH / "cases/base/01example/Minimal_AP.idf"
 WEATHER_FILE = BASE_PATH.parent / "weather_data/PALO_ALTO/CA_PALO-ALTO-AP_724937_23.EPW"
 

@@ -13,23 +13,6 @@ from typing import Literal, TypeVar
 from plan2eplus.helpers.helpers import regex_match, regex_tester
 
 
-# class RoughnessLevel(Enum):
-#     MediumRough = 0
-
-RoughnessLevel = Literal[
-    "VeryRough", "Rough", "MediumRough", "MediumSmooth", "Smooth", "VerySmooth"
-]
-
-
-def test_material_regex():
-    test1 = "WINDOWMATERIAL:GLAZING:EQUIVALENTLAYER"
-    test2 = "MATERIAL:AIRGAP"
-    test3 = "MATERIAL"
-    test4 = "MATERIALPROPERTY:PHASECHANGEHYSTERESIS"  # anticase
-
-    regex_tester(r"(MATERIAL:|\bMATERIAL\b)", test4)
-
-
 @dataclass
 class Material:
     name: str
@@ -53,49 +36,14 @@ class Material:
     # can make assertions about the shape of the EpBunch OR wrap desired functions in class methods..
 
 
-MaterialType = U = TypeVar("MaterialType", bound=Material)
-
-
-@dataclass
-class WallMaterial(Material):
-    ...
-    # for now since don't need the differentiation, can go super simple..
-
-    # name: str
-    # roughness: RoughnessLevel
-    # # TODO can replace this with the epobject .. not doing anything special with these properties.., can add them as needed..
-    # thickness: float
-    # conductivity: float
-    # density: float
-    # specific_heat: float
-    # thermal_absorptance: float = 0
-    # solar_absorpatance: float = 0
-    # visible_absorptance: float = 0
-
-    # @classmethod
-    # def from_idf_object(cls, mat:EpBunch):
-    #     return WallMaterial(mat.Name, mat.Roughness, mat.Thickness, mat.Conductivity,mat.Density, mat.Specific_Heat) # type: ignore # TODO eplus error..
-    # TODO also have epobject, in case want r-values, etc..
-
-
-@dataclass
-class AirGap(Material): ...
-
-
-# NoMass
-# WindowGas
-# Air Gap
-# Windo Glazing..
-
-
 @dataclass
 class Construction:
     name: str
-    layers: list[Material]  # TODO fix -> should be generic material..
+    layers: list[Material]
 
     @classmethod
-    def from_str_list(
-        cls, name: str, str_list: list[str], materials_dict: dict[str, MaterialType]
+    def from_list_of_material_names(
+        cls, name: str, str_list: list[str], materials_dict: dict[str, Material]
     ):
         layers = []
         for val in str_list:
@@ -107,12 +55,12 @@ class Construction:
                 )
         return cls(name, layers)
 
-    def add_materials_to_idf(self, idf: IDF, material: Material):
+    def add_material_to_idf(self, idf: IDF, material: Material):
         existing_material = idf.getobject(material.key.upper(), material.name)
         if not existing_material:
             idf = material._add_to_idf(idf=idf)
 
-    def to_idf_object(self, _idf: IDF):
+    def add_construction_to_idf(self, _idf: IDF):
         """Object looks like => Name, Outside_Layer, Layer_2, Layer_2+1, ..., Layer_n"""
 
         idf = deepcopy(_idf)
@@ -126,11 +74,9 @@ class Construction:
         idf.newidfobject("CONSTRUCTION", **const_dict)
 
         for mat in self.layers:
-            self.add_materials_to_idf(idf, mat)
+            self.add_material_to_idf(idf, mat)
 
         return idf
-
-
 
 
 class ConstructionSet:
@@ -138,7 +84,7 @@ class ConstructionSet:
     # responsible for assigning itself to different materials..
 
 
-# TODO go to a different file
+# TODO move to a different file
 def find_material_keys(idf: IDF):
     material_keys = []
     pattern_str = r"(MATERIAL:|\bMATERIAL\b)"
@@ -183,7 +129,7 @@ if __name__ == "__main__":
     )
     mat_dict = create_material_dict(case.idf)
 
-    MyExteriorWall = Construction.from_str_list(
+    MyExteriorWall = Construction.from_list_of_material_names(
         "My Exterior Wall",
         [
             "G01 16mm gypsum board",
@@ -192,10 +138,9 @@ if __name__ == "__main__":
         ],
         mat_dict,
     )
-    new_idf = MyExteriorWall.to_idf_object(case.idf)
+    new_idf = MyExteriorWall.add_construction_to_idf(case.idf)
     # rprint(new_idf.idfobjects["CONSTRUCTION"])
     # rprint(new_idf.idfobjects["MATERIAL"])
-
 
     # case.idf.getobject("Material".upper(), "a fake material")
 

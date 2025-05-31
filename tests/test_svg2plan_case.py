@@ -16,3 +16,12 @@ def test_ezacase_runs():
     ## run case..
     result = case.run_idf(force_run=True)
     assert result
+
+
+# def test_material_regex():
+#     test1 = "WINDOWMATERIAL:GLAZING:EQUIVALENTLAYER"
+#     test2 = "MATERIAL:AIRGAP"
+#     test3 = "MATERIAL"
+#     test4 = "MATERIALPROPERTY:PHASECHANGEHYSTERESIS"  # anticase
+
+#     regex_tester(r"(MATERIAL:|\bMATERIAL\b)", test4)

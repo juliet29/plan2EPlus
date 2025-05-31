@@ -76,7 +76,7 @@ def match_subsurfaces(surface: EpBunch):
             return ""
 
 
-def assign_material_to_surface(surface: EpBunch, cons_assignment: dict):
+def assign_construction_to_surface(surface: EpBunch, cons_assignment: dict):
     key = match_surfaces(surface)
     if not key:
         key = match_subsurfaces(surface)

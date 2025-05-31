@@ -16,38 +16,41 @@ from plan2eplus.materials2.interfaces import Construction, get_default_material_
 # )
 
 
-# NOTES -> no AFN + some single sided ventilation... 
+# NOTES -> no AFN + some single sided ventilation...
 
 
 input_path = SRC_PATH / "graphbem"
 
-# windows.. 
+# windows..
 
-def add_materials(idf: IDF):
+
+def add_constructions_from_csv(idf: IDF):
     df = pl.read_csv(input_path / "My_Constructions.csv")
     layer_cols = df.select(cs.contains("Layer")).columns
-    
+
     # constructions:list = []
     for row in df.iter_rows(named=True):
-        material_list = [v for k,v in row.items() if k in layer_cols and v]
+        material_list = [v for k, v in row.items() if k in layer_cols and v]
         name = row["Name"]
-        c = Construction.from_str_list(name, material_list, get_default_material_dict())
-        idf = c.to_idf_object(idf)
+        c = Construction.from_list_of_material_names(
+            name, material_list, get_default_material_dict()
+        )
+        idf = c.add_construction_to_idf(idf)
 
     return idf
 
     # for construction in constructions:
     #     construction.to_idf
 
+
 def assign_materials():
     pass
-
 
 
 def test_graph_bem():
     case = EneryPlusCaseEditor(DUMMY_OUTPUT_PATH)
     case.idf = add_rooms(case.idf, input_path)
-    case.idf = add_materials(case.idf)
+    case.idf = add_constructions_from_csv(case.idf)
     rprint(case.idf.idfobjects["CONSTRUCTION"])
     rprint(case.idf.idfobjects["MATERIAL"])
     # pz = PlanZones(case.idf)
@@ -56,14 +59,7 @@ def test_graph_bem():
     # pz.zones[0].get_plan_name(input_path)
 
     # read construction as df
-    # extract name, put layers into list 
-
-
-
-        
-
-
-
+    # extract name, put layers into list
 
 
 if __name__ == "__main__":

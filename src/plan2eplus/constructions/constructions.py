@@ -4,7 +4,7 @@ from eppy.bunch_subclass import EpBunch
 from eppy.constructions import thermal_properties
 from geomeppy import IDF
 from .materials import get_construction_set_materials
-from .organize import assign_material_to_surface, organize_cons_set
+from .organize import assign_construction_to_surface, organize_cons_set
 from plan2eplus.constants import BASE_PATH
 
 CONSTRUCTION_SET_TYPE = Literal["Light", "Medium", "Heavy"]
@@ -40,7 +40,7 @@ def assign_cons_set(idf: IDF, cons_set_type: CONSTRUCTION_SET_TYPE):
     subsurfaces = idf.getsubsurfaces()
     res = surfaces + subsurfaces
     for surface in res:
-        assign_material_to_surface(surface, cad)
+        assign_construction_to_surface(surface, cad)
     return idf
 
 

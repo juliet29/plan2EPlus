@@ -89,8 +89,11 @@ def regex_tester(pattern_str:str, test_name:str):
     else:
         print("No match found!")
     
-def regex_match(pattern_str:str, value:str):
-    pattern = re.compile(pattern_str)
+def regex_match(pattern_str:str, value:str, IGNORE_CASE=False):
+    if IGNORE_CASE:
+        pattern = re.compile(pattern_str, re.IGNORECASE)
+    else:
+        pattern = re.compile(pattern_str)
     m = pattern.search(value)
     if m:
         return m.group()
