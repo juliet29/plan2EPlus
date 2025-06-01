@@ -29,8 +29,14 @@ class IDFName(NamedTuple):
             return int(self.n_position.split("_")[1])
         else:
             return 0
+        
+    @property
+    def get_zone_name(self):
+        return " ".join([self.zone_name, self.plan_name, self.storey_name])
+        
+    
 
-
+# TODO this should be part of the object above as a class method? 
 def decompose_idf_name(name: str):
     def match(pattern: re.Pattern[str]):
         m = pattern.search(name)

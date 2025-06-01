@@ -66,6 +66,7 @@ class RoomFromJSON:
     # TODO remove from here.. 
     def create_zone_name(self):
         return f"0{self.id} `{self.label}`" # TODO - make zero padded.. 
+    # `{self.label}` -> # TODO to not break rest of code, going to break Plan Zones.. 5/31/25 8:17pm 
 
     def get_coordinates(self):
         left, top, *_ = self.convert_numbers()

@@ -2,8 +2,13 @@ from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
 from plan2eplus.helpers.geometry_interfaces import WallNormal
+from plan2eplus.visuals.idf_name import IDFName, decompose_idf_name
 
-## IDF and objects generally 
+## CONSTANTS used in E+
+### for surfaces..
+
+
+## IDF and objects generally
 def show_idf_keys(idf: IDF):
     print(idf.idfobjects.keys())
 
@@ -12,44 +17,49 @@ def show_object_attributes(ep_object: EpBunch):
     print(ep_object.__dict__)
 
 
+## Zones ----
 
-## Zones ---- 
 
 def get_zone_num(name: str):
     return int(name.split(" ")[1])
 
 
-def get_zone_name(num: int):
-    return f"Block 0{num} Storey 0"
+def get_zones(idf: IDF) -> list[EpBunch]:
+    return [i for i in idf.idfobjects["ZONE"]]
+
+
+def get_zone_name_by_num(idf: IDF, num: int):
+    zone_names = [decompose_idf_name(i.Name) for i in get_zones(idf)]
+    name = [i for i in zone_names if i.zone_number == num]
+    assert len(name) == 1, (
+        f"No zone with number `{num}` in {[n.get_zone_name for n in name]}"
+    )
+    return name[0].get_zone_name
+
+    # return f"Block 0{num} Storey 0"  # TODO to not break rest of code, going to break Plan Zones.. 5/31/25 8:17pm
 
 
 def get_zone_by_name(idf: IDF, name: str):
     return idf.getobject("ZONE", name)
 
 
-def get_zones(idf: IDF) -> list[EpBunch]:
-    return [i for i in idf.idfobjects["ZONE"]]
-
-## Surfaces ---- 
-
+## Surfaces ----
 
 
 def get_surfaces(idf: IDF) -> list[EpBunch]:
-    return [
-        i
-        for i in idf.idfobjects["BUILDINGSURFACE:DETAILED"]
-    ]
+    return [i for i in idf.idfobjects["BUILDINGSURFACE:DETAILED"]]
 
-def get_zone_walls(idf: IDF, num: int) -> list[EpBunch]:
+
+# TODO refactor this significantlu..
+def get_zone_walls_by_zone_num(idf: IDF, num: int) -> list[EpBunch]:
     return [
         i
         for i in idf.idfobjects["BUILDINGSURFACE:DETAILED"]
-        if get_zone_name(num) in i.Name and "Wall" in i.Name
+        if get_zone_name_by_num(idf, num) in i.Name and "Wall" in i.Name
     ]
 
 
 # can alse do zone.zonesubusrfaces then filter to walls ..
-
 
 
 def get_surface_direction(idf: IDF, surface_name: str):

@@ -1,0 +1,6 @@
+OUTDOORS = "outdoors"
+FLOOR = "floor"
+ROOF = "roof"
+WALL = "wall"
+DOOR = "door"
+WINDOW = "window"

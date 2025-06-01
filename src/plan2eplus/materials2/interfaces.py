@@ -36,10 +36,13 @@ class Material:
     # can make assertions about the shape of the EpBunch OR wrap desired functions in class methods..
 
 
+ConstructionTypes = Literal["exterior", "interior", "roof", "cieling", "floor", "door", "window"]
+
 @dataclass
 class Construction:
     name: str
     layers: list[Material]
+    construction_type: ConstructionTypes | None = None
 
     @classmethod
     def from_list_of_material_names(
@@ -77,10 +80,14 @@ class Construction:
             self.add_material_to_idf(idf, mat)
 
         return idf
+    
+    def assign_default_mapping(self, construction_type:ConstructionTypes):
+        self.construction_type = construction_type
 
 
-class ConstructionSet:
-    ...
+
+
+
     # responsible for assigning itself to different materials..
 
 
@@ -116,6 +123,39 @@ def get_default_material_dict():
         path_to_outputs=DUMMY_OUTPUT_PATH, starting_path=main_materials_idf
     )
     return create_material_dict(case.idf)
+
+def create_test_constructions():
+    mat_dict = get_default_material_dict()
+    const_a = Construction.from_list_of_material_names(
+            "My Exterior Wall",
+            [
+                "G01 16mm gypsum board",
+                "F04 Wall air space resistance",
+                "G01 16mm gypsum board",
+            ],
+            mat_dict,
+        )
+    
+    const_b = Construction.from_list_of_material_names(
+            "My Floor",
+            [
+                "G01 16mm gypsum board",
+                "F04 Wall air space resistance",
+                "G01 16mm gypsum board",
+            ],
+            mat_dict,
+        )
+    
+    const_c = Construction.from_list_of_material_names(
+            "My Roof",
+            [
+                "G01 16mm gypsum board",
+                "F04 Wall air space resistance",
+                "G01 16mm gypsum board",
+            ],
+            mat_dict,
+        )
+    return const_a, const_b, const_c
 
 
 # TODO read in wall materials from IDF

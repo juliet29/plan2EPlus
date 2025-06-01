@@ -3,13 +3,18 @@ from copy import deepcopy
 from eppy.bunch_subclass import EpBunch
 from geomeppy import IDF
 from ..helpers.ep_geom_helpers import create_domain_for_rectangular_wall
-from ..helpers.ep_helpers import WallNormal, get_zone_name, get_zone_walls
+from ..helpers.ep_helpers import (
+    WallNormal,
+    get_zone_name_by_num,
+    get_zone_walls_by_zone_num,
+)
 from .interfaces import (
     Dimensions,
     PairOnly,
     SubsurfacePair,
 )
 from .placement import create_nine_points_for_domain
+from rich import print as rprint
 
 
 class MoreThanOneIntersectionError(Exception):
@@ -30,8 +35,9 @@ def handle_connection_result(res: list[EpBunch]):
 def find_surface_connecting_two_zones(idf: IDF, pair: PairOnly):
     assert pair.space_b + 1  # type: ignore
 
-    zone_walls = get_zone_walls(idf, pair.space_a)
-    partner = get_zone_name(pair.space_b)  # type: ignore
+    zone_walls = get_zone_walls_by_zone_num(idf, pair.space_a)
+    partner = get_zone_name_by_num(idf, pair.space_b)  # type: ignore
+    rprint(zone_walls, partner)
     return handle_connection_result(
         [i for i in zone_walls if partner in i.Outside_Boundary_Condition_Object]
     )
@@ -39,7 +45,8 @@ def find_surface_connecting_two_zones(idf: IDF, pair: PairOnly):
 
 def find_surface_connecting_zone_and_drn(idf: IDF, pair: PairOnly):
     assert pair.space_b.name  # type: ignore
-    zone_walls = get_zone_walls(idf, pair.space_a)
+    zone_walls = get_zone_walls_by_zone_num(idf, pair.space_a)
+    rprint(zone_walls)
     try:
         res = handle_connection_result(
             [
@@ -110,7 +117,7 @@ def get_approp_surface_and_attrs(
     surf = get_connecting_surface(idf, pair)
     if not surf:
         raise Exception("No surface found")
-    # TODO here will check idf.subsurface changes.. 
+    # TODO here will check idf.subsurface changes..
     pair.attrs = ensure_subsurface_within_surface(surf, pair)
     return surf, pair.attrs
 

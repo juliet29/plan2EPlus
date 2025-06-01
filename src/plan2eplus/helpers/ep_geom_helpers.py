@@ -2,7 +2,7 @@ from itertools import groupby
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
-from .ep_helpers import get_zone_walls, get_zones
+from .ep_helpers import get_zone_walls_by_zone_num, get_zones
 from .geometry_interfaces import Coordinate3D, Domain, Range, WallNormal
 
 
@@ -53,7 +53,7 @@ def create_domain_for_zone(idf: IDF, num: int):
                 domains[k].append(create_domain_for_rectangular_wall(surf))
         return domains
 
-    walls = get_zone_walls(idf, num)
+    walls = get_zone_walls_by_zone_num(idf, num)
     grouped_walls = sort_and_group_walls()
     domains = create_domains()
     ranges = {k: create_total_range(v) for k, v in domains.items()}

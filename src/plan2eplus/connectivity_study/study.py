@@ -19,6 +19,8 @@ from plan2eplus.subsurfaces.interfaces import (
     SubsurfaceObjects,
     SubsurfacePair,
 )
+from rich import print as rprint
+
 
 
 output_path = PATH_TO_OUTPUT_CASES / "250527_threeplan"
@@ -57,14 +59,27 @@ def get_subsurface_pairs(path_to_inputs: Path, graph_ix: int):
 def test_connectivity_case():
     case = EneryPlusCaseEditor(output_path)
     case.idf = add_rooms(case.idf, input_path)
+    case.idf.printidf()
+    # p = PlanZones(case.idf)
+    # p.plot_zone_domains()
+
     n_connectivity_graph = 0
     pairs = get_subsurface_pairs(input_path, n_connectivity_graph)
     pprint(pairs)
-    case.idf = add_subsurfaces_to_case(case.idf, pairs)
-    finish_creating_ezcase(case, input_path)
 
-    case.idf.printidf()
-    case.run_idf(force_run=True)
+
+    case.idf = add_subsurfaces_to_case(case.idf, pairs)
+
+
+    # print(case.idf.getsubsurfaces())
+    # s = case.idf.getsubsurfaces()[0]
+    # rprint(s.__dict__)
+    rprint(case.idf.printidf())
+
+    # finish_creating_ezcase(case, input_path)
+
+    # case.idf.printidf()
+    # case.run_idf(force_run=True)
 
 
 

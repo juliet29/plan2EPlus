@@ -26,7 +26,6 @@ def sort_and_group_objects_dict(lst: Iterable[T], fx: Callable[[T], Any]) -> Lis
     d = {}
     for k, g in groupby(sorted_objs, fx):
         d[k] = [i for i in list(g)]
-
     return d
 
 
