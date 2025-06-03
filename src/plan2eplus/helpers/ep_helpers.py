@@ -32,9 +32,9 @@ def get_zone_name_by_num(idf: IDF, num: int):
     zone_names = [decompose_idf_name(i.Name) for i in get_zones(idf)]
     name = [i for i in zone_names if i.zone_number == num]
     assert len(name) == 1, (
-        f"No zone with number `{num}` in {[n.get_zone_name for n in name]}"
+        f"No zone with number `{num}` in {[n.recreate_zone_name for n in name]}"
     )
-    return name[0].get_zone_name
+    return name[0].recreate_zone_name
 
     # return f"Block 0{num} Storey 0"  # TODO to not break rest of code, going to break Plan Zones.. 5/31/25 8:17pm
 
@@ -78,7 +78,7 @@ def get_surface_by_name(idf: IDF, name):
 
 
 def get_partner_of_surface(idf: IDF, surf: EpBunch):
-    assert is_interior_wall
+    assert is_interior_wall  # TODO is this an error?
     return get_surface_by_name(idf, surf.Outside_Boundary_Condition_Object)
 
 

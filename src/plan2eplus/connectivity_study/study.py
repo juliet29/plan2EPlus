@@ -20,9 +20,11 @@ from plan2eplus.subsurfaces.interfaces import (
     SubsurfacePair,
 )
 from rich import print as rprint
+from plan2eplus.visuals.graph_plot import find_points_along_path, find_wall_on_zone_facade
+from plan2eplus.log_setup import setup_logging
+import logging
 
-
-
+logger = logging.getLogger(__name__)
 output_path = PATH_TO_OUTPUT_CASES / "250527_threeplan"
 input_path = PATH_TO_GRAPH2PLAN_CASES / "three_plan"
 
@@ -49,40 +51,29 @@ def handle_edge(
 def get_subsurface_pairs(path_to_inputs: Path, graph_ix: int):
     path_to_connectivity_graphs = path_to_inputs / "connectivity"
     room_map = create_room_map(path_to_inputs)
-    graph_data = load_data_from_json(path_to_connectivity_graphs, f"_{graph_ix:02}.json")
+    graph_data = load_data_from_json(
+        path_to_connectivity_graphs, f"_{graph_ix:02}.json"
+    )
     edges: list[GraphEdgeJSON] = graph_data["edges"]
-    return [
-        handle_edge(e, room_map) for e in edges
-    ]
+    return [handle_edge(e, room_map) for e in edges]
 
 
 def test_connectivity_case():
     case = EneryPlusCaseEditor(output_path)
     case.idf = add_rooms(case.idf, input_path)
-    case.idf.printidf()
-    # p = PlanZones(case.idf)
-    # p.plot_zone_domains()
 
     n_connectivity_graph = 0
     pairs = get_subsurface_pairs(input_path, n_connectivity_graph)
-    pprint(pairs)
-
-
     case.idf = add_subsurfaces_to_case(case.idf, pairs)
+    return case.idf
 
-
-    # print(case.idf.getsubsurfaces())
-    # s = case.idf.getsubsurfaces()[0]
-    # rprint(s.__dict__)
-    rprint(case.idf.printidf())
-
-    # finish_creating_ezcase(case, input_path)
-
-    # case.idf.printidf()
-    # case.run_idf(force_run=True)
-
+    
 
 
 if __name__ == "__main__":
-    print("Running connectivity test..")
-    test_connectivity_case()
+    setup_logging("test_connectivity")
+    logger.info("test_connectivity")
+    idf  = test_connectivity_case()
+
+    find_points_along_path(idf)
+

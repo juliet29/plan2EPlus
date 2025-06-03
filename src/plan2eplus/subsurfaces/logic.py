@@ -37,7 +37,7 @@ def find_surface_connecting_two_zones(idf: IDF, pair: PairOnly):
 
     zone_walls = get_zone_walls_by_zone_num(idf, pair.space_a)
     partner = get_zone_name_by_num(idf, pair.space_b)  # type: ignore
-    rprint(zone_walls, partner)
+    # rprint(zone_walls, partner)
     return handle_connection_result(
         [i for i in zone_walls if partner in i.Outside_Boundary_Condition_Object]
     )
@@ -46,7 +46,7 @@ def find_surface_connecting_two_zones(idf: IDF, pair: PairOnly):
 def find_surface_connecting_zone_and_drn(idf: IDF, pair: PairOnly):
     assert pair.space_b.name  # type: ignore
     zone_walls = get_zone_walls_by_zone_num(idf, pair.space_a)
-    rprint(zone_walls)
+    # rprint(zone_walls)
     try:
         res = handle_connection_result(
             [

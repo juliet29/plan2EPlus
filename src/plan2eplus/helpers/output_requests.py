@@ -55,8 +55,9 @@ def add_all_output_requests(idf:IDF):
     idf = request_sql(idf)
     idf = request_dxf(idf)
     idf = request_advanced_variables(idf)
+    # all_variables.afn
 
-    vars = get_vars([all_variables.afn, all_variables.zone, all_variables.site])
+    vars = get_vars([all_variables.surface, all_variables.zone, all_variables.site])
 
     for var in vars:
         idf = add_output_variable(idf, var)

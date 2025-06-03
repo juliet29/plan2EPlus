@@ -29,14 +29,18 @@ class IDFName(NamedTuple):
             return int(self.n_position.split("_")[1])
         else:
             return 0
-        
-    @property
-    def get_zone_name(self):
-        return " ".join([self.zone_name, self.plan_name, self.storey_name])
-        
-    
 
-# TODO this should be part of the object above as a class method? 
+    @property
+    def recreate_zone_name(self):
+        return " ".join([self.zone_name, self.plan_name, self.storey_name]) # TODO redundnat with method on Zone?
+    
+    @property
+    def plan_name_alone(self):
+        return self.plan_name.replace("`", "")
+
+
+
+# TODO this should be part of the object above as a class method?
 def decompose_idf_name(name: str):
     def match(pattern: re.Pattern[str]):
         m = pattern.search(name)
@@ -53,7 +57,6 @@ def decompose_idf_name(name: str):
     n_direction = re.compile(r"\d{4}")
     n_position = re.compile(r"_\d{1,2}\b")
     object_type = re.compile(r"(Window|Door)")
-
 
     s = IDFName(
         match(block),

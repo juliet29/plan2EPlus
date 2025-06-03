@@ -1,5 +1,5 @@
 from geomeppy import IDF
-from plan2eplus.constants import SRC_PATH, DUMMY_OUTPUT_PATH
+from plan2eplus.constants import SRC_PATH, GRAPHBEM_PATH
 from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
 from plan2eplus.case_edits.ezcase import add_rooms, finish_creating_ezcase,    add_all_output_requests
 from plan2eplus.materials2.construction_set_map import ConstructionSet, match_surface_to_constr_set
@@ -63,13 +63,14 @@ def assign_constructions(idf: IDF, constructions:list[Construction]):
 
 
 def test_graph_bem():
-    case = EneryPlusCaseEditor(DUMMY_OUTPUT_PATH)
+    case = EneryPlusCaseEditor(GRAPHBEM_PATH)
     case.idf = add_rooms(case.idf, input_path)
     case.idf, constructions = add_constructions_from_csv(case.idf)
     case.idf = assign_constructions(case.idf, constructions)
     case.idf = add_all_output_requests(case.idf)
     case.compare_and_save()
     case.run_idf(force_run=True)
+    return case.idf
     # idf.printidf()
     
     
@@ -89,4 +90,11 @@ def test_graph_bem():
 
 if __name__ == "__main__":
     print("Running connectivity test..")
-    test_graph_bem()
+    idf = test_graph_bem()
+    pz = PlanZones(idf)
+    # pz.plot_zone_domains()
+    # zone = pz.get_zone_by_num(0)
+    # for wall in zone.walls:
+    #     partner_wall = wall.partner_wall(idf)
+    #     rprint([wall, wall.idf_name, "|", partner_wall])
+

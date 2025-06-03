@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, IntEnum
 from typing import Callable, NamedTuple
 import numpy as np
 from ..helpers.plots import ShapeDict
@@ -158,13 +158,19 @@ class Dimensions:  # TODO why is this different from a Domain?
 # TODO -> convert these to be associated with the EPBUnch, https://eppy.readthedocs.io/en/latest/_modules/eppy/bunch_subclass.html#addfunctions
 
 
-class WallNormal(Enum):
+class WallNormal(IntEnum): # TODO 6/2/25 -> possible breaking change
     # direction of outward normal of the wall..
     # https://eppy.readthedocs.io/en/latest/eppy.geometry.html#eppy.geometry.surface.azimuth
-    NORTH = 0.0
-    EAST = 90.0
-    SOUTH = 180.0
-    WEST = 270.0
+    NORTH = 0
+    EAST = 90
+    SOUTH = 180
+    WEST = 270
+    UP = 1
+    DOWN = -1
+    # TODO => if anything iterates over this it will throw an error 
 
     def __getitem__(self, i):
         return getattr(self, i)
+    
+    # def __lt__(self):
+    #     return 

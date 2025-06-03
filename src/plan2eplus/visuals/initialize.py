@@ -8,9 +8,10 @@ from plan2eplus.visuals.interfaces import PlanZones
 
 
 def create_plan(idf: IDF):
+    pass
     # rprint(idf.__dict__.keys())
-    p = PlanZones(idf)
-    p.zones[0].dname
+    # p = PlanZones(idf)
+    # p.zones[0].dname
     # p.plot_zone_domains()
     # zones = [Zone(obj) for obj in get_zones(idf)]
     # rprint(zones[2].subsurfaces)

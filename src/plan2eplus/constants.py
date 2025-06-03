@@ -8,6 +8,9 @@ IDD_PATH = ENERGY_PLUS_LOCATION / "Energy+.idd"
 
 BASE_PATH = pyprojroot.find_root(pyprojroot.has_dir(".git"))
 
+CONFIG_DIR = BASE_PATH / "config"
+LOG_DIR = BASE_PATH / "logs"
+
 
 
 IDF_PATH = BASE_PATH / "cases/base/01example/Minimal_AP.idf"
@@ -18,6 +21,7 @@ PATH_TO_OUTPUT_CASES = BASE_PATH / "cases"
 # TODO for extensibility, this gets copied over to this directory...
 
 DUMMY_OUTPUT_PATH = PATH_TO_OUTPUT_CASES / "tests/dummy"
+GRAPHBEM_PATH = PATH_TO_OUTPUT_CASES / "tests/graphbem"
 
 
 

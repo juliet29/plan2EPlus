@@ -5,7 +5,7 @@ from ladybug.datacollection import BaseCollection
 from ...helpers.read_sql import get_collection_for_variable
 # from .plots import get_name_for_spatial_data
 from .setup import CaseData
-from .interfaces import DataDescription, InitData
+from .interfaces import DataDescription, InitData, SQLiteResult
 
 
 def get_name_for_spatial_data(dataset: BaseCollection):
@@ -49,7 +49,7 @@ def create_long_dataframe(data: InitData):
     )
 
 
-def create_dataframe_for_case(case_name, sql, qoi):
+def create_dataframe_for_case(case_name:str, sql:SQLiteResult, qoi:str):
     collection = get_collection_for_variable(sql, qoi)
     init_data = [create_init_data(case_name, i) for i in collection]
     dataframes = [create_long_dataframe(i) for i in init_data]

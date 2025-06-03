@@ -9,9 +9,24 @@ from rich import print as rprint
 
 from plan2eplus.helpers.ep_constants import DOOR, FLOOR, OUTDOORS, ROOF, WALL
 from plan2eplus.helpers.geometry_interfaces import Domain, Range, WallNormal
-from plan2eplus.helpers.helpers import chain_flatten
+from plan2eplus.helpers.helpers import chain_flatten, sort_and_group_objects_dict
+from plan2eplus.plan.interfaces import Coord
 from plan2eplus.visuals.idf_name import decompose_idf_name
-from plan2eplus.visuals.projections import compute_unit_normal, get_surface_domain
+from plan2eplus.visuals.projections import (
+    compute_unit_normal,
+    get_surface_domain,
+    get_position_along_normal_axis,
+)
+from typing import NamedTuple
+from plan2eplus.custom_exceptions import PlanMismatch
+
+
+def get_idfobject_by_name_and_key(idf: IDF, key: str, name: str):
+    return idf.getobject(key.upper(), name)
+
+
+def get_idfobject_key(ep_object: EpBunch):
+    return ep_object.obj[0]
 
 
 @dataclass
@@ -29,7 +44,7 @@ class GeometryObject:
 
 @dataclass
 class LinearGeometryObject(GeometryObject):
-    construction: str | None =  None
+    construction: str | None = None
 
     @property
     def unit_normal_drn(self):
@@ -40,12 +55,26 @@ class LinearGeometryObject(GeometryObject):
         return get_surface_domain(self.ep_object, self.unit_normal_drn)
 
     @property
-    def linear_component(self):
+    def linear_component(self):  # TODO include a direction..
         return self.domain.horz_range
+
+    @property
+    def centroid(self):  # TODO include a direction..
+        other_pos = get_position_along_normal_axis(self.ep_object, self.unit_normal_drn)
+        # rprint(f"other pos: {other_pos}")
+        if self.unit_normal_drn == "X":
+            return Coord(other_pos, self.linear_component.midpoint)
+        elif self.unit_normal_drn == "Y":
+            return Coord(
+                self.linear_component.midpoint,
+                other_pos,
+            )
+        else:
+            raise NotImplementedError("only considered x + y!")
 
     def assign_construction(self, construction_name: str):
         rprint(f"my const will be - {construction_name}")
-        self.construction = construction_name # TODO does this not persist?
+        self.construction = construction_name  # TODO does this not persist?
         # TODO IDF assigns in outer function..
 
     def update_construction_on_idf(self):
@@ -63,7 +92,7 @@ class Subsurface(LinearGeometryObject):
     @property
     def is_door(self):
         return (
-            self.ep_object.obj[0] == DOOR or self.dname.object_type == DOOR
+            get_idfobject_key(self.ep_object) == DOOR or self.dname.object_type == DOOR
         )  # TODO better way to figure out the object type..
 
     def __repr__(self) -> str:
@@ -75,12 +104,20 @@ class Surface(LinearGeometryObject):
     # TODO interior, partners..
     @property
     def direction(self):
-        rounded_azimuuth = round(float(self.ep_object.azimuth))
-        return WallNormal(rounded_azimuuth)
+        if self.is_wall:
+            rounded_azimuuth = round(float(self.ep_object.azimuth))
+            return WallNormal(rounded_azimuuth)
+        elif self.is_floor:
+            return WallNormal.DOWN
+        elif self.is_roof:
+            return WallNormal.UP
+        else:
+            raise NotImplementedError("Haven't implemented direction for this type of surface!")
+        
 
     @property
     def nickname(self):
-        return f"B{self.dname.zone_number}-{self.dname.surface_type}-{self.direction.name}({self.dname.direction_number})-{self.dname.position_number}"
+        return f"{self.dname.surface_type}`B{self.dname.zone_number}-{self.dname.plan_name_alone}`-{self.direction.name}({self.dname.direction_number})-{self.dname.position_number}"
 
     @property
     def subsurfaces(self):
@@ -89,7 +126,7 @@ class Surface(LinearGeometryObject):
     # TOOD CAN add to extended geom object .., only need at certain point..
     @property
     def is_interior(self):
-        return self.ep_object.Outside_Boundary_Condition.lower() == OUTDOORS
+        return self.ep_object.Outside_Boundary_Condition.lower() != OUTDOORS
 
     @property
     def is_wall(self):
@@ -107,8 +144,31 @@ class Surface(LinearGeometryObject):
     def is_ceiling(self):
         return self.ep_object.Surface_Type.lower() == ROOF and self.is_interior
 
+    def partner_wall(self, idf: IDF):
+        if self.is_interior and self.is_wall:
+            # rprint(f"Im an inside wall {self.nickname} - and my partner is {self.ep_object.Outside_Boundary_Condition_Object}")
+            partner_wall = self.ep_object.Outside_Boundary_Condition_Object
+            assert partner_wall
+            partner_wall_object = get_idfobject_by_name_and_key(
+                idf, get_idfobject_key(self.ep_object), partner_wall
+            )
+            assert partner_wall_object
+            return Surface(partner_wall_object)
+        else:
+            return None  # TODO OR reais exception??
+
     def __repr__(self) -> str:
         return f"{self.nickname}"
+
+
+class ZoneDirectedWalls(NamedTuple):
+    NORTH: list[Surface]
+    EAST: list[Surface]
+    SOUTH: list[Surface]
+    WEST: list[Surface]
+
+    def __getitem__(self, i):
+        return getattr(self, i)
 
 
 @dataclass
@@ -122,6 +182,22 @@ class Zone(GeometryObject):
         return [Surface(obj) for obj in self.ep_object.zonesurfaces]  # type: ignore # TODO eppy type issue
 
     @property
+    def walls(self):
+        return [s for s in self.surfaces if s.is_wall]
+
+    @property
+    def interior_walls(self):
+        return [s for s in self.surfaces if s.is_interior and s.is_wall]
+
+    @property
+    def directed_walls(self):
+        res = sort_and_group_objects_dict(self.walls, lambda s: s.direction)
+
+        # rprint(res)
+        # rprint(type(res))
+        return ZoneDirectedWalls(*[i for i in res.values()])
+
+    @property
     def subsurfaces(self):
         return chain_flatten([s.subsurfaces for s in self.surfaces if s.subsurfaces])
 
@@ -132,12 +208,11 @@ class Zone(GeometryObject):
         return get_surface_domain(floor[0].ep_object, "Z")
 
     # TODO all plotting stuff extends the object and goes in a different file
-
     def plot_zone_midpoints(self, ax: Axes | None = None):
         if not ax:
             _, ax = plt.subplots()
         x, y = zip(*self.domain.perimeter_midpoints.as_pairs)
-        ax.scatter(x, y)
+        ax.scatter(x, y)  # dont just want midpoints, actually want the walls..
 
     def plot_zone_name(self, ax: Axes | None = None):
         if not ax:
@@ -156,6 +231,15 @@ def get_zones(idf: IDF) -> list[EpBunch]:
     return [i for i in idf.idfobjects["ZONE"]]
 
 
+class PlanExternalPositions(NamedTuple):
+    NORTH: Coord
+    EAST: Coord
+    SOUTH: Coord
+    WEST: Coord
+
+    def __getitem__(self, i):
+        return getattr(self, i)
+
 @dataclass
 class PlanZones:  # can just call Plan..
     idf: IDF
@@ -171,28 +255,24 @@ class PlanZones:  # can just call Plan..
     @property
     def domains(self):
         return [i.domain for i in self.zones]
-    
+
     @property
     def surfaces_and_subsurfaces(self):
         surfaces = chain_flatten([z.surfaces for z in self.zones])
         subsurfaces = chain_flatten([z.subsurfaces for z in self.zones])
         return surfaces + subsurfaces
-    
-    def update_constructions_for_all_surfaces(self):
-        sub = self.surfaces_and_subsurfaces
-        rprint(f"id in update {id(sub)}")
-        for surf in self.surfaces_and_subsurfaces:
-            rprint(surf.construction)
-            surf.update_construction_on_idf()
-        # write new idf? 
-        # TODO be concerned about modifying the object.. 
-            
 
     def get_zone_by_num(self, num: int):
         for v in self.zones:
             if v.dname.zone_number == num:
                 return v
-        raise Exception("Invalid zone number")
+        raise PlanMismatch("Invalid zone number")
+
+    def get_zone_by_plan_name(self, plan_name: str):
+        for v in self.zones:
+            if v.dname.plan_name_alone == plan_name:
+                return v
+        raise PlanMismatch(f"Name: {plan_name} is not valid")
 
     def get_plan_extents(self, PAD_BASE=1.4):
         PAD = PAD_BASE * 1.1
@@ -201,6 +281,12 @@ class PlanZones:  # can just call Plan..
         min_y = min([i.vert_range.min for i in self.domains]) - PAD
         max_y = max([i.vert_range.max for i in self.domains]) + PAD
         return (min_x, max_x), (min_y, max_y)
+    
+    def get_plan_external_positions(self):
+        xs, ys = self.get_plan_extents() # TODO will need a different fx to base on, bc these need to be in the plot also.. 
+        domain = Domain(Range(*xs), Range(*ys))
+    
+
 
     # TODO all plotting stuff extends the object and goes in a different file
     def plot_zone_domains(self, ax: Axes | None = None):

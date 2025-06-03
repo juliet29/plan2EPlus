@@ -21,7 +21,7 @@ def sort_and_group_objects(lst: Iterable[T], fx: Callable[[T], Any]) -> List[Lis
     sorted_objs = sorted(lst, key=fx)
     return [list(g) for _, g in groupby(sorted_objs, fx)]
 
-def sort_and_group_objects_dict(lst: Iterable[T], fx: Callable[[T], Any]) -> List[List[T]]:
+def sort_and_group_objects_dict(lst: Iterable[T], fx: Callable[[T], Any]) -> dict[T, list[T]]:
     sorted_objs = sorted(lst, key=fx)
     d = {}
     for k, g in groupby(sorted_objs, fx):
@@ -98,3 +98,10 @@ def regex_match(pattern_str:str, value:str, IGNORE_CASE=False):
         return m.group()
     else:
         return None
+
+
+# def pairwise(iterable):
+#     "s -> (s0, s1), (s1, s2), (s2, s3), ..."
+#     a, b = tee(iterable)
+#     next(b, None)
+#     return zip(a, b)
