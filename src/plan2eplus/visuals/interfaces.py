@@ -207,12 +207,12 @@ class Zone(GeometryObject):
         assert len(floor) == 1, rprint(f"Invalid floor for zone  -> {floor}")
         return get_surface_domain(floor[0].ep_object, "Z")
 
-    # TODO all plotting stuff extends the object and goes in a different file
-    def plot_zone_midpoints(self, ax: Axes | None = None):
-        if not ax:
-            _, ax = plt.subplots()
-        x, y = zip(*self.domain.perimeter_midpoints.as_pairs)
-        ax.scatter(x, y)  # dont just want midpoints, actually want the walls..
+    # # TODO all plotting stuff extends the object and goes in a different file
+    # def plot_zone_midpoints(self, ax: Axes | None = None):
+    #     if not ax:
+    #         _, ax = plt.subplots()
+    #     x, y = zip(*self.domain.perimeter_midpoints.as_pairs)
+    #     ax.scatter(x, y)  # dont just want midpoints, actually want the walls..
 
     def plot_zone_name(self, ax: Axes | None = None):
         if not ax:

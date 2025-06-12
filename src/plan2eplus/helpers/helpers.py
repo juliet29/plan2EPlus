@@ -1,7 +1,8 @@
-from typing import Dict
+from typing import Dict, Optional, Protocol
 from itertools import chain, groupby, tee, zip_longest
 from typing import Any, Callable, Dict, Iterable, List, TypeVar, Union
 import re
+from dataclasses import fields
 
 import polars as pl
 
@@ -27,6 +28,13 @@ def sort_and_group_objects_dict(lst: Iterable[T], fx: Callable[[T], Any]) -> dic
     for k, g in groupby(sorted_objs, fx):
         d[k] = [i for i in list(g)]
     return d
+
+
+
+
+def dataclass_as_dict(dataclass):
+    return {field.name: getattr(dataclass, field.name) for field in fields(dataclass)}
+
 
 
 

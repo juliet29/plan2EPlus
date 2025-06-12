@@ -5,6 +5,7 @@ import numpy as np
 from ..helpers.plots import ShapeDict
 from matplotlib.patches import Rectangle
 from shapely import Polygon
+from plan2eplus.helpers.helpers import dataclass_as_dict
 
 # TODO organize classes -> dunder methods, then class methods, then properties, then other things..
 
@@ -68,15 +69,52 @@ class Range:
         return np.isclose(self.min, other.min) and np.isclose(self.max, other.max)
 
 
-class PerimeterMidpoints(NamedTuple):
-    top: Coord
-    bottom: Coord
-    left: Coord
-    right: Coord
+@dataclass
+class CoordList:
+    # sample_coords: int = 0
 
     @property
-    def as_pairs(self):
-        return [self.top.pair, self.bottom.pair, self.left.pair, self.right.pair]
+    def asdict(self) -> dict[str, Coord]:
+        return dataclass_as_dict(self)
+
+    @property
+    def as_pairs_dict(self):  # TOOD use a dict here..
+        return {k: v.pair for k, v in self.asdict.items()}
+
+    @property
+    def as_pairs(self):  # TOOD use a dict here..
+        return [v.pair for v in self.asdict.values()]
+        # return [self.north.pair, self.south.pair, self.west.pair, self.east.pair]
+
+
+# TODO potentially pair w/ card directions?
+@dataclass
+class PerimeterMidpoints(CoordList):
+    north: Coord
+    south: Coord
+    east: Coord  
+    west: Coord
+
+
+
+
+@dataclass
+class Bounds(CoordList):
+    br: Coord
+    tr: Coord
+    tl: Coord
+    bl: Coord
+
+
+def extend_bounds(bounds:Bounds, EXTENTS:int):
+    br = (bounds.br.x + EXTENTS, bounds.br.y - EXTENTS)
+    tr = (bounds.tr.x + EXTENTS, bounds.tr.y + EXTENTS)
+    tl = (bounds.tl.x - EXTENTS, bounds.tl.y + EXTENTS)
+    bl = (bounds.bl.x - EXTENTS), bounds.bl.y - EXTENTS
+    coords = [br, tr, tl, bl]
+    return Bounds(*[Coord(*i) for i in coords])
+
+    # def test_stuff(self):
 
 
 @dataclass(frozen=True)
@@ -85,11 +123,24 @@ class Domain:
     vert_range: Range
 
     @classmethod
-    def from_coords_list(cls, coords: list[Coord]):
+    def from_coords_list(cls, coords: list[Coord]): 
+        # TODO can it be > 4 coords? 
         xs = sorted(set([i.x for i in coords]))
         ys = sorted(set([i.y for i in coords]))
         horz_range = Range(xs[0], xs[-1])
         vert_range = Range(ys[0], ys[-1])
+        return cls(horz_range, vert_range)
+    
+    @classmethod
+    def from_perimeter_mid_points(cls, pm:PerimeterMidpoints):
+        horz_range = Range(pm.west.x, pm.east.x)
+        vert_range = Range(pm.south.y, pm.north.y)
+        return cls(horz_range, vert_range)
+    
+    @classmethod
+    def from_bounds(cls, bounds:Bounds):
+        horz_range = Range(bounds.tl.x, bounds.tr.x)
+        vert_range = Range(bounds.bl.y, bounds.tl.y)
         return cls(horz_range, vert_range)
 
     @property
@@ -104,13 +155,31 @@ class Domain:
     def aspect_ratio(self):
         return self.horz_range.size / self.vert_range.size
 
-    @property
-    def perimeter_midpoints(self):
-        top = (self.horz_range.midpoint, self.vert_range.max)
-        bottom = (self.horz_range.midpoint, self.vert_range.min)
-        left = (self.horz_range.min, self.vert_range.midpoint)
-        right = (self.horz_range.max, self.vert_range.midpoint)
-        return PerimeterMidpoints(*[Coord(*i) for i in [top, bottom, left, right]])
+    def create_bounds(self, EXTENTS=0):  # TODO should be a property..
+        # following requirements for geomeppy block
+        # ccw from bottom right
+        br = (self.horz_range.max, self.vert_range.min)
+        tr = (self.horz_range.max, self.vert_range.max)
+        tl = (self.horz_range.min, self.vert_range.max)
+        bl = (self.horz_range.min, self.vert_range.min)
+
+        coords = [br, tr, tl, bl]
+        init_bounds = Bounds(*[Coord(*i) for i in coords])
+
+        if not EXTENTS:
+            return init_bounds
+        
+        return extend_bounds(init_bounds, EXTENTS)
+
+
+    def create_perimeter_midpoints(self, EXTENTS=0):
+        north = (self.horz_range.midpoint, self.vert_range.max + EXTENTS)
+        south = (self.horz_range.midpoint, self.vert_range.min - EXTENTS)
+        east = (self.horz_range.max + EXTENTS, self.vert_range.midpoint)
+        west = (self.horz_range.min - EXTENTS, self.vert_range.midpoint)
+        coords = [north, south, east, west]
+
+        return PerimeterMidpoints(*[Coord(*i) for i in coords]) # TODO potentially extract the extension here also 
 
     def get_mpl_patch(self):
         return Rectangle(
@@ -122,16 +191,7 @@ class Domain:
             alpha=0.2,
         )
 
-    def create_coordinates(self):
-        # following requirements for geomeppy block
-        # ccw from bottom right
-        br = (self.horz_range.max, self.vert_range.min)
-        tr = (self.horz_range.max, self.vert_range.max)
-        tl = (self.horz_range.min, self.vert_range.max)
-        bl = (self.horz_range.min, self.vert_range.min)
-        return [br, tr, tl, bl]  # TODO probably put this in another data structure?
-
-    # todo the extents should be here..
+    # todo the extents should be here.. as a separate multi domain object..
 
 
 @dataclass
@@ -158,7 +218,7 @@ class Dimensions:  # TODO why is this different from a Domain?
 # TODO -> convert these to be associated with the EPBUnch, https://eppy.readthedocs.io/en/latest/_modules/eppy/bunch_subclass.html#addfunctions
 
 
-class WallNormal(IntEnum): # TODO 6/2/25 -> possible breaking change
+class WallNormal(IntEnum):  # TODO 6/2/25 -> possible breaking change
     # direction of outward normal of the wall..
     # https://eppy.readthedocs.io/en/latest/eppy.geometry.html#eppy.geometry.surface.azimuth
     NORTH = 0
@@ -167,10 +227,10 @@ class WallNormal(IntEnum): # TODO 6/2/25 -> possible breaking change
     WEST = 270
     UP = 1
     DOWN = -1
-    # TODO => if anything iterates over this it will throw an error 
+    # TODO => if anything iterates over this it will throw an error
 
     def __getitem__(self, i):
         return getattr(self, i)
-    
+
     # def __lt__(self):
-    #     return 
+    #     return
