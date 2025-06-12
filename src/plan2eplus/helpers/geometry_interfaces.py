@@ -114,7 +114,7 @@ def extend_bounds(bounds:Bounds, EXTENTS:int):
     coords = [br, tr, tl, bl]
     return Bounds(*[Coord(*i) for i in coords])
 
-    # def test_stuff(self):
+
 
 
 @dataclass(frozen=True)
@@ -181,6 +181,7 @@ class Domain:
 
         return PerimeterMidpoints(*[Coord(*i) for i in coords]) # TODO potentially extract the extension here also 
 
+    # TODO should be in a seperate class devoted to graphing.. 
     def get_mpl_patch(self):
         return Rectangle(
             (self.horz_range.min, self.vert_range.min),
@@ -192,6 +193,32 @@ class Domain:
         )
 
     # todo the extents should be here.. as a separate multi domain object..
+@dataclass
+class MultiDomain:
+    domains: list[Domain]
+
+    @property
+    def total_domain(self):
+        min_x = min([i.horz_range.min for i in self.domains]) 
+        max_x = max([i.horz_range.max for i in self.domains]) 
+        min_y = min([i.vert_range.min for i in self.domains]) 
+        max_y = max([i.vert_range.max for i in self.domains]) 
+        return Domain(Range(min_x, max_x), Range(min_y, max_y))
+    
+    @property
+    def external_coord_positions(self):
+        return self.total_domain.create_perimeter_midpoints(EXTENTS=1)
+    
+    @property
+    def extended_domain_with_external_coords(self):
+        external_coords_domain = Domain.from_perimeter_mid_points(self.external_coord_positions)
+        extended_bounds = external_coords_domain.create_bounds(EXTENTS=1)
+        return Domain.from_bounds(extended_bounds)
+    
+
+
+
+
 
 
 @dataclass
