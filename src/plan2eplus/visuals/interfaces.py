@@ -8,7 +8,7 @@ from matplotlib.axes import Axes
 from rich import print as rprint
 
 from plan2eplus.helpers.ep_constants import DOOR, FLOOR, OUTDOORS, ROOF, WALL
-from plan2eplus.helpers.geometry_interfaces import Domain, Range, WallNormal
+from plan2eplus.helpers.geometry_interfaces import Domain, MultiDomain, Range, WallNormal
 from plan2eplus.helpers.helpers import chain_flatten, sort_and_group_objects_dict
 from plan2eplus.plan.interfaces import Coord
 from plan2eplus.visuals.idf_name import decompose_idf_name
@@ -254,7 +254,7 @@ class PlanZones:  # can just call Plan..
 
     @property
     def domains(self):
-        return [i.domain for i in self.zones]
+        return MultiDomain([i.domain for i in self.zones])
 
     @property
     def surfaces_and_subsurfaces(self):
@@ -274,17 +274,17 @@ class PlanZones:  # can just call Plan..
                 return v
         raise PlanMismatch(f"Name: {plan_name} is not valid")
 
-    def get_plan_extents(self, PAD_BASE=1.4):
-        PAD = PAD_BASE * 1.1
-        min_x = min([i.horz_range.min for i in self.domains]) - PAD
-        max_x = max([i.horz_range.max for i in self.domains]) + PAD
-        min_y = min([i.vert_range.min for i in self.domains]) - PAD
-        max_y = max([i.vert_range.max for i in self.domains]) + PAD
-        return (min_x, max_x), (min_y, max_y)
+    # def get_plan_extents(self, PAD_BASE=1.4):
+    #     PAD = PAD_BASE * 1.1
+    #     min_x = min([i.horz_range.min for i in self.domains]) - PAD
+    #     max_x = max([i.horz_range.max for i in self.domains]) + PAD
+    #     min_y = min([i.vert_range.min for i in self.domains]) - PAD
+    #     max_y = max([i.vert_range.max for i in self.domains]) + PAD
+    #     return (min_x, max_x), (min_y, max_y)
     
-    def get_plan_external_positions(self):
-        xs, ys = self.get_plan_extents() # TODO will need a different fx to base on, bc these need to be in the plot also.. 
-        domain = Domain(Range(*xs), Range(*ys))
+    # def get_plan_external_positions(self):
+    #     xs, ys = self.get_plan_extents() # TODO will need a different fx to base on, bc these need to be in the plot also.. 
+    #     domain = Domain(Range(*xs), Range(*ys))
     
 
 
@@ -292,15 +292,15 @@ class PlanZones:  # can just call Plan..
     def plot_zone_domains(self, ax: Axes | None = None):
         if not ax:
             _, ax = plt.subplots()
-        xlim, ylim = self.get_plan_extents()
+        xlim, ylim = self.domains.extents
 
-        for d in self.domains:
+        for d in self.domains.domains:
             ax.add_artist(d.get_mpl_patch())
 
         ax.set(xlim=xlim, ylim=ylim)
         for zone in self.zones:
             zone.plot_zone_name(ax)
 
-        plt.show()
+        # plt.show()
 
         return ax

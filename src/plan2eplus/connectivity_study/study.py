@@ -4,6 +4,7 @@ from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
 from plan2eplus.case_edits.ezcase import add_rooms, finish_creating_ezcase
 from geomeppy import IDF
 from pathlib import Path
+from matplotlib import pyplot as plt
 
 from plan2eplus.helpers.geometry_interfaces import Dimensions
 from plan2eplus.plan.graph_to_subsurfaces import (
@@ -20,9 +21,16 @@ from plan2eplus.subsurfaces.interfaces import (
     SubsurfacePair,
 )
 from rich import print as rprint
-from plan2eplus.visuals.graph_plot import find_points_along_path, find_wall_on_zone_facade
+from plan2eplus.visuals.graph_plot import (
+    find_points_along_path,
+    find_wall_on_zone_facade,
+    plot_path_on_plot
+)
 from plan2eplus.log_setup import setup_logging
 import logging
+
+from plan2eplus.visuals.interfaces import PlanZones
+
 
 logger = logging.getLogger(__name__)
 output_path = PATH_TO_OUTPUT_CASES / "250527_threeplan"
@@ -58,7 +66,7 @@ def get_subsurface_pairs(path_to_inputs: Path, graph_ix: int):
     return [handle_edge(e, room_map) for e in edges]
 
 
-def test_connectivity_case():
+def create_connectivity_case():
     case = EneryPlusCaseEditor(output_path)
     case.idf = add_rooms(case.idf, input_path)
 
@@ -67,13 +75,18 @@ def test_connectivity_case():
     case.idf = add_subsurfaces_to_case(case.idf, pairs)
     return case.idf
 
-    
-
 
 if __name__ == "__main__":
     setup_logging("test_connectivity")
     logger.info("test_connectivity")
-    idf  = test_connectivity_case()
+    idf = create_connectivity_case()
 
-    find_points_along_path(idf)
-
+    # path = ["NORTH", "c", "a", "SOUTH"]
+    path = ["WEST", "b", "a", "EAST"]
+    coords = find_points_along_path(idf, path)
+    print(f"==>> coords in main: {coords}")
+    pz = PlanZones(idf)
+    ax = pz.plot_zone_domains()
+    _coords = [i.pair for i in coords]
+    ax = plot_path_on_plot(_coords, ax)
+    plt.show()

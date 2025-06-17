@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, IntEnum
-from typing import Callable, NamedTuple
+from typing import Callable, Literal, NamedTuple
 import numpy as np
 from ..helpers.plots import ShapeDict
 from matplotlib.patches import Rectangle
@@ -51,6 +51,17 @@ class Range:
     def __repr__(self) -> str:
         return f"[{self.min:.2f}, {self.max:.2f}]"
 
+    def __eq__(self, other) -> bool:
+        return np.isclose(self.min, other.min) and np.isclose(self.max, other.max)
+    
+    @property 
+    def as_tuple(self):
+        return (self.min, self.max)
+
+    @property
+    def midpoint(self):
+        return (self.min + self.max) / 2
+
     @property
     def size(self):
         return self.max - self.min
@@ -60,13 +71,6 @@ class Range:
 
     def buffered_max(self, val):
         return self.max - val * self.size
-
-    @property
-    def midpoint(self):
-        return (self.min + self.max) / 2
-
-    def __eq__(self, other) -> bool:
-        return np.isclose(self.min, other.min) and np.isclose(self.max, other.max)
 
 
 @dataclass
@@ -86,16 +90,26 @@ class CoordList:
         return [v.pair for v in self.asdict.values()]
         # return [self.north.pair, self.south.pair, self.west.pair, self.east.pair]
 
+    # @classmethod
+    # def from_list_of_coords(cls, coords:list[Coord]):
+        
+
+
 
 # TODO potentially pair w/ card directions?
 @dataclass
 class PerimeterMidpoints(CoordList):
-    north: Coord
-    south: Coord
-    east: Coord  
-    west: Coord
+    NORTH: Coord
+    SOUTH: Coord
+    EAST: Coord
+    WEST: Coord
 
-
+    def __getitem__(self, i): # :Literal["NORTH", "SOUTH", "EAST", "WEST" ]
+        return self.asdict[i]
+    
+    @property
+    def keys(self): # :Literal["NORTH", "SOUTH", "EAST", "WEST" ]
+        return list(self.asdict.keys())
 
 
 @dataclass
@@ -106,7 +120,7 @@ class Bounds(CoordList):
     bl: Coord
 
 
-def extend_bounds(bounds:Bounds, EXTENTS:int):
+def extend_bounds(bounds: Bounds, EXTENTS: int):
     br = (bounds.br.x + EXTENTS, bounds.br.y - EXTENTS)
     tr = (bounds.tr.x + EXTENTS, bounds.tr.y + EXTENTS)
     tl = (bounds.tl.x - EXTENTS, bounds.tl.y + EXTENTS)
@@ -115,30 +129,28 @@ def extend_bounds(bounds:Bounds, EXTENTS:int):
     return Bounds(*[Coord(*i) for i in coords])
 
 
-
-
 @dataclass(frozen=True)
 class Domain:
     horz_range: Range
     vert_range: Range
 
     @classmethod
-    def from_coords_list(cls, coords: list[Coord]): 
-        # TODO can it be > 4 coords? 
+    def from_coords_list(cls, coords: list[Coord]):
+        # TODO can it be > 4 coords?
         xs = sorted(set([i.x for i in coords]))
         ys = sorted(set([i.y for i in coords]))
         horz_range = Range(xs[0], xs[-1])
         vert_range = Range(ys[0], ys[-1])
         return cls(horz_range, vert_range)
-    
+
     @classmethod
-    def from_perimeter_mid_points(cls, pm:PerimeterMidpoints):
-        horz_range = Range(pm.west.x, pm.east.x)
-        vert_range = Range(pm.south.y, pm.north.y)
+    def from_perimeter_mid_points(cls, pm: PerimeterMidpoints):
+        horz_range = Range(pm.WEST.x, pm.EAST.x)
+        vert_range = Range(pm.SOUTH.y, pm.NORTH.y)
         return cls(horz_range, vert_range)
-    
+
     @classmethod
-    def from_bounds(cls, bounds:Bounds):
+    def from_bounds(cls, bounds: Bounds):
         horz_range = Range(bounds.tl.x, bounds.tr.x)
         vert_range = Range(bounds.bl.y, bounds.tl.y)
         return cls(horz_range, vert_range)
@@ -168,9 +180,8 @@ class Domain:
 
         if not EXTENTS:
             return init_bounds
-        
-        return extend_bounds(init_bounds, EXTENTS)
 
+        return extend_bounds(init_bounds, EXTENTS)
 
     def create_perimeter_midpoints(self, EXTENTS=0):
         north = (self.horz_range.midpoint, self.vert_range.max + EXTENTS)
@@ -179,9 +190,11 @@ class Domain:
         west = (self.horz_range.min - EXTENTS, self.vert_range.midpoint)
         coords = [north, south, east, west]
 
-        return PerimeterMidpoints(*[Coord(*i) for i in coords]) # TODO potentially extract the extension here also 
+        return PerimeterMidpoints(
+            *[Coord(*i) for i in coords]
+        )  # TODO potentially extract the extension here also
 
-    # TODO should be in a seperate class devoted to graphing.. 
+    # TODO should be in a seperate class devoted to graphing..
     def get_mpl_patch(self):
         return Rectangle(
             (self.horz_range.min, self.vert_range.min),
@@ -193,32 +206,36 @@ class Domain:
         )
 
     # todo the extents should be here.. as a separate multi domain object..
+
+
 @dataclass
 class MultiDomain:
     domains: list[Domain]
 
     @property
     def total_domain(self):
-        min_x = min([i.horz_range.min for i in self.domains]) 
-        max_x = max([i.horz_range.max for i in self.domains]) 
-        min_y = min([i.vert_range.min for i in self.domains]) 
-        max_y = max([i.vert_range.max for i in self.domains]) 
+        min_x = min([i.horz_range.min for i in self.domains])
+        max_x = max([i.horz_range.max for i in self.domains])
+        min_y = min([i.vert_range.min for i in self.domains])
+        max_y = max([i.vert_range.max for i in self.domains])
         return Domain(Range(min_x, max_x), Range(min_y, max_y))
-    
+
     @property
     def external_coord_positions(self):
         return self.total_domain.create_perimeter_midpoints(EXTENTS=1)
-    
+
     @property
     def extended_domain_with_external_coords(self):
-        external_coords_domain = Domain.from_perimeter_mid_points(self.external_coord_positions)
+        external_coords_domain = Domain.from_perimeter_mid_points(
+            self.external_coord_positions
+        )
         extended_bounds = external_coords_domain.create_bounds(EXTENTS=1)
         return Domain.from_bounds(extended_bounds)
-    
 
-
-
-
+    @property
+    def extents(self):
+        extended_domain = self.extended_domain_with_external_coords
+        return (extended_domain.horz_range.as_tuple, extended_domain.vert_range.as_tuple)
 
 
 @dataclass
@@ -258,6 +275,10 @@ class WallNormal(IntEnum):  # TODO 6/2/25 -> possible breaking change
 
     def __getitem__(self, i):
         return getattr(self, i)
+    
+    @classmethod
+    def keys(cls):
+        return list(cls.__members__.keys())
 
     # def __lt__(self):
     #     return

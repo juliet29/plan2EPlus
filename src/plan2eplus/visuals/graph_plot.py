@@ -1,4 +1,6 @@
 from geomeppy import IDF
+from matplotlib import pyplot as plt
+from matplotlib.axes import Axes
 
 # from plan2eplus.helpers.helpers import pairwise
 from plan2eplus.visuals.interfaces import PlanZones, Surface, Zone
@@ -7,7 +9,10 @@ import logging
 from plan2eplus.custom_exceptions import PlanMismatch
 from plan2eplus.helpers.geometry_interfaces import WallNormal
 from itertools import pairwise
-from typing import NamedTuple
+from typing import NamedTuple, Optional
+from plan2eplus.helpers.geometry_interfaces import PerimeterMidpoints
+from scipy.interpolate import CubicSpline
+import numpy as np
 
 
 logger = logging.getLogger(__name__)
@@ -44,11 +49,11 @@ class ZoneDrnPair(NamedTuple):
     drn: WallNormal
 
 
-def find_points_along_path(idf: IDF):
+def find_points_along_path(idf: IDF, path:list[str]):
     pz = PlanZones(idf)
-    pz.plot_zone_domains()
-    # path = ["NORTH", "c", "a", "SOUTH"]
-    path = ["WEST", "b", "a", "EAST"]
+    assert path[0] in WallNormal.keys()
+    assert path[-1] in WallNormal.keys()
+
 
     spaces: list[Zone | WallNormal] = []
 
@@ -59,16 +64,45 @@ def find_points_along_path(idf: IDF):
             spaces.append(WallNormal[space])
 
     shared_walls: list[Surface] = []
-    # rprint(spaces)
+
     for a, b in pairwise(spaces):
-        # rprint((a,b))
-        if isinstance(a, Zone) and isinstance(b, Zone):
+        if isinstance(a, Zone) and isinstance(b, Zone): # TODO why not a try-catch here also? 
             shared_wall = find_wall_connecting_zones(idf, a, b)
         else:
             res = sorted([a, b], key=lambda x: isinstance(x, WallNormal))
-            shared_wall = find_wall_on_zone_facade(idf, *ZoneDrnPair(*res)) # type: ignore -> typechecker does not know about sorting results 
-        # rprint([a, b, shared_wall])
+            shared_wall = find_wall_on_zone_facade(idf, *ZoneDrnPair(*res)) # type: ignore -> typechecker does not know about sorting results # TODO find cleaner way to write this.. 
         shared_walls.append(shared_wall)
 
-    rprint([(i, i.centroid) for  i in shared_walls])
+    # can reasonably assume that all paths will end and start with cardinal directions (for these lines..)
+    coords = []
+    start_coord = pz.domains.external_coord_positions[path[0]]
+    end_coord = pz.domains.external_coord_positions[path[-1]]
+    coords = [i.centroid for i in shared_walls]
+    coords.insert(0, start_coord)
+    coords.append(end_coord)
+
+    # rprint([i for  i in shared_walls])
+    # rprint(f"coords: {coords}")
+    return coords
     # TODO append the centroid of the zone  / positoon f the endpoints..
+
+
+def create_spline(xs, ys):
+    cs = CubicSpline(xs, ys)
+    line_xs = np.linspace(start=xs[0], stop=xs[-1], num=20)
+    return line_xs,  cs(line_xs)
+
+
+def plot_path_on_plot(coords:list[tuple[float, float]], ax: Optional[Axes]=None):
+    print(f"==>> coords: {coords}")
+    if not ax:
+        _, ax = plt.subplots()
+    xs = [i[0] for i in coords]
+    print(f"==>> xs: {xs}")
+    ys = [i[1] for i in coords]
+    print(f"==>> ys: {ys}")
+    line_xs, line_ys = create_spline(xs, ys)
+    ax.plot(line_xs, line_ys)
+    return ax
+
+

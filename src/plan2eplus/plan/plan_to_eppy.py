@@ -17,7 +17,7 @@ def convert_room_to_eppy_block(room: RoomFromJSON, height: float):
     domain = room.create_domain()
     return {
         "name": room.create_zone_name(),
-        "coordinates": domain.create_bounds(),
+        "coordinates": domain.create_bounds().as_pairs,
         "height": height,
     }
 
