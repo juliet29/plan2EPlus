@@ -53,11 +53,11 @@ def request_advanced_variables(idf: IDF):
 
 AdditionalVariablesFx = Optional[Callable[[], list[str]]] 
 
-def request_qoi_variables(get_additional_variables: AdditionalVariablesFx = None):
+def request_qoi_variables(get_additional_variables_fx: AdditionalVariablesFx = None):
     vars: list[str] = get_vars([all_variables.surface, all_variables.zone, all_variables.site])
-    if get_additional_variables:
+    if get_additional_variables_fx:
         print("we have additional vars")
-        additional_vars = get_additional_variables()
+        additional_vars = get_additional_variables_fx()
         assert len(additional_vars) > 0
         new_vars = set(vars + additional_vars)
         return list(new_vars)
@@ -66,14 +66,14 @@ def request_qoi_variables(get_additional_variables: AdditionalVariablesFx = None
 
 
 
-def add_all_output_requests(idf:IDF, get_additional_variables:AdditionalVariablesFx = None):
+def add_all_output_requests(idf:IDF, get_additional_variables_fx:AdditionalVariablesFx = None):
 
     idf = request_sql(idf)
     idf = request_dxf(idf)
     idf = request_advanced_variables(idf)
     # all_variables.afn
 
-    vars = request_qoi_variables(get_additional_variables)
+    vars = request_qoi_variables(get_additional_variables_fx)
 
     for var in vars:
         idf = add_output_variable(idf, var)

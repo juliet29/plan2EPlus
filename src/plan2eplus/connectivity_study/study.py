@@ -68,9 +68,7 @@ def get_subsurface_pairs(path_to_inputs: Path, graph_ix: int):
     return [handle_edge(e, room_map) for e in edges]
 
 
-def create_connectivity_case(
-    epw: Optional[Path] = None, analysis_period: Optional[AnalysisPeriod] = None
-):
+def create_connectivity_case():
     case = EneryPlusCaseEditor(output_path)
     case.idf = add_rooms(case.idf, input_path)
 

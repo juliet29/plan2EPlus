@@ -11,19 +11,41 @@ from geomeppy import IDF
 from ladybug.analysisperiod import AnalysisPeriod
 from ladybug.epw import EPW
 from rich import print as rprint
+from typing import NamedTuple
 
 IDF.setiddname(IDD_PATH)
+
+def update_idf_location(idf: IDF, epw: EPW):
+    loc = idf.newidfobject("SITE:LOCATION")
+    loc.Name = epw.location.city
+    loc.Latitude = epw.location.latitude
+    loc.Longitude = epw.location.longitude
+    loc.Time_Zone = epw.location.time_zone
+    loc.Elevation = epw.location.elevation
+    return idf
+
+
+def update_idf_run_period(idf: IDF, ap: AnalysisPeriod):
+    rp = idf.newidfobject("RUNPERIOD")
+    rp.Name = "Summer"
+    rp.Begin_Month = ap.st_month
+    rp.End_Month = ap.end_month
+    rp.Begin_Day_of_Month = ap.st_day
+    rp.End_Day_of_Month = ap.end_day
+    return idf
+
 
 
 
 class EneryPlusCaseEditor:
     def __init__(
-        self,
+        self, # TODO make inputs a  dataclalss.. 
         path_to_outputs: Path,
         starting_path: Optional[Path] = None,
-        epw: EPW | None = None,
+        epw: EPW | Path | None = None, # todo should be path
         analysis_period: AnalysisPeriod | None = None,
     ) -> None:
+        # TODO make this objects 
         self.path = path_to_outputs
         self.case_name = self.path.name
         self.starting_path = starting_path
@@ -85,8 +107,11 @@ class EneryPlusCaseEditor:
     def update_weather_and_run_period(self):
         if not self.epw:
             self.epw = EPW(WEATHER_FILE)
-            # TODO log! 
-            # print(f"No epw! Now its {self.epw}") 
+            
+        else:
+            if isinstance(self.epw, Path):
+                self.epw = EPW(self.epw)
+            print(f"Got an epw - its {self.epw}") 
         self.idf.epw = self.epw.file_path
         self.idf = update_idf_location(self.idf, self.epw)
 
@@ -97,21 +122,3 @@ class EneryPlusCaseEditor:
         self.idf = update_idf_run_period(self.idf, self.analysis_period)
 
 
-def update_idf_location(idf: IDF, epw: EPW):
-    loc = idf.newidfobject("SITE:LOCATION")
-    loc.Name = epw.location.city
-    loc.Latitude = epw.location.latitude
-    loc.Longitude = epw.location.longitude
-    loc.Time_Zone = epw.location.time_zone
-    loc.Elevation = epw.location.elevation
-    return idf
-
-
-def update_idf_run_period(idf: IDF, ap: AnalysisPeriod):
-    rp = idf.newidfobject("RUNPERIOD")
-    rp.Name = "Summer"
-    rp.Begin_Month = ap.st_month
-    rp.End_Month = ap.end_month
-    rp.Begin_Day_of_Month = ap.st_day
-    rp.End_Day_of_Month = ap.end_day
-    return idf

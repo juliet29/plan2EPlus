@@ -1,5 +1,5 @@
 from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
-from plan2eplus.graphbem.study import test_graph_bem
+from plan2eplus.graphbem.study import create_graphbem_case
 from plan2eplus.helpers.helpers import chain_flatten
 from plan2eplus.helpers.read_sql import get_collection_for_variable, get_sql_results
 from plan2eplus.studies.setup.data_wrangle import (

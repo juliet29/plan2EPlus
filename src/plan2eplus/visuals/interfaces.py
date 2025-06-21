@@ -73,13 +73,13 @@ class LinearGeometryObject(GeometryObject):
             raise NotImplementedError("only considered x + y!")
 
     def assign_construction(self, construction_name: str):
-        rprint(f"my const will be - {construction_name}")
+        # rprint(f"my const will be - {construction_name}")
         self.construction = construction_name  # TODO does this not persist?
         # TODO IDF assigns in outer function..
 
     def update_construction_on_idf(self):
         assert self.construction
-        rprint(f"my const is - {self.construction}")
+        # rprint(f"my const is - {self.construction}")
         self.ep_object.Construction_Name = self.construction
 
 

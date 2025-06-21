@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Dict, Optional, Protocol
 from itertools import chain, groupby, tee, zip_longest
 from typing import Any, Callable, Dict, Iterable, List, TypeVar, Union
@@ -108,14 +109,24 @@ def regex_match(pattern_str: str, value: str, IGNORE_CASE=False):
         return None
 
 
-def load_data_from_json(path_to_inputs, file_name):
+def load_data_from_json(path_to_inputs: Path, file_name):
     path = path_to_inputs / file_name
+    assert path.suffix == ".json"
+
     print(f"path is {path}")
     assert path.exists(), f"{path} is not valid"
-    # TODO check is json file.. 
+    # TODO check is json file..
     with open(path) as f:
         res = json.load(f)
     return res
+
+
+def get_or_mkdir(path: Path):
+    assert path.parent.exists(), f"Parent of the input path {path.parent} does not exist!"
+    if not path.exists():
+        path.mkdir()
+    return path
+# TODO integrate into plan2eplus.. 
 
 
 # def pairwise(iterable):

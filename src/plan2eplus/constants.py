@@ -1,6 +1,8 @@
 import pyprojroot
 from pathlib import Path
 
+# rename to be paths 
+
 
 ENERGY_PLUS_LOCATION = Path.home().parent.parent / "Applications/EnergyPlus-22-2-0"
 IDD_PATH = ENERGY_PLUS_LOCATION / "Energy+.idd"
