@@ -6,7 +6,7 @@ from plan2eplus.studies.setup.data_wrangle import (
     create_init_data,
     create_dataframe_for_case,
 )
-from plan2eplus.constants import DUMMY_OUTPUT_PATH, GRAPHBEM_PATH
+from plan2eplus.constants import DUMMY_OUTPUT_PATH, PATH_TO_GRAPHBEM_OUTPUTS
 from rich import print as rprint
 import altair as alt
 
@@ -25,7 +25,7 @@ variables = {
 
 
 def analyze_zones():
-    sql_result = get_sql_results(GRAPHBEM_PATH)
+    sql_result = get_sql_results(PATH_TO_GRAPHBEM_OUTPUTS)
     df = create_dataframe_for_case(CASE_NAME, sql_result, variables["TEMP"])
     rprint(df.head())
     base = (
@@ -43,7 +43,7 @@ def analyze_zones():
 
 def get_case_surfaces():
     case = EneryPlusCaseEditor(
-        DUMMY_OUTPUT_PATH, starting_path=GRAPHBEM_PATH / "out.idf"
+        DUMMY_OUTPUT_PATH, starting_path=PATH_TO_GRAPHBEM_OUTPUTS / "out.idf"
     )
     pz = PlanZones(case.idf)
     surfs_list = chain_flatten([s.surfaces for s in pz.zones])
@@ -62,7 +62,7 @@ def decompose_surface_name(name: str):
 
 
 def analyze_surfaces():
-    sql_result = get_sql_results(GRAPHBEM_PATH)
+    sql_result = get_sql_results(PATH_TO_GRAPHBEM_OUTPUTS)
     df = create_dataframe_for_case(CASE_NAME, sql_result, variables["SURF_OUT_TEMP"])
     rprint(df.head())
 
@@ -81,7 +81,9 @@ def analyze_surfaces():
         .mark_line()
         .encode(
             x="datetimes",
-            y=alt.Y("mean(values)", title=variables["SURF_OUT_TEMP"]).scale(zero=False), # TODO add units.. 
+            y=alt.Y("mean(values)", title=variables["SURF_OUT_TEMP"]).scale(
+                zero=False
+            ),  # TODO add units..
             color="direction:N",
             column="zone:N",
         )

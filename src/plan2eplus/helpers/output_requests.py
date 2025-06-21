@@ -1,4 +1,5 @@
-from re import L
+from pathlib import Path
+from typing import Callable, Optional
 from geomeppy import IDF
 from .variable_interfaces import all_variables, get_vars
 
@@ -50,14 +51,29 @@ def request_advanced_variables(idf: IDF):
     obj.Key_1 = "DisplayAdvancedReportVariables"
     return idf
 
+AdditionalVariablesFx = Optional[Callable[[], list[str]]] 
 
-def add_all_output_requests(idf:IDF):
+def request_qoi_variables(get_additional_variables: AdditionalVariablesFx = None):
+    vars: list[str] = get_vars([all_variables.surface, all_variables.zone, all_variables.site])
+    if get_additional_variables:
+        print("we have additional vars")
+        additional_vars = get_additional_variables()
+        assert len(additional_vars) > 0
+        new_vars = set(vars + additional_vars)
+        return list(new_vars)
+    return vars
+
+
+
+
+def add_all_output_requests(idf:IDF, get_additional_variables:AdditionalVariablesFx = None):
+
     idf = request_sql(idf)
     idf = request_dxf(idf)
     idf = request_advanced_variables(idf)
     # all_variables.afn
 
-    vars = get_vars([all_variables.surface, all_variables.zone, all_variables.site])
+    vars = request_qoi_variables(get_additional_variables)
 
     for var in vars:
         idf = add_output_variable(idf, var)

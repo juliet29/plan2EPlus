@@ -1,4 +1,5 @@
 from pprint import pprint
+from typing import Optional
 from plan2eplus.constants import PATH_TO_GRAPH2PLAN_CASES, PATH_TO_OUTPUT_CASES
 from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
 from plan2eplus.case_edits.ezcase import add_rooms, finish_creating_ezcase
@@ -12,7 +13,7 @@ from plan2eplus.plan.graph_to_subsurfaces import (
     create_room_map,
     get_node_mapping,
 )
-from plan2eplus.plan.helpers import load_data_from_json
+from plan2eplus.helpers.helpers import load_data_from_json
 from plan2eplus.subsurfaces.creator import add_subsurfaces_to_case
 from plan2eplus.subsurfaces.interfaces import (
     NinePointsLocator,
@@ -24,12 +25,13 @@ from rich import print as rprint
 from plan2eplus.visuals.graph_plot import (
     find_points_along_path,
     find_wall_on_zone_facade,
-    plot_path_on_plot
+    plot_path_on_plot,
 )
 from plan2eplus.log_setup import setup_logging
 import logging
 
 from plan2eplus.visuals.interfaces import PlanZones
+from ladybug.analysisperiod import AnalysisPeriod
 
 
 logger = logging.getLogger(__name__)
@@ -66,7 +68,9 @@ def get_subsurface_pairs(path_to_inputs: Path, graph_ix: int):
     return [handle_edge(e, room_map) for e in edges]
 
 
-def create_connectivity_case():
+def create_connectivity_case(
+    epw: Optional[Path] = None, analysis_period: Optional[AnalysisPeriod] = None
+):
     case = EneryPlusCaseEditor(output_path)
     case.idf = add_rooms(case.idf, input_path)
 

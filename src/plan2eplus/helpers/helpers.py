@@ -5,6 +5,7 @@ import re
 from dataclasses import fields
 
 import polars as pl
+import json
 
 
 T = TypeVar("T")
@@ -22,7 +23,10 @@ def sort_and_group_objects(lst: Iterable[T], fx: Callable[[T], Any]) -> List[Lis
     sorted_objs = sorted(lst, key=fx)
     return [list(g) for _, g in groupby(sorted_objs, fx)]
 
-def sort_and_group_objects_dict(lst: Iterable[T], fx: Callable[[T], Any]) -> dict[T, list[T]]:
+
+def sort_and_group_objects_dict(
+    lst: Iterable[T], fx: Callable[[T], Any]
+) -> dict[T, list[T]]:
     sorted_objs = sorted(lst, key=fx)
     d = {}
     for k, g in groupby(sorted_objs, fx):
@@ -30,13 +34,8 @@ def sort_and_group_objects_dict(lst: Iterable[T], fx: Callable[[T], Any]) -> dic
     return d
 
 
-
-
 def dataclass_as_dict(dataclass):
     return {field.name: getattr(dataclass, field.name) for field in fields(dataclass)}
-
-
-
 
 
 def chain_flatten(lst: Iterable[Iterable[T]]) -> List[T]:
@@ -84,7 +83,7 @@ def grouper(iterable, n):
     return list(zip_longest(*iterators, fillvalue=None))
 
 
-def regex_tester(pattern_str:str, test_name:str):
+def regex_tester(pattern_str: str, test_name: str):
     print(f"Looking for {test_name}")
     pattern = re.compile(pattern_str)
     m = pattern.search(test_name)
@@ -95,8 +94,9 @@ def regex_tester(pattern_str:str, test_name:str):
         return m.group()
     else:
         print("No match found!")
-    
-def regex_match(pattern_str:str, value:str, IGNORE_CASE=False):
+
+
+def regex_match(pattern_str: str, value: str, IGNORE_CASE=False):
     if IGNORE_CASE:
         pattern = re.compile(pattern_str, re.IGNORECASE)
     else:
@@ -106,6 +106,16 @@ def regex_match(pattern_str:str, value:str, IGNORE_CASE=False):
         return m.group()
     else:
         return None
+
+
+def load_data_from_json(path_to_inputs, file_name):
+    path = path_to_inputs / file_name
+    print(f"path is {path}")
+    assert path.exists(), f"{path} is not valid"
+    # TODO check is json file.. 
+    with open(path) as f:
+        res = json.load(f)
+    return res
 
 
 # def pairwise(iterable):

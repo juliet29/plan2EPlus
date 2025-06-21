@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+from pathlib import Path
 from .variables import afn, surface, site, zone
-from .helpers import chain_flatten
+from .helpers import chain_flatten, load_data_from_json
+
 
 def get_values(d:dict):
         return chain_flatten([list(v.values()) for v in d.values()])
@@ -13,37 +15,37 @@ class Vars:
 
 @dataclass
 class AFNVariables(Vars):
-    zone: dict
-    node: dict
-    linkage: dict
-    surface: dict
+    zone: dict[str,str]
+    node: dict[str,str]
+    linkage: dict[str,str]
+    surface: dict[str,str]
 
 
 @dataclass
 class ZoneVariables(Vars):
-    temp: dict
-    rate: dict
-    wind: dict
+    temp: dict[str,str]
+    rate: dict[str,str]
+    wind: dict[str,str]
 
 
 @dataclass
 class SurfaceVariablesPattern(Vars):
-    rate_per_area: dict
-    temp: dict
+    rate_per_area: dict[str,str]
+    temp: dict[str,str]
 
 
 @dataclass
 class SurfaceVariables(Vars):
-    inside_face: dict
-    outside_face: dict
-    average_face: dict
+    inside_face: dict[str,str]
+    outside_face: dict[str,str]
+    average_face: dict[str,str]
 
 
 @dataclass
 class SiteVariables(Vars):
-    temp: dict
-    solar: dict
-    wind: dict
+    temp: dict[str,str]
+    solar: dict[str,str]
+    wind: dict[str,str]
 
 
 @dataclass
@@ -76,3 +78,12 @@ def get_vars(arr: list[AFNVariables | ZoneVariables | SiteVariables |SurfaceVari
 
     
     return chain_flatten(vars)
+
+
+
+def prepare_to_load_additional_variables_from_file(path: Path):
+    def get_additional_variables():
+        variables:list[str] = load_data_from_json(path.parent, path.name)
+        return variables
+
+    return get_additional_variables

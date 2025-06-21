@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from ..helpers.geometry_interfaces import WallNormal
-from ..helpers.helpers import key_from_value
+from ..helpers.helpers import key_from_value, load_data_from_json
 from ..subsurfaces.interfaces import (
     Dimensions,
     NinePointsLocator,
@@ -9,7 +9,7 @@ from ..subsurfaces.interfaces import (
     SubsurfaceObjects,
     SubsurfacePair,
 )
-from .helpers import create_room_map, load_data_from_json
+from .helpers import create_room_map
 from .interfaces import (
     GRAPH,
     SUBSURFACES,
@@ -101,9 +101,7 @@ def get_subsurface_pairs_from_case(
     room_map = create_room_map(path_to_inputs)
     databases = load_attributes(path_to_inputs)
 
-    if (
-        win_change_data
-    ):  # TODO => fix this with modifications config.. goal is to parametrically alter window sizes..
+    if win_change_data:  # TODO => fix this with modifications config.. goal is to parametrically alter window sizes..
         databases = modify_window_database(databases, win_change_data.value)
 
     graph_data = load_data_from_json(path_to_inputs, GRAPH)
