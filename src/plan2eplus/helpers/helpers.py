@@ -50,6 +50,9 @@ def filter_none(lst: Iterable[T | None]) -> List[T]:
 def set_difference(s_large: Iterable, s2: Iterable):
     return list(set(s_large).difference(set(s2)))
 
+def set_intersection(s_large: Iterable, s2: Iterable):
+    return list(set(s_large).intersection(set(s2)))
+
 
 def set_union(s1: Iterable, s2: Iterable):
     return list(set(s1).union(set(s2)))
@@ -122,11 +125,19 @@ def load_data_from_json(path_to_inputs: Path, file_name):
 
 
 def get_or_mkdir(path: Path):
-    assert path.parent.exists(), f"Parent of the input path {path.parent} does not exist!"
+    assert path.parent.exists(), (
+        f"Parent of the input path {path.parent} does not exist!"
+    )
     if not path.exists():
         path.mkdir()
     return path
-# TODO integrate into plan2eplus.. 
+
+
+def extend_data(val, len_data):
+    return [val] * len_data
+
+
+# TODO integrate into plan2eplus..
 
 
 # def pairwise(iterable):

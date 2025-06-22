@@ -1,5 +1,5 @@
 from geomeppy import IDF
-from plan2eplus.constants import DUMMY_OUTPUT_PATH
+from plan2eplus.constants import PATH_TO_DUMMY_OUTPUTS
 from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
 from plan2eplus.connectivity_study.study import output_path as graph2plan_idf_path
 from rich import print as rprint
@@ -24,8 +24,7 @@ def create_plan(idf: IDF):
     # #     s.domain
 
     # # print(surfaces)
-    
- 
+
     # # print(surfaces[0].ep_object.unit_normal)
     # # pprint([i.nickname for i in surfaces])
 
@@ -49,7 +48,8 @@ def create_subsurfaces(idf: IDF):
 
 if __name__ == "__main__":
     case = EneryPlusCaseEditor(
-        path_to_outputs=DUMMY_OUTPUT_PATH, starting_path=graph2plan_idf_path / "out.idf"
+        path_to_outputs=PATH_TO_DUMMY_OUTPUTS,
+        starting_path=graph2plan_idf_path / "out.idf",
     )
     print("\n---testing visual initialization.. ---")
     create_plan(case.idf)

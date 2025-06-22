@@ -3,13 +3,6 @@ from eppy.bunch_subclass import EpBunch
 from plan2eplus.helpers.geometry_interfaces import WallNormal
 from plan2eplus.visuals.idf_name import IDFName, decompose_idf_name
 
-## CONSTANTS used in E+
-RUNPERIOD = "RUNPERIOD"
-SITE = "SITE:LOCATION"
-OUTPUT_VARIABLE = "OUTPUT:VARIABLE"
-BUILDING_SURFACE = "BUILDINGSURFACE:DETAILED"
-
-
 ### for surfaces..
 
 
@@ -18,9 +11,6 @@ def get_first_object(idf: IDF, idfobject: str, IS_UNIQUE=True):
     if IS_UNIQUE:
         assert len(idfobjects) == 1
     return idfobjects[0]
-
-
-
 
 
 ## IDF and objects generally

@@ -2,19 +2,14 @@ from copy import deepcopy
 import polars as pl
 from ladybug.datacollection import BaseCollection
 
-from ...helpers.read_sql import get_collection_for_variable
+from plan2eplus.helpers.helpers import extend_data
+from plan2eplus.helpers.read_sql import get_name_for_spatial_data
+
+from ...helpers.read_sql import create_collections_for_variable
+
 # from .plots import get_name_for_spatial_data
 from .setup import CaseData
 from .interfaces import DataDescription, InitData, SQLiteResult
-
-
-def get_name_for_spatial_data(dataset: BaseCollection):
-    keys = dataset.header.metadata.keys()
-    for i in ["System", "Zone", "Surface"]:
-        if i in keys:
-            return dataset.header.metadata[i]
-    else:
-        raise Exception("Spatial type is not defined")
 
 
 # TODO way to get this data for just one item..
@@ -32,10 +27,6 @@ def create_init_data(case_name, dataset):
     return InitData(case_name, dd.space, dataset.values, dataset.datetimes, qoi_w_unit)
 
 
-def extend_data(val, len_data):
-    return [val] * len_data
-
-
 def create_long_dataframe(data: InitData):
     len_data = len(data.values)
     return pl.DataFrame(
@@ -49,8 +40,21 @@ def create_long_dataframe(data: InitData):
     )
 
 
-def create_dataframe_for_case(case_name:str, sql:SQLiteResult, qoi:str):
-    collection = get_collection_for_variable(sql, qoi)
+def create_long_dataframe_with_qoi(data: InitData):
+    len_data = len(data.values)
+    return pl.DataFrame(
+        {
+            "case_names": extend_data(data.case_name, len_data),
+            "space_names": extend_data(data.space, len_data),
+            "datetimes": data.datetimes,
+            "qoi": extend_data(data.qoi, len_data),
+            "values": data.values,
+        }
+    )
+
+
+def create_dataframe_for_case(case_name: str, sql: SQLiteResult, qoi: str):
+    collection = create_collections_for_variable(sql, qoi)
     init_data = [create_init_data(case_name, i) for i in collection]
     dataframes = [create_long_dataframe(i) for i in init_data]
     return pl.concat(dataframes, how="vertical")
@@ -63,7 +67,7 @@ def create_dataframe_for_many_cases(cases: list[CaseData], qoi: str):
 
 def create_site_var(case: CaseData, qoi: str):
     assert "site" in qoi.lower()
-    dataset = get_collection_for_variable(case.sql, qoi)[0]
+    dataset = create_collections_for_variable(case.sql, qoi)[0]
     dd = get_dataset_description(dataset)
     return InitData(case.case_name, dd.space, dataset.values, dataset.datetimes, dd.qoi)
 
@@ -106,7 +110,7 @@ def join_any_data(df: pl.DataFrame, cases: list[CaseData], qoi: str, ix=0):
 
 
 def get_plot_labels(case: CaseData, qoi: str, custom_qoi=None, ap=False):
-    collection = get_collection_for_variable(case.sql, qoi)
+    collection = create_collections_for_variable(case.sql, qoi)
     dd = get_dataset_description(collection[0])
     case_info = (
         f"Case: {case.case_name}"

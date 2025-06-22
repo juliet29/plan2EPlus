@@ -6,7 +6,7 @@ from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
 from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
-from plan2eplus.constants import DUMMY_OUTPUT_PATH, MATERIALS_PATH
+from plan2eplus.constants import PATH_TO_DUMMY_OUTPUTS, MATERIALS_PATH
 from rich import print as rprint
 from typing import Literal, TypeVar
 
@@ -36,7 +36,10 @@ class Material:
     # can make assertions about the shape of the EpBunch OR wrap desired functions in class methods..
 
 
-ConstructionTypes = Literal["exterior", "interior", "roof", "cieling", "floor", "door", "window"]
+ConstructionTypes = Literal[
+    "exterior", "interior", "roof", "cieling", "floor", "door", "window"
+]
+
 
 @dataclass
 class Construction:
@@ -80,13 +83,9 @@ class Construction:
             self.add_material_to_idf(idf, mat)
 
         return idf
-    
-    def assign_default_mapping(self, construction_type:ConstructionTypes):
+
+    def assign_default_mapping(self, construction_type: ConstructionTypes):
         self.construction_type = construction_type
-
-
-
-
 
     # responsible for assigning itself to different materials..
 
@@ -120,41 +119,42 @@ def create_material_dict(idf: IDF) -> dict[str, Material]:
 def get_default_material_dict():
     main_materials_idf = MATERIALS_PATH / "ASHRAE_2005_HOF_Materials.idf"
     case = EneryPlusCaseEditor(
-        path_to_outputs=DUMMY_OUTPUT_PATH, starting_path=main_materials_idf
+        path_to_outputs=PATH_TO_DUMMY_OUTPUTS, starting_path=main_materials_idf
     )
     return create_material_dict(case.idf)
+
 
 def create_test_constructions():
     mat_dict = get_default_material_dict()
     const_a = Construction.from_list_of_material_names(
-            "My Exterior Wall",
-            [
-                "G01 16mm gypsum board",
-                "F04 Wall air space resistance",
-                "G01 16mm gypsum board",
-            ],
-            mat_dict,
-        )
-    
+        "My Exterior Wall",
+        [
+            "G01 16mm gypsum board",
+            "F04 Wall air space resistance",
+            "G01 16mm gypsum board",
+        ],
+        mat_dict,
+    )
+
     const_b = Construction.from_list_of_material_names(
-            "My Floor",
-            [
-                "G01 16mm gypsum board",
-                "F04 Wall air space resistance",
-                "G01 16mm gypsum board",
-            ],
-            mat_dict,
-        )
-    
+        "My Floor",
+        [
+            "G01 16mm gypsum board",
+            "F04 Wall air space resistance",
+            "G01 16mm gypsum board",
+        ],
+        mat_dict,
+    )
+
     const_c = Construction.from_list_of_material_names(
-            "My Roof",
-            [
-                "G01 16mm gypsum board",
-                "F04 Wall air space resistance",
-                "G01 16mm gypsum board",
-            ],
-            mat_dict,
-        )
+        "My Roof",
+        [
+            "G01 16mm gypsum board",
+            "F04 Wall air space resistance",
+            "G01 16mm gypsum board",
+        ],
+        mat_dict,
+    )
     return const_a, const_b, const_c
 
 
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     print("\n---materials ---")
     main_materials_idf = MATERIALS_PATH / "ASHRAE_2005_HOF_Materials.idf"
     case = EneryPlusCaseEditor(
-        path_to_outputs=DUMMY_OUTPUT_PATH, starting_path=main_materials_idf
+        path_to_outputs=PATH_TO_DUMMY_OUTPUTS, starting_path=main_materials_idf
     )
     mat_dict = create_material_dict(case.idf)
 

@@ -7,8 +7,13 @@ from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from rich import print as rprint
 
-from plan2eplus.helpers.ep_constants import DOOR, FLOOR, OUTDOORS, ROOF, WALL
-from plan2eplus.helpers.geometry_interfaces import Domain, MultiDomain, Range, WallNormal
+from plan2eplus.helpers.ep_constants import DOOR, FLOOR, OUTDOORS, ROOF, WALL, BUILDING_SURFACE, ZONE
+from plan2eplus.helpers.geometry_interfaces import (
+    Domain,
+    MultiDomain,
+    Range,
+    WallNormal,
+)
 from plan2eplus.helpers.helpers import chain_flatten, sort_and_group_objects_dict
 from plan2eplus.plan.interfaces import Coord
 from plan2eplus.visuals.idf_name import decompose_idf_name
@@ -101,6 +106,14 @@ class Subsurface(LinearGeometryObject):
 
 @dataclass
 class Surface(LinearGeometryObject):
+    @classmethod
+    def create(cls, idf: IDF, idf_name: str):
+        object = idf.getobject(BUILDING_SURFACE, idf_name)
+        assert object, "Invalid surface name"
+        return cls(object)
+
+    # TODO class method -> idf + object name to create -> everything that inherits has to implement.. ? or put it directly on the objects
+
     # TODO interior, partners..
     @property
     def direction(self):
@@ -112,8 +125,9 @@ class Surface(LinearGeometryObject):
         elif self.is_roof:
             return WallNormal.UP
         else:
-            raise NotImplementedError("Haven't implemented direction for this type of surface!")
-        
+            raise NotImplementedError(
+                "Haven't implemented direction for this type of surface!"
+            )
 
     @property
     def nickname(self):
@@ -173,6 +187,12 @@ class ZoneDirectedWalls(NamedTuple):
 
 @dataclass
 class Zone(GeometryObject):
+    @classmethod
+    def create(cls, idf: IDF, idf_name: str):
+        object = idf.getobject(ZONE, idf_name)
+        assert object, "Invalid zone name"
+        return cls(object)
+
     @property
     def nickname(self):
         return f"B{self.dname.zone_number}"
@@ -240,6 +260,7 @@ class PlanExternalPositions(NamedTuple):
     def __getitem__(self, i):
         return getattr(self, i)
 
+
 @dataclass
 class PlanZones:  # can just call Plan..
     idf: IDF
@@ -281,12 +302,10 @@ class PlanZones:  # can just call Plan..
     #     min_y = min([i.vert_range.min for i in self.domains]) - PAD
     #     max_y = max([i.vert_range.max for i in self.domains]) + PAD
     #     return (min_x, max_x), (min_y, max_y)
-    
-    # def get_plan_external_positions(self):
-    #     xs, ys = self.get_plan_extents() # TODO will need a different fx to base on, bc these need to be in the plot also.. 
-    #     domain = Domain(Range(*xs), Range(*ys))
-    
 
+    # def get_plan_external_positions(self):
+    #     xs, ys = self.get_plan_extents() # TODO will need a different fx to base on, bc these need to be in the plot also..
+    #     domain = Domain(Range(*xs), Range(*ys))
 
     # TODO all plotting stuff extends the object and goes in a different file
     def plot_zone_domains(self, ax: Axes | None = None):

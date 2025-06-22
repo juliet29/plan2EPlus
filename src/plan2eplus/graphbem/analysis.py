@@ -1,16 +1,14 @@
-from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
+from plan2eplus.graphbem.data_helpers import decompose_surface_name
 from plan2eplus.graphbem.study import create_graphbem_case
-from plan2eplus.helpers.helpers import chain_flatten
-from plan2eplus.helpers.read_sql import get_collection_for_variable, get_sql_results
+from plan2eplus.helpers.read_sql import create_collections_for_variable, get_sql_results
 from plan2eplus.studies.setup.data_wrangle import (
     create_init_data,
     create_dataframe_for_case,
 )
-from plan2eplus.constants import DUMMY_OUTPUT_PATH, PATH_TO_GRAPHBEM_OUTPUTS
+from plan2eplus.constants import PATH_TO_GRAPHBEM_OUTPUTS
 from rich import print as rprint
 import altair as alt
 
-from plan2eplus.visuals.interfaces import PlanZones
 from plan2eplus.visuals.idf_name import decompose_idf_name
 import polars as pl
 
@@ -39,26 +37,6 @@ def analyze_zones():
         )
     )
     base.show()
-
-
-def get_case_surfaces():
-    case = EneryPlusCaseEditor(
-        DUMMY_OUTPUT_PATH, starting_path=PATH_TO_GRAPHBEM_OUTPUTS / "out.idf"
-    )
-    pz = PlanZones(case.idf)
-    surfs_list = chain_flatten([s.surfaces for s in pz.zones])
-    surfs = {s.idf_name.upper(): s for s in surfs_list}
-    return surfs
-
-
-def decompose_surface_name(name: str):
-    surfs = get_case_surfaces()
-    surf = surfs[name.upper()]
-    return {
-        "zone": surf.dname.plan_name,
-        "direction": surf.direction.name,
-        "is_exterior": not surf.is_interior,
-    }
 
 
 def analyze_surfaces():

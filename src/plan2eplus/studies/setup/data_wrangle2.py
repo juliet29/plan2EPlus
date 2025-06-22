@@ -1,7 +1,9 @@
 import polars as pl
 
-from ...helpers.read_sql import get_collection_for_variable
-from .data_wrangle import create_init_data, extend_data
+from ...helpers.helpers import extend_data
+
+from ...helpers.read_sql import create_collections_for_variable
+from .data_wrangle import create_init_data
 from .interfaces import InitData, CaseData
 from copy import deepcopy
 
@@ -19,19 +21,22 @@ def create_long_dataframe(data: InitData):
 
 
 def create_dataframe_for_case(case: CaseData, qoi: str):
-    collection = get_collection_for_variable(case.sql, qoi)
+    collection = create_collections_for_variable(case.sql, qoi)
     init_data = [create_init_data(case.case_name, i) for i in collection]
     dataframes = [create_long_dataframe(i) for i in init_data]
     return pl.concat(dataframes, how="vertical")
+
+
+# TODO ^ the above is duplicated in graphbem for now, but dont want to break network graphs 6/21/25
 
 
 def create_wide_dataframe_for_many_qois(case: CaseData, qois: list[str]):
     dfs = [create_dataframe_for_case(case, qoi) for qoi in qois]
     join_df = dfs[0]
     for qoi, df in zip(qois[1:], dfs[1:]):
-        assert set(join_df["space_names"]) == set(
-            df["space_names"]
-        ), f"{qoi} does not have the same space_names as others in dataframe"
+        assert set(join_df["space_names"]) == set(df["space_names"]), (
+            f"{qoi} does not have the same space_names as others in dataframe"
+        )
         join_df = join_df.join(df, on=["datetimes", "case_names", "space_names"])
 
     return join_df
