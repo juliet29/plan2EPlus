@@ -1,7 +1,7 @@
 from typing import Optional
 
 from geomeppy import IDF
-from plan2eplus.helpers.helpers import extend_data
+from plan2eplus.helpers.helpers import check_list_has_identical_items, extend_data
 from plan2eplus.helpers.read_sql import (
     SQLCollection,
     SQLiteResult,
@@ -13,11 +13,11 @@ import polars as pl
 
 from copy import deepcopy
 from enum import StrEnum
+from rich import print as rprint
 
 
 class DFC(StrEnum):
     """Dataframe Columns"""
-
     ZONE = "zone"
     DIRECTION = "direction"
     IS_EXTERIOR = "is_exterior"
@@ -87,8 +87,21 @@ def dataframe_for_qoi(
 ):
     collections = create_collections_for_variable(sql, qoi)
     dataframes = [create_long_dataframe(collection, idf, case_name) for collection in collections]
-    df1 = pl.concat(dataframes, how="vertical")
-    return df1
+    df = pl.concat(dataframes, how="vertical")
+    return df
+
+
+def check_space_types_match(sql: SQLiteResult, qois: list[str]):
+    space_types = []
+    for qoi in qois:
+        collections = create_collections_for_variable(sql, qoi)
+        curr_space_type = collections[0].space_type
+        space_types.append(curr_space_type)
+        try:
+            check_list_has_identical_items(space_types)
+        except AssertionError:
+            raise NotImplementedError(f"{qoi} with space type `{curr_space_type}` does not have a space type matching `{space_types[0]}` which the remaining qois {qois} have")
+    
 
 
 def create_dataframe_for_case(
@@ -97,18 +110,10 @@ def create_dataframe_for_case(
     idf: Optional[IDF] = None,
     case_name: Optional[str] = None,
 ):
+    check_space_types_match(sql, qois)
     df0 = dataframe_for_qoi(sql, qois[0], idf, case_name)
     if len(qois) == 1:
         return df0
     remaining_dfs = [dataframe_for_qoi(sql, qoi) for qoi in qois[1:]]
-    # collections = create_collections_for_variable(sql, qois[0])
-    # dataframes = [
-    #     create_long_dataframe(collection, idf, case_name) for collection in collections
-    # ]
-    # df0 = pl.concat(dataframes, how="vertical")
-   
-    # if have many qois.. assume that have matching surface type..
-    # df1 = dataframe_for_qoi(sql, qois[1])
-    # df2 = dataframe_for_qoi(sql, qois[2])
-    # df0.join(df1, on = [DFC.SPACE_NAMES.value, DFC.DATETIMES.value])
+
     return pl.concat([df0] + remaining_dfs, how="align")

@@ -110,9 +110,9 @@ def test_dataframe_has_correct_rows(case):
     qoi = get_output_variables()[0]
     df = create_dataframe_for_case(case.sql, [qoi], case.idf)
 
-    assert len(df["zone"].unique()) == EXPECTED_N_ZONES # TODO replace names! 
-    assert len(df["direction"].unique()) == 6  # num surfaces for rectangular room
-    assert len(df["datetimes"].dt.date().unique()) == 31  # number of days in auguest
+    assert len(df[DFC.ZONE.value].unique()) == EXPECTED_N_ZONES # TODO replace names! 
+    assert len(df[DFC.DIRECTION.value].unique()) == 6  # num surfaces for rectangular room
+    assert len(df[DFC.DATETIMES.value].dt.date().unique()) == 31  # number of days in auguest
 
 
 def test_dataframe_for_multiple_qois_is_correct_surface_only(case):
@@ -121,7 +121,16 @@ def test_dataframe_for_multiple_qois_is_correct_surface_only(case):
     set_vars = set_intersection(list(df.columns), qois)
     print(set_vars)
 
-    assert  set_vars == qois
+    assert sorted(set_vars) == sorted(qois)
+
+# @pytest.mark.skip("Not yet implemented")
+def test_dataframe_for_multiple_qois_mix_geom_types_throws_error(case):
+    qois = get_output_variables()[0:3] + [ZONE_QOI]
+    with pytest.raises(NotImplementedError):
+        create_dataframe_for_case(case.sql, qois, case.idf)
+
+
+
 
 @pytest.mark.skip("Not yet implemented")
 def test_dataframe_for_multiple_qois_is_correct_surface_and_zone(case):
@@ -129,10 +138,10 @@ def test_dataframe_for_multiple_qois_is_correct_surface_and_zone(case):
     df =  create_dataframe_for_case(case.sql, qois, case.idf)
     # zone variable should be the same for all surfaces
     zone_data = df.filter(
-            (pl.col("zone") == SAMPLE_ZONE_NAME)
-            & (pl.col("datetimes") == pl.date(*SAMPLE_DATE))
+            (pl.col(DFC.ZONE.value) == SAMPLE_ZONE_NAME)
+            & (pl.col(DFC.DATETIMES.value) == pl.date(*SAMPLE_DATE))
         )[ZONE_QOI]
-    surfaces = df["direction"].unique()
+    surfaces = df[DFC.DIRECTION.value].unique()
     assert len(zone_data) == len(surfaces)
     assert len(zone_data.unique()) == 1
 

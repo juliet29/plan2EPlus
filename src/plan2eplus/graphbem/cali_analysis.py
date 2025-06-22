@@ -1,3 +1,4 @@
+from pathlib import Path
 import polars as pl
 from plan2eplus.graphbem.constants import (
     OUTPUT_BASE_PATH,
@@ -12,23 +13,33 @@ from plan2eplus.studies.setup.interfaces import CaseData2
 import polars as pl
 
 
-def dataframe_for_one_case():
-    output_path = OUTPUT_BASE_PATH / SAMPLE_CASE
+def write_csv_for_one_case(output_path: Path, variables: list[str] ):
     case = CaseData2(output_path)
-    test_var = get_output_variables()[0:4]
-    return create_dataframe_for_case(case.sql, test_var, case.idf)
+    df =  create_dataframe_for_case(case.sql, variables, case.idf)
+    assert len(df.columns) > len(variables)
+    file_name = "surface_data.csv"
+    path = output_path /file_name
+    rprint(f"path to print to is {path}")
+    assert path.parent.exists(), f"{path} does not exist!"
+    df.write_csv(file = path)
+    return df 
+
+def write_csvs_for_all_cases_and_all_surface_qois():
+    variables =  get_output_variables()
+    case_paths = [i for i in OUTPUT_BASE_PATH.iterdir() if i.is_dir()]
+    for case in case_paths:
+        rprint(f"Preparing case for {case.stem}")
+
+        write_csv_for_one_case(case, variables)
+        # except:
+        #     rprint(f"[red bold] Printing {case} failed")
+        #     pass
+    
+
+
 
 
 if __name__ == "__main__":
-    SAMPLE_ZONE_NAME = "corner_ventilation"
-    SAMPLE_DATE = (2017,8,1)
-    SAMPLE_HOUR = 0
     print("Analyzing california studies.. ")
-    df = dataframe_for_one_case()
-    # f = df.filter(
-    #     (pl.col("zone") == SAMPLE_ZONE_NAME)
-    #     & (pl.col("datetimes") == pl.datetime(*SAMPLE_DATE))
-    #     # & (pl.col("hour") == SAMPLE_HOUR)
-    # )
-
-    rprint(df)
+    write_csvs_for_all_cases_and_all_surface_qois()
+ 

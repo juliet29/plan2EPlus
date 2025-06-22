@@ -37,7 +37,7 @@ def run_cali_cases():
         try:
             case.run_idf(force_run=True)
         except EnergyPlusRunError:
-            rprint(f"[red bold] FAILED TO COMPLETE RUN FOR {case.case_name}")
+            rprint(f"[red bold] FAILED TO COMPLETE RUN FOR {case.path}")
             raise Exception
 
     # # logger.info(subdirectories)

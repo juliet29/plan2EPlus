@@ -1,3 +1,4 @@
+import functools
 from pathlib import Path
 from typing import Dict, Optional, Protocol
 from itertools import chain, groupby, tee, zip_longest
@@ -50,12 +51,17 @@ def filter_none(lst: Iterable[T | None]) -> List[T]:
 def set_difference(s_large: Iterable, s2: Iterable):
     return list(set(s_large).difference(set(s2)))
 
+
 def set_intersection(s_large: Iterable, s2: Iterable):
     return list(set(s_large).intersection(set(s2)))
 
 
 def set_union(s1: Iterable, s2: Iterable):
     return list(set(s1).union(set(s2)))
+
+
+def check_list_has_identical_items(s: Iterable):
+    assert len(set(s)) == 1, f"{s} does not have identical items!"
 
 
 def list_all_dict_values(d: dict):

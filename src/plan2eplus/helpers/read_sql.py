@@ -6,16 +6,17 @@ from ladybug.sql import SQLiteResult
 from ladybug.datacollection import BaseCollection
 from warnings import warn
 from plan2eplus.constants import DEFAULT_SQL_SUBPATH
+from plan2eplus.helpers.helpers import check_list_has_identical_items
+from rich import print as rprint 
 
 
 SpaceTuple = NamedTuple("SpaceTuple", [("name", str), ("space_type", str)])
+
 
 class SpaceTypes(StrEnum):
     SYSTEM = "System"
     ZONE = "Zone"
     SURFACE = "Surface"
-
-
 
 
 # SpaceTypes = Literal["System", "Zone", "Surface"]
@@ -90,7 +91,16 @@ def create_collections_for_variable(sql: SQLiteResult, var: str) -> list[SQLColl
     if validate_request(sql, var):
         collections: list[BaseCollection] = sql.data_collections_by_output_name(var)
         assert len(collections) > 0, "No collections found!"
-        return [SQLCollection(i) for i in collections]
+
+        datasets = [SQLCollection(i) for i in collections]
+
+        try:
+            check_list_has_identical_items([i.space_type for i in datasets])
+        except AssertionError:
+            raise NotImplementedError(f"[red bold] This collection for {var} has multiple space types!")
+
+
+        return datasets
 
     raise Exception(
         f"Invalid variable request: {var} not in {sql.available_outputs} in {sql}"
