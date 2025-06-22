@@ -1,5 +1,11 @@
 **/weather_data
-**/cases/**
+cases/** 
+# !cases/
+# !cases/graphbem_cali/
+# !cases/graphbem_cali/**/
+# !cases/graphbem_cali/**/eplusout.sql
+# !cases/graphbem_cali/**/out.idf
+
 *.html
 
 
