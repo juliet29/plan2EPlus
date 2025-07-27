@@ -33,7 +33,9 @@ def find_wall_connecting_zones(idf: IDF, z0: Zone, z1: Zone) -> Surface:
                 )
         else:
             logger.debug(f"No partner wall for {wall}")
-    assert len(shared_walls) == 1,  "There should only be one wall that is shared by two zones"
+    assert len(shared_walls) == 1, (
+        "There should only be one wall that is shared by two zones"
+    )
     return shared_walls[0]
 
 
@@ -49,11 +51,10 @@ class ZoneDrnPair(NamedTuple):
     drn: WallNormal
 
 
-def find_points_along_path(idf: IDF, path:list[str]):
+def find_points_along_path(idf: IDF, path: list[str]):
     pz = PlanZones(idf)
     assert path[0] in WallNormal.keys()
     assert path[-1] in WallNormal.keys()
-
 
     spaces: list[Zone | WallNormal] = []
 
@@ -66,11 +67,13 @@ def find_points_along_path(idf: IDF, path:list[str]):
     shared_walls: list[Surface] = []
 
     for a, b in pairwise(spaces):
-        if isinstance(a, Zone) and isinstance(b, Zone): # TODO why not a try-catch here also? 
+        if isinstance(a, Zone) and isinstance(
+            b, Zone
+        ):  # TODO why not a try-catch here also?
             shared_wall = find_wall_connecting_zones(idf, a, b)
         else:
             res = sorted([a, b], key=lambda x: isinstance(x, WallNormal))
-            shared_wall = find_wall_on_zone_facade(idf, *ZoneDrnPair(*res)) # type: ignore -> typechecker does not know about sorting results # TODO find cleaner way to write this.. 
+            shared_wall = find_wall_on_zone_facade(idf, *ZoneDrnPair(*res))  # type: ignore -> typechecker does not know about sorting results # TODO find cleaner way to write this..
         shared_walls.append(shared_wall)
 
     # can reasonably assume that all paths will end and start with cardinal directions (for these lines..)
@@ -90,10 +93,10 @@ def find_points_along_path(idf: IDF, path:list[str]):
 def create_spline(xs, ys):
     cs = CubicSpline(xs, ys)
     line_xs = np.linspace(start=xs[0], stop=xs[-1], num=20)
-    return line_xs,  cs(line_xs)
+    return line_xs, cs(line_xs)
 
 
-def plot_path_on_plot(coords:list[tuple[float, float]], ax: Optional[Axes]=None):
+def plot_path_on_plot(coords: list[tuple[float, float]], ax: Optional[Axes] = None):
     print(f"==>> coords: {coords}")
     if not ax:
         _, ax = plt.subplots()
@@ -104,5 +107,3 @@ def plot_path_on_plot(coords:list[tuple[float, float]], ax: Optional[Axes]=None)
     line_xs, line_ys = create_spline(xs, ys)
     ax.plot(line_xs, line_ys)
     return ax
-
-

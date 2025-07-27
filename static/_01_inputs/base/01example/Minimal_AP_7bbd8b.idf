@@ -1,0 +1,3056 @@
+!- Darwin Line endings 
+
+Version,
+    22.2;                     !- Version Identifier
+
+SimulationControl,
+    No,                       !- Do Zone Sizing Calculation
+    No,                       !- Do System Sizing Calculation
+    No,                       !- Do Plant Sizing Calculation
+    No,                       !- Run Simulation for Sizing Periods
+    Yes,                      !- Run Simulation for Weather File Run Periods
+    No,                       !- Do HVAC Sizing Simulation for Sizing Periods
+    1;                        !- Maximum Number of HVAC Sizing Simulation Passes
+
+Building,
+    None,                     !- Name
+    0,                        !- North Axis
+    Suburbs,                  !- Terrain
+    0.04,                     !- Loads Convergence Tolerance Value
+    0.4,                      !- Temperature Convergence Tolerance Value
+    FullInteriorAndExterior,    !- Solar Distribution
+    25,                       !- Maximum Number of Warmup Days
+    6;                        !- Minimum Number of Warmup Days
+
+Timestep,
+    4;                        !- Number of Timesteps per Hour
+
+SITE:LOCATION,
+    "PALO-ALTO-AP",           !- Name
+    37.461,                   !- Latitude
+    -122.115,                 !- Longitude
+    -8,                       !- Time Zone
+    1;                        !- Elevation
+
+RUNPERIOD,
+    Summer,                   !- Name
+    7,                        !- Begin Month
+    1,                        !- Begin Day of Month
+    ,                         !- Begin Year
+    7,                        !- End Month
+    1,                        !- End Day of Month
+    ,                         !- End Year
+    ,                         !- Day of Week for Start Day
+    Yes,                      !- Use Weather File Holidays and Special Days
+    Yes,                      !- Use Weather File Daylight Saving Period
+    No,                       !- Apply Weekend Holiday Rule
+    Yes,                      !- Use Weather File Rain Indicators
+    Yes,                      !- Use Weather File Snow Indicators
+    No,                       !- Treat Weather as Actual
+    Hour24;                   !- First Hour Interpolation Starting Values
+
+Material,
+    M01 100mm brick,          !- Name
+    MediumRough,              !- Roughness
+    0.1016,                   !- Thickness
+    0.89,                     !- Conductivity
+    1920,                     !- Density
+    790;                      !- Specific Heat
+
+Material,
+    I02 50mm insulation board,    !- Name
+    MediumRough,              !- Roughness
+    0.0508,                   !- Thickness
+    0.03,                     !- Conductivity
+    43,                       !- Density
+    1210;                     !- Specific Heat
+
+Material,
+    G01a 19mm gypsum board,    !- Name
+    MediumSmooth,             !- Roughness
+    0.019,                    !- Thickness
+    0.16,                     !- Conductivity
+    800,                      !- Density
+    1090;                     !- Specific Heat
+
+Material,
+    M14a 100mm heavyweight concrete,    !- Name
+    MediumRough,              !- Roughness
+    0.1016,                   !- Thickness
+    1.95,                     !- Conductivity
+    2240,                     !- Density
+    900;                      !- Specific Heat
+
+Material,
+    F16 Acoustic tile,        !- Name
+    MediumSmooth,             !- Roughness
+    0.0191,                   !- Thickness
+    0.06,                     !- Conductivity
+    368,                      !- Density
+    590;                      !- Specific Heat
+
+Material,
+    G05 25mm wood,            !- Name
+    MediumSmooth,             !- Roughness
+    0.0254,                   !- Thickness
+    0.15,                     !- Conductivity
+    608,                      !- Density
+    1630;                     !- Specific Heat
+
+Material:AirGap,
+    F04 Wall air space resistance,    !- Name
+    0.15;                     !- Thermal Resistance
+
+Material:AirGap,
+    F05 Ceiling air space resistance,    !- Name
+    0.18;                     !- Thermal Resistance
+
+WindowMaterial:Glazing,
+    CLEAR 6MM,                !- Name
+    SpectralAverage,          !- Optical Data Type
+    ,                         !- Window Glass Spectral Data Set Name
+    0.006,                    !- Thickness
+    0.775,                    !- Solar Transmittance at Normal Incidence
+    0.071,                    !- Front Side Solar Reflectance at Normal Incidence
+    0.071,                    !- Back Side Solar Reflectance at Normal Incidence
+    0.881,                    !- Visible Transmittance at Normal Incidence
+    0.08,                     !- Front Side Visible Reflectance at Normal Incidence
+    0.08,                     !- Back Side Visible Reflectance at Normal Incidence
+    0,                        !- Infrared Transmittance at Normal Incidence
+    0.84,                     !- Front Side Infrared Hemispherical Emissivity
+    0.84,                     !- Back Side Infrared Hemispherical Emissivity
+    0.9;                      !- Conductivity
+
+Construction,
+    Medium Exterior Wall,     !- Name
+    M01 100mm brick,          !- Outside Layer
+    I02 50mm insulation board,    !- Layer 2
+    F04 Wall air space resistance,    !- Layer 3
+    G01a 19mm gypsum board;    !- Layer 4
+
+Construction,
+    Medium Roof/Ceiling,      !- Name
+    M14a 100mm heavyweight concrete,    !- Outside Layer
+    F05 Ceiling air space resistance,    !- Layer 2
+    F16 Acoustic tile;        !- Layer 3
+
+Construction,
+    Medium Partitions,        !- Name
+    G01a 19mm gypsum board,    !- Outside Layer
+    F04 Wall air space resistance,    !- Layer 2
+    G01a 19mm gypsum board;    !- Layer 3
+
+Construction,
+    Medium Floor,             !- Name
+    F16 Acoustic tile,        !- Outside Layer
+    F05 Ceiling air space resistance,    !- Layer 2
+    M14a 100mm heavyweight concrete;    !- Layer 3
+
+Construction,
+    Medium Furnishings,       !- Name
+    G05 25mm wood;            !- Outside Layer
+
+Construction,
+    Medium Window Sgl Clr 6mm,    !- Name
+    CLEAR 6MM;                !- Outside Layer
+
+CONSTRUCTION:AIRBOUNDARY,
+    AirBoundary Block 09 Storey 0 Wall 0001_2,    !- Name
+    None,                     !- Air Exchange Method
+    0.5;                      !- Simple Mixing Air Changes per Hour
+
+CONSTRUCTION:AIRBOUNDARY,
+    AirBoundary Block 09 Storey 0 Wall 0002_1,    !- Name
+    None,                     !- Air Exchange Method
+    0.5;                      !- Simple Mixing Air Changes per Hour
+
+CONSTRUCTION:AIRBOUNDARY,
+    AirBoundary Block 08 Storey 0 Wall 0002_1,    !- Name
+    None,                     !- Air Exchange Method
+    0.5;                      !- Simple Mixing Air Changes per Hour
+
+GlobalGeometryRules,
+    UpperLeftCorner,          !- Starting Vertex Position
+    CounterClockWise,         !- Vertex Entry Direction
+    World;                    !- Coordinate System
+
+ZONE,
+    Block 00 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 01 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 02 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 03 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 04 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 05 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 06 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 07 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 08 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block 09 Storey 0,        !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+BUILDINGSURFACE:DETAILED,
+    Block 00 Storey 0 Wall 0002,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 00 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.56,                     !- Vertex 1 Xcoordinate
+    4.91,                     !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    3.56,                     !- Vertex 2 Xcoordinate
+    4.91,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    4.91,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    4.91,                     !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 00 Storey 0 Wall 0003,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 00 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    4.91,                     !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    4.91,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 00 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 00 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.56,                     !- Vertex 1 Xcoordinate
+    4.91,                     !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    3.56,                     !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    4.91,                     !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 00 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 00 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.56,                     !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    3.56,                     !- Vertex 2 Xcoordinate
+    4.91,                     !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    4.91,                     !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 01 Storey 0 Wall 0002,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 01 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.07,                     !- Vertex 1 Xcoordinate
+    4.91,                     !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    6.07,                     !- Vertex 2 Xcoordinate
+    4.91,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.56,                     !- Vertex 3 Xcoordinate
+    4.91,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.56,                     !- Vertex 4 Xcoordinate
+    4.91,                     !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 01 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 01 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.07,                     !- Vertex 1 Xcoordinate
+    4.91,                     !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    6.07,                     !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.56,                     !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.56,                     !- Vertex 4 Xcoordinate
+    4.91,                     !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 01 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 01 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.07,                     !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    6.07,                     !- Vertex 2 Xcoordinate
+    4.91,                     !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    3.56,                     !- Vertex 3 Xcoordinate
+    4.91,                     !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    3.56,                     !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 02 Storey 0 Wall 0001,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 02 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    8.31,                     !- Vertex 3 Xcoordinate
+    4.91,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    8.31,                     !- Vertex 4 Xcoordinate
+    4.91,                     !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 02 Storey 0 Wall 0002,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 02 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    4.91,                     !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    4.91,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.07,                     !- Vertex 3 Xcoordinate
+    4.91,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.07,                     !- Vertex 4 Xcoordinate
+    4.91,                     !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 02 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 02 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    4.91,                     !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.07,                     !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.07,                     !- Vertex 4 Xcoordinate
+    4.91,                     !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 02 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 02 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    4.91,                     !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    6.07,                     !- Vertex 3 Xcoordinate
+    4.91,                     !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    6.07,                     !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 03 Storey 0 Wall 0001,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 03 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    8.31,                     !- Vertex 3 Xcoordinate
+    2.1,                      !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    8.31,                     !- Vertex 4 Xcoordinate
+    2.1,                      !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 03 Storey 0 Wall 0004,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 03 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    8.31,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    8.31,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 03 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 03 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    2.1,                      !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.57,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.57,                     !- Vertex 4 Xcoordinate
+    2.1,                      !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 03 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 03 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    2.1,                      !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    5.57,                     !- Vertex 3 Xcoordinate
+    2.1,                      !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    5.57,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 04 Storey 0 Wall 0004,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 04 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.69,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    3.69,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.57,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.57,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 04 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 04 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    1.32,                     !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    1.32,                     !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 04 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 04 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    1.32,                     !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    1.32,                     !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 05 Storey 0 Wall 0004,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 05 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.65,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    2.65,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 05 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 05 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.69,                     !- Vertex 1 Xcoordinate
+    2.1,                      !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    3.69,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    2.1,                      !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 05 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 05 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.69,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    3.69,                     !- Vertex 2 Xcoordinate
+    2.1,                      !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    2.1,                      !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 06 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 06 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    2.1,                      !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    1.32,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    1.32,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    2.1,                      !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 06 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 06 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    1.32,                     !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    2.1,                      !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    2.1,                      !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    1.32,                     !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 07 Storey 0 Wall 0001,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 07 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    2.0999999999999996,       !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    2.0999999999999996,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    8.31,                     !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    8.31,                     !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 07 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 07 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    2.0999999999999996,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.99,                     !- Vertex 3 Xcoordinate
+    2.0999999999999996,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.99,                     !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 07 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 07 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.31,                     !- Vertex 1 Xcoordinate
+    2.0999999999999996,       !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    8.31,                     !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    6.99,                     !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    6.99,                     !- Vertex 4 Xcoordinate
+    2.0999999999999996,       !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.99,                     !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    6.99,                     !- Vertex 2 Xcoordinate
+    2.0999999999999996,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    2.0999999999999996,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.99,                     !- Vertex 1 Xcoordinate
+    2.0999999999999996,       !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    6.99,                     !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    2.0999999999999996,       !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 09 Storey 0 Wall 0003,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 09 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 09 Storey 0 Wall 0004,    !- Name
+    wall,                     !- Surface Type
+    Medium Exterior Wall,     !- Construction Name
+    Block 09 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 09 Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    Medium Floor,             !- Construction Name
+    Block 09 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.65,                     !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    2.65,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 09 Storey 0 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    Medium Roof/Ceiling,      !- Construction Name
+    Block 09 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.65,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.05,                     !- Vertex 1 Zcoordinate
+    2.65,                     !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    3.05,                     !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    3.05,                     !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.05;                     !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 00 Storey 0 Wall 0001_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 00 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 01 Storey 0 Wall 0003_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.56,                     !- Vertex 1 Xcoordinate
+    2.859999999869615,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.56,                     !- Vertex 2 Xcoordinate
+    2.859999999869615,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.56,                     !- Vertex 3 Xcoordinate
+    4.90999999968335,         !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.56,                     !- Vertex 4 Xcoordinate
+    4.90999999968335,         !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 01 Storey 0 Wall 0003_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 01 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 00 Storey 0 Wall 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.56,                     !- Vertex 1 Xcoordinate
+    4.90999999968335,         !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.56,                     !- Vertex 2 Xcoordinate
+    4.90999999968335,         !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.56,                     !- Vertex 3 Xcoordinate
+    2.859999999869615,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.56,                     !- Vertex 4 Xcoordinate
+    2.859999999869615,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 00 Storey 0 Wall 0004_1,    !- Name
+    wall,                     !- Surface Type
+    AirBoundary Block 08 Storey 0 Wall 0002_1,    !- Construction Name
+    Block 00 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 08 Storey 0 Wall 0002_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.6499999999068677,       !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    2.6499999999068677,       !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.559999999590218,        !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.559999999590218,        !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 00 Storey 0 Wall 0004_2,    !- Name
+    wall,                     !- Surface Type
+    AirBoundary Block 09 Storey 0 Wall 0002_1,    !- Construction Name
+    Block 00 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 09 Storey 0 Wall 0002_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.6499999999068677,       !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.6499999999068677,       !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Wall 0002_1,    !- Name
+    wall,                     !- Surface Type
+    AirBoundary Block 08 Storey 0 Wall 0002_1,    !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 00 Storey 0 Wall 0004_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.559999999590218,        !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.559999999590218,        !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.6499999999068677,       !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.6499999999068677,       !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Wall 0002_2,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 01 Storey 0 Wall 0004_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.069999999832362,        !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.069999999832362,        !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.559999999590218,        !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.559999999590218,        !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Wall 0002_3,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 02 Storey 0 Wall 0004_2,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.989999999757856,        !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.989999999757856,        !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.069999999832362,        !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.069999999832362,        !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 09 Storey 0 Wall 0002_1,    !- Name
+    wall,                     !- Surface Type
+    AirBoundary Block 09 Storey 0 Wall 0002_1,    !- Construction Name
+    Block 09 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 00 Storey 0 Wall 0004_2,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.6499999999068677,       !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    2.6499999999068677,       !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 01 Storey 0 Wall 0001_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 01 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 02 Storey 0 Wall 0003_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.07,                     !- Vertex 1 Xcoordinate
+    2.859999999869615,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.07,                     !- Vertex 2 Xcoordinate
+    2.859999999869615,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.07,                     !- Vertex 3 Xcoordinate
+    4.90999999968335,         !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.07,                     !- Vertex 4 Xcoordinate
+    4.90999999968335,         !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 02 Storey 0 Wall 0003_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 02 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 01 Storey 0 Wall 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.07,                     !- Vertex 1 Xcoordinate
+    4.90999999968335,         !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.07,                     !- Vertex 2 Xcoordinate
+    4.90999999968335,         !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.07,                     !- Vertex 3 Xcoordinate
+    2.859999999869615,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.07,                     !- Vertex 4 Xcoordinate
+    2.859999999869615,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 01 Storey 0 Wall 0004_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 01 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 08 Storey 0 Wall 0002_2,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.559999999590218,        !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.559999999590218,        !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.069999999832362,        !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.069999999832362,        !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 02 Storey 0 Wall 0004_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 02 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 07 Storey 0 Wall 0002_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.989999999757856,        !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.989999999757856,        !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    8.309999999590218,        !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    8.309999999590218,        !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 02 Storey 0 Wall 0004_2,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 02 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 08 Storey 0 Wall 0002_3,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.069999999832362,        !- Vertex 1 Xcoordinate
+    2.8600000000000003,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.069999999832362,        !- Vertex 2 Xcoordinate
+    2.8600000000000003,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.989999999757856,        !- Vertex 3 Xcoordinate
+    2.8600000000000003,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.989999999757856,        !- Vertex 4 Xcoordinate
+    2.8600000000000003,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 07 Storey 0 Wall 0002_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 07 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 02 Storey 0 Wall 0004_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.309999999590218,        !- Vertex 1 Xcoordinate
+    2.86,                     !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    8.309999999590218,        !- Vertex 2 Xcoordinate
+    2.86,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.989999999757856,        !- Vertex 3 Xcoordinate
+    2.86,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.989999999757856,        !- Vertex 4 Xcoordinate
+    2.86,                     !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 03 Storey 0 Wall 0002_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 03 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 07 Storey 0 Wall 0004_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    8.309999999590218,        !- Vertex 1 Xcoordinate
+    2.1,                      !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    8.309999999590218,        !- Vertex 2 Xcoordinate
+    2.1,                      !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.989999999757856,        !- Vertex 3 Xcoordinate
+    2.1,                      !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.989999999757856,        !- Vertex 4 Xcoordinate
+    2.1,                      !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 03 Storey 0 Wall 0002_2,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 03 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 08 Storey 0 Wall 0004_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.989999999757856,        !- Vertex 1 Xcoordinate
+    2.1,                      !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.989999999757856,        !- Vertex 2 Xcoordinate
+    2.1,                      !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.569999999832362,        !- Vertex 3 Xcoordinate
+    2.1,                      !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.569999999832362,        !- Vertex 4 Xcoordinate
+    2.1,                      !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 07 Storey 0 Wall 0004_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 07 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 03 Storey 0 Wall 0002_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.989999999757856,        !- Vertex 1 Xcoordinate
+    2.0999999999999996,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.989999999757856,        !- Vertex 2 Xcoordinate
+    2.0999999999999996,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    8.309999999590218,        !- Vertex 3 Xcoordinate
+    2.0999999999999996,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    8.309999999590218,        !- Vertex 4 Xcoordinate
+    2.0999999999999996,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Wall 0004_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 03 Storey 0 Wall 0002_2,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.569999999832362,        !- Vertex 1 Xcoordinate
+    2.0999999999999996,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    5.569999999832362,        !- Vertex 2 Xcoordinate
+    2.0999999999999996,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.989999999757856,        !- Vertex 3 Xcoordinate
+    2.0999999999999996,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.989999999757856,        !- Vertex 4 Xcoordinate
+    2.0999999999999996,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Wall 0004_2,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 06 Storey 0 Wall 0002_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.6899999999441206,       !- Vertex 1 Xcoordinate
+    2.0999999999999996,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.6899999999441206,       !- Vertex 2 Xcoordinate
+    2.0999999999999996,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.569999999832362,        !- Vertex 3 Xcoordinate
+    2.0999999999999996,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.569999999832362,        !- Vertex 4 Xcoordinate
+    2.0999999999999996,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Wall 0004_3,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 05 Storey 0 Wall 0002_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.6499999999068677,       !- Vertex 1 Xcoordinate
+    2.0999999999999996,       !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    2.6499999999068677,       !- Vertex 2 Xcoordinate
+    2.0999999999999996,       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.6899999999441206,       !- Vertex 3 Xcoordinate
+    2.0999999999999996,       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.6899999999441206,       !- Vertex 4 Xcoordinate
+    2.0999999999999996,       !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 03 Storey 0 Wall 0003_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 03 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 04 Storey 0 Wall 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    1.319999999832362,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    1.319999999832362,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.57,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.57,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 03 Storey 0 Wall 0003_2,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 03 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 06 Storey 0 Wall 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    2.099999999627471,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    2.099999999627471,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.57,                     !- Vertex 3 Xcoordinate
+    1.319999999832362,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.57,                     !- Vertex 4 Xcoordinate
+    1.319999999832362,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 04 Storey 0 Wall 0001_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 04 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 03 Storey 0 Wall 0003_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.57,                     !- Vertex 3 Xcoordinate
+    1.319999999832362,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.57,                     !- Vertex 4 Xcoordinate
+    1.319999999832362,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 06 Storey 0 Wall 0001_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 06 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 03 Storey 0 Wall 0003_2,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.57,                     !- Vertex 1 Xcoordinate
+    1.319999999832362,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    5.57,                     !- Vertex 2 Xcoordinate
+    1.319999999832362,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.57,                     !- Vertex 3 Xcoordinate
+    2.099999999627471,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.57,                     !- Vertex 4 Xcoordinate
+    2.099999999627471,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 04 Storey 0 Wall 0002_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 04 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 06 Storey 0 Wall 0004_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.569999999832362,        !- Vertex 1 Xcoordinate
+    1.32,                     !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    5.569999999832362,        !- Vertex 2 Xcoordinate
+    1.32,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.6899999999441206,       !- Vertex 3 Xcoordinate
+    1.32,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.6899999999441206,       !- Vertex 4 Xcoordinate
+    1.32,                     !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 06 Storey 0 Wall 0004_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 06 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 04 Storey 0 Wall 0002_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.6899999999441206,       !- Vertex 1 Xcoordinate
+    1.32,                     !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.6899999999441206,       !- Vertex 2 Xcoordinate
+    1.32,                     !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    5.569999999832362,        !- Vertex 3 Xcoordinate
+    1.32,                     !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    5.569999999832362,        !- Vertex 4 Xcoordinate
+    1.32,                     !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 04 Storey 0 Wall 0003_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 04 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 05 Storey 0 Wall 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.69,                     !- Vertex 1 Xcoordinate
+    1.319999999832362,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.69,                     !- Vertex 2 Xcoordinate
+    1.319999999832362,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 05 Storey 0 Wall 0001_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 05 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 04 Storey 0 Wall 0003_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.69,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.69,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    1.319999999832362,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    1.319999999832362,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 05 Storey 0 Wall 0001_2,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 05 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 06 Storey 0 Wall 0003_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.69,                     !- Vertex 1 Xcoordinate
+    1.319999999832362,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.69,                     !- Vertex 2 Xcoordinate
+    1.319999999832362,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    2.099999999627471,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    2.099999999627471,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 06 Storey 0 Wall 0003_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 06 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 05 Storey 0 Wall 0001_2,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.69,                     !- Vertex 1 Xcoordinate
+    2.099999999627471,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.69,                     !- Vertex 2 Xcoordinate
+    2.099999999627471,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.69,                     !- Vertex 3 Xcoordinate
+    1.319999999832362,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.69,                     !- Vertex 4 Xcoordinate
+    1.319999999832362,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 05 Storey 0 Wall 0002_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 05 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 08 Storey 0 Wall 0004_3,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    3.6899999999441206,       !- Vertex 1 Xcoordinate
+    2.1,                      !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    3.6899999999441206,       !- Vertex 2 Xcoordinate
+    2.1,                      !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.6499999999068677,       !- Vertex 3 Xcoordinate
+    2.1,                      !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.6499999999068677,       !- Vertex 4 Xcoordinate
+    2.1,                      !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 05 Storey 0 Wall 0003_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 05 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 09 Storey 0 Wall 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.65,                     !- Vertex 1 Xcoordinate
+    2.099999999627471,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    2.65,                     !- Vertex 2 Xcoordinate
+    2.099999999627471,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 09 Storey 0 Wall 0001_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 09 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 05 Storey 0 Wall 0003_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.65,                     !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    2.65,                     !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    2.099999999627471,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    2.099999999627471,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 09 Storey 0 Wall 0001_2,    !- Name
+    wall,                     !- Surface Type
+    AirBoundary Block 09 Storey 0 Wall 0001_2,    !- Construction Name
+    Block 09 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 08 Storey 0 Wall 0003_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.65,                     !- Vertex 1 Xcoordinate
+    2.099999999627471,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    2.65,                     !- Vertex 2 Xcoordinate
+    2.099999999627471,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    2.859999999869615,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    2.859999999869615,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 06 Storey 0 Wall 0002_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 06 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 08 Storey 0 Wall 0004_2,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    5.569999999832362,        !- Vertex 1 Xcoordinate
+    2.1,                      !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    5.569999999832362,        !- Vertex 2 Xcoordinate
+    2.1,                      !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    3.6899999999441206,       !- Vertex 3 Xcoordinate
+    2.1,                      !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    3.6899999999441206,       !- Vertex 4 Xcoordinate
+    2.1,                      !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 07 Storey 0 Wall 0003_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 07 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 08 Storey 0 Wall 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.99,                     !- Vertex 1 Xcoordinate
+    2.859999999869615,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.99,                     !- Vertex 2 Xcoordinate
+    2.859999999869615,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.99,                     !- Vertex 3 Xcoordinate
+    2.099999999627471,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.99,                     !- Vertex 4 Xcoordinate
+    2.099999999627471,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Wall 0001_1,    !- Name
+    wall,                     !- Surface Type
+    Medium Partitions,        !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 07 Storey 0 Wall 0003_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    6.99,                     !- Vertex 1 Xcoordinate
+    2.099999999627471,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    6.99,                     !- Vertex 2 Xcoordinate
+    2.099999999627471,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    6.99,                     !- Vertex 3 Xcoordinate
+    2.859999999869615,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    6.99,                     !- Vertex 4 Xcoordinate
+    2.859999999869615,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block 08 Storey 0 Wall 0003_1,    !- Name
+    wall,                     !- Surface Type
+    AirBoundary Block 09 Storey 0 Wall 0001_2,    !- Construction Name
+    Block 08 Storey 0,        !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block 09 Storey 0 Wall 0001_2,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    2.65,                     !- Vertex 1 Xcoordinate
+    2.859999999869615,        !- Vertex 1 Ycoordinate
+    3.0499999998137355,       !- Vertex 1 Zcoordinate
+    2.65,                     !- Vertex 2 Xcoordinate
+    2.859999999869615,        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    2.65,                     !- Vertex 3 Xcoordinate
+    2.099999999627471,        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    2.65,                     !- Vertex 4 Xcoordinate
+    2.099999999627471,        !- Vertex 4 Ycoordinate
+    3.0499999998137355;       !- Vertex 4 Zcoordinate
+
+WINDOW,
+    Block 03 Storey 0 Wall 0001 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 03 Storey 0 Wall 0001,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    0.6950000000000001,       !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 02 Storey 0 Wall 0001 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 02 Storey 0 Wall 0001,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    0.6699999999999999,       !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 02 Storey 0 Wall 0002 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 02 Storey 0 Wall 0002,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    0.7650000000000001,       !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 09 Storey 0 Wall 0003 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 09 Storey 0 Wall 0003,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    1.075,                    !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 00 Storey 0 Wall 0002 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 00 Storey 0 Wall 0002,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    1.425,                    !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 01 Storey 0 Wall 0002 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 01 Storey 0 Wall 0002,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    0.9000000000000001,       !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 03 Storey 0 Wall 0004 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 03 Storey 0 Wall 0004,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    1.0150000000000001,       !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 04 Storey 0 Wall 0004 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 04 Storey 0 Wall 0004,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    0.5850000000000002,       !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 05 Storey 0 Wall 0004 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 05 Storey 0 Wall 0004,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    1.650000e-01,             !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+WINDOW,
+    Block 09 Storey 0 Wall 0004 Window,    !- Name
+    Medium Window Sgl Clr 6mm,    !- Construction Name
+    Block 09 Storey 0 Wall 0004,    !- Building Surface Name
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    0.97,                     !- Starting X Coordinate
+    1.4994999999999998,       !- Starting Z Coordinate
+    0.71,                     !- Length
+    1.52;                     !- Height
+
+DOOR:INTERZONE,
+    Block 04 Storey 0 Wall 0001_1 Door,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 04 Storey 0 Wall 0001_1,    !- Building Surface Name
+    Block 04 Storey 0 Wall 0001_1 Door Partner,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    2.550000e-01,             !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 04 Storey 0 Wall 0001_1 Door Partner,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 03 Storey 0 Wall 0003_1,    !- Building Surface Name
+    Block 04 Storey 0 Wall 0001_1 Door,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    2.550000e-01,             !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 03 Storey 0 Wall 0002_2 Door,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 03 Storey 0 Wall 0002_2,    !- Building Surface Name
+    Block 03 Storey 0 Wall 0002_2 Door Partner,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    3.050000e-01,             !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 03 Storey 0 Wall 0002_2 Door Partner,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 08 Storey 0 Wall 0004_1,    !- Building Surface Name
+    Block 03 Storey 0 Wall 0002_2 Door,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    3.050000e-01,             !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 08 Storey 0 Wall 0002_2 Door,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 08 Storey 0 Wall 0002_2,    !- Building Surface Name
+    Block 08 Storey 0 Wall 0002_2 Door Partner,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    0.8500000001210719,       !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 08 Storey 0 Wall 0002_2 Door Partner,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 01 Storey 0 Wall 0004_1,    !- Building Surface Name
+    Block 08 Storey 0 Wall 0002_2 Door,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    0.8500000001210719,       !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 08 Storey 0 Wall 0002_3 Door,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 08 Storey 0 Wall 0002_3,    !- Building Surface Name
+    Block 08 Storey 0 Wall 0002_3 Door Partner,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    5.500000e-02,             !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 08 Storey 0 Wall 0002_3 Door Partner,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 02 Storey 0 Wall 0004_2,    !- Building Surface Name
+    Block 08 Storey 0 Wall 0002_3 Door,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    5.500000e-02,             !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 06 Storey 0 Wall 0002_1 Door,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 06 Storey 0 Wall 0002_1,    !- Building Surface Name
+    Block 06 Storey 0 Wall 0002_1 Door Partner,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    0.5349999999441206,       !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 06 Storey 0 Wall 0002_1 Door Partner,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 08 Storey 0 Wall 0004_2,    !- Building Surface Name
+    Block 06 Storey 0 Wall 0002_1 Door,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    0.5349999999441206,       !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 05 Storey 0 Wall 0002_1 Door,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 05 Storey 0 Wall 0002_1,    !- Building Surface Name
+    Block 05 Storey 0 Wall 0002_1 Door Partner,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    1.150000e-01,             !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+DOOR:INTERZONE,
+    Block 05 Storey 0 Wall 0002_1 Door Partner,    !- Name
+    Medium Furnishings,       !- Construction Name
+    Block 08 Storey 0 Wall 0004_3,    !- Building Surface Name
+    Block 05 Storey 0 Wall 0002_1 Door,    !- Outside Boundary Condition Object
+    1.0,                      !- Multiplier
+    1.150000e-01,             !- Starting X Coordinate
+    3.050000e-02,             !- Starting Z Coordinate
+    0.81,                     !- Length
+    2.03;                     !- Height
+
+AIRFLOWNETWORK:SIMULATIONCONTROL,
+    AFN_SIM_CONTROL,          !- Name
+    MultizoneWithoutDistribution,    !- AirflowNetwork Control
+    SurfaceAverageCalculation,    !- Wind Pressure Coefficient Type
+    OpeningHeight,            !- Height Selection for Local Wind Pressure Calculation
+    LowRise,                  !- Building Type
+    500,                      !- Maximum Number of Iterations
+    ZeroNodePressures,        !- Initialization Type
+    0.0001,                   !- Relative Airflow Convergence Tolerance
+    1e-06,                    !- Absolute Airflow Convergence Tolerance
+    -0.5,                     !- Convergence Acceleration Limit
+    0,                        !- Azimuth Angle of Long Axis of Building
+    1,                        !- Ratio of Building Width Along Short Axis to Width Along Long Axis
+    No,                       !- Height Dependence of External Node Temperature
+    SkylineLU,                !- Solver
+    No,                       !- Allow Unsupported Zone Equipment
+    No;                       !- Do Distribution Duct Sizing Calculation
+
+AIRFLOWNETWORK:MULTIZONE:ZONE,
+    Block 09 Storey 0,        !- Zone Name
+    Constant,                 !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    Standard,                 !- Single Sided Wind Pressure Coefficient Algorithm
+    10;                       !- Facade Width
+
+AIRFLOWNETWORK:MULTIZONE:ZONE,
+    Block 04 Storey 0,        !- Zone Name
+    Constant,                 !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    Standard,                 !- Single Sided Wind Pressure Coefficient Algorithm
+    10;                       !- Facade Width
+
+AIRFLOWNETWORK:MULTIZONE:ZONE,
+    Block 02 Storey 0,        !- Zone Name
+    Constant,                 !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    Standard,                 !- Single Sided Wind Pressure Coefficient Algorithm
+    10;                       !- Facade Width
+
+AIRFLOWNETWORK:MULTIZONE:ZONE,
+    Block 03 Storey 0,        !- Zone Name
+    Constant,                 !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    Standard,                 !- Single Sided Wind Pressure Coefficient Algorithm
+    10;                       !- Facade Width
+
+AIRFLOWNETWORK:MULTIZONE:ZONE,
+    Block 01 Storey 0,        !- Zone Name
+    Constant,                 !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    Standard,                 !- Single Sided Wind Pressure Coefficient Algorithm
+    10;                       !- Facade Width
+
+AIRFLOWNETWORK:MULTIZONE:ZONE,
+    Block 05 Storey 0,        !- Zone Name
+    Constant,                 !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    Standard,                 !- Single Sided Wind Pressure Coefficient Algorithm
+    10;                       !- Facade Width
+
+AIRFLOWNETWORK:MULTIZONE:ZONE,
+    Block 08 Storey 0,        !- Zone Name
+    Constant,                 !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    Standard,                 !- Single Sided Wind Pressure Coefficient Algorithm
+    10;                       !- Facade Width
+
+AIRFLOWNETWORK:MULTIZONE:ZONE,
+    Block 00 Storey 0,        !- Zone Name
+    Constant,                 !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    Standard,                 !- Single Sided Wind Pressure Coefficient Algorithm
+    10;                       !- Facade Width
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 08 Storey 0 Wall 0002_2 Door,    !- Surface Name
+    Block 08 Storey 0 Wall 0002_2 Door SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 03 Storey 0 Wall 0004 Window,    !- Surface Name
+    Block 03 Storey 0 Wall 0004 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 05 Storey 0 Wall 0002_1 Door,    !- Surface Name
+    Block 05 Storey 0 Wall 0002_1 Door SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 04 Storey 0 Wall 0001_1 Door,    !- Surface Name
+    Block 04 Storey 0 Wall 0001_1 Door SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 05 Storey 0 Wall 0004 Window,    !- Surface Name
+    Block 05 Storey 0 Wall 0004 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 08 Storey 0 Wall 0002_3 Door,    !- Surface Name
+    Block 08 Storey 0 Wall 0002_3 Door SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 09 Storey 0 Wall 0003 Window,    !- Surface Name
+    Block 09 Storey 0 Wall 0003 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 09 Storey 0 Wall 0004 Window,    !- Surface Name
+    Block 09 Storey 0 Wall 0004 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 02 Storey 0 Wall 0002 Window,    !- Surface Name
+    Block 02 Storey 0 Wall 0002 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 01 Storey 0 Wall 0002 Window,    !- Surface Name
+    Block 01 Storey 0 Wall 0002 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 03 Storey 0 Wall 0001 Window,    !- Surface Name
+    Block 03 Storey 0 Wall 0001 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 04 Storey 0 Wall 0004 Window,    !- Surface Name
+    Block 04 Storey 0 Wall 0004 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 02 Storey 0 Wall 0001 Window,    !- Surface Name
+    Block 02 Storey 0 Wall 0001 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 03 Storey 0 Wall 0002_2 Door,    !- Surface Name
+    Block 03 Storey 0 Wall 0002_2 Door SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 09 Storey 0 Wall 0001_2,    !- Surface Name
+    Block 09 Storey 0 Wall 0001_2 SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 09 Storey 0 Wall 0002_1,    !- Surface Name
+    Block 09 Storey 0 Wall 0002_1 SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 08 Storey 0 Wall 0002_1,    !- Surface Name
+    Block 08 Storey 0 Wall 0002_1 SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:SURFACE,
+    Block 00 Storey 0 Wall 0002 Window,    !- Surface Name
+    Block 00 Storey 0 Wall 0002 Window SimpleOpening,    !- Leakage Component Name
+    ,                         !- External Node Name
+    1,                        !- WindowDoor Opening Factor or Crack Factor
+    ZoneLevel,                !- Ventilation Control Mode
+    ,                         !- Ventilation Control Zone Temperature Setpoint Schedule Name
+    0,                        !- Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Temperature Difference Lower Limit For Maximum Venting Open Factor
+    100,                      !- Indoor and Outdoor Temperature Difference Upper Limit for Minimum Venting Open Factor
+    0,                        !- Indoor and Outdoor Enthalpy Difference Lower Limit For Maximum Venting Open Factor
+    300000,                   !- Indoor and Outdoor Enthalpy Difference Upper Limit for Minimum Venting Open Factor
+    ,                         !- Venting Availability Schedule Name
+    ,                         !- Occupant Ventilation Control Name
+    PolygonHeight,            !- Equivalent Rectangle Method
+    1;                        !- Equivalent Rectangle Aspect Ratio
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 08 Storey 0 Wall 0002_2 Door SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 03 Storey 0 Wall 0004 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 05 Storey 0 Wall 0002_1 Door SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 04 Storey 0 Wall 0001_1 Door SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 05 Storey 0 Wall 0004 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 08 Storey 0 Wall 0002_3 Door SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 09 Storey 0 Wall 0003 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 09 Storey 0 Wall 0004 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 02 Storey 0 Wall 0002 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 01 Storey 0 Wall 0002 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 03 Storey 0 Wall 0001 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 04 Storey 0 Wall 0004 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 02 Storey 0 Wall 0001 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 03 Storey 0 Wall 0002_2 Door SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 09 Storey 0 Wall 0001_2 SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 09 Storey 0 Wall 0002_1 SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 08 Storey 0 Wall 0002_1 SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+AIRFLOWNETWORK:MULTIZONE:COMPONENT:SIMPLEOPENING,
+    Block 00 Storey 0 Wall 0002 Window SimpleOpening,    !- Name
+    0.001,                    !- Air Mass Flow Coefficient When Opening is Closed
+    0.65,                     !- Air Mass Flow Exponent When Opening is Closed
+    0.0001,                   !- Minimum Density Difference for TwoWay Flow
+    1;                        !- Discharge Coefficient
+
+Output:VariableDictionary,
+    Regular;                  !- Key Field
+
+OUTPUT:SURFACES:DRAWING,
+    DXF,                      !- Report Type
+    Triangulate3DFace;        !- Report Specifications 1
+
+Output:Table:SummaryReports,
+    AllSummary;               !- Report 1 Name
+
+OutputControl:Table:Style,
+    HTML;                     !- Column Separator
+
+Output:Variable,
+    *,                        !- Key Value
+    Site Outdoor Air Drybulb Temperature,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+Output:Variable,
+    *,                        !- Key Value
+    Site Outdoor Air Wetbulb Temperature,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+Output:Variable,
+    *,                        !- Key Value
+    Site Outdoor Air Dewpoint Temperature,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+Output:Variable,
+    *,                        !- Key Value
+    Site Solar Azimuth Angle,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+Output:Variable,
+    *,                        !- Key Value
+    Site Solar Altitude Angle,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+Output:Variable,
+    *,                        !- Key Value
+    Site Direct Solar Radiation Rate per Area,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+Output:Variable,
+    *,                        !- Key Value
+    Site Diffuse Solar Radiation Rate per Area,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Ventilation Volume,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Mixing Volume,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Ventilation Sensible Heat Gain Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Ventilation Sensible Heat Loss Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Ventilation Latent Heat Gain Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Ventilation Latent Heat Loss Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Mixing Sensible Heat Gain Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Mixing Sensible Heat Loss Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Mixing Latent Heat Gain Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Mixing Latent Heat Loss Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Zone Ventilation Air Change Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Node Temperature,     !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Node Total Pressure,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Node Wind Pressure,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Linkage Node 1 to Node 2 Volume Flow Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Linkage Node 2 to Node 1 Volume Flow Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    AFN Surface Venting Window or Door Opening Factor,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Mean Air Temperature,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Air Heat Balance Surface Convection Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Air Heat Balance Interzone Air Transfer Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Air Heat Balance Outdoor Air Transfer Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Air Heat Balance Air Energy Storage Rate,    !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Outdoor Air Wind Speed,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Outdoor Air Wind Direction,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Site Wind Speed,          !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Site Wind Direction,      !- Variable Name
+    Timestep;                 !- Reporting Frequency
+
+OUTPUT:SQLITE,
+    Simple,                   !- Option Type
+    UseOutputControlTableStyle;    !- Unit Conversion for Tabular Data
+
+OUTPUT:DIAGNOSTICS,
+    DisplayAdvancedReportVariables;    !- Key 1
