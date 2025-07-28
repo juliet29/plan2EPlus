@@ -4,8 +4,8 @@ from eppy.geometry.surface import get_an_unit_normal, unit_normal
 from geomeppy.geom.polygons import Polygon, Polygon3D
 from rich import print as rprint
 
-from plan2eplus.helpers.ep_geom_helpers import Coordinate3D
-from plan2eplus.helpers.geometry_interfaces import Domain
+from plan2eplus.geometry.coords import Coordinate3D
+from plan2eplus.geometry.domain import Domain
 
 UNIT_NORMAL_DRN = Literal["X", "Y", "Z"]
 

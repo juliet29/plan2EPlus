@@ -2,7 +2,7 @@ import os
 import logging
 import logging.config
 from dotenv import find_dotenv, load_dotenv
-from plan2eplus.constants import CONFIG_DIR, LOG_DIR
+from plan2eplus.paths import CONFIG_DIR, LOG_DIR
 
 
 # find .env file in parent directory

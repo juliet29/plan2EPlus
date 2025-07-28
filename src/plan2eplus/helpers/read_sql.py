@@ -5,7 +5,7 @@ from typing import Literal, NamedTuple
 from ladybug.sql import SQLiteResult
 from ladybug.datacollection import BaseCollection
 from warnings import warn
-from plan2eplus.constants import DEFAULT_SQL_SUBPATH
+from plan2eplus.paths import DEFAULT_SQL_SUBPATH
 from plan2eplus.helpers.helpers import check_list_has_identical_items
 from rich import print as rprint 
 

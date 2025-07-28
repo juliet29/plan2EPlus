@@ -6,7 +6,7 @@ from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
 from plan2eplus.case_edits.epcase import EneryPlusCaseEditor
-from plan2eplus.constants import PATH_TO_DUMMY_OUTPUTS, MATERIALS_PATH
+from plan2eplus.paths import PATH_TO_DUMMY_OUTPUTS, MATERIALS_PATH
 from rich import print as rprint
 from typing import Literal, TypeVar
 

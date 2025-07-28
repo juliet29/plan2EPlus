@@ -1,6 +1,6 @@
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
-from plan2eplus.helpers.geometry_interfaces import WallNormal
+from plan2eplus.geometry.directions import WallNormal
 from plan2eplus.visuals.idf_name import IDFName, decompose_idf_name
 
 ### for surfaces..

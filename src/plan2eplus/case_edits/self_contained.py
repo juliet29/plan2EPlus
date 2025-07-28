@@ -1,6 +1,6 @@
-from plan2eplus.constants import IDD_PATH, IDF_PATH
+from plan2eplus.paths import IDD_PATH, IDF_PATH
 from plan2eplus.case_edits.extended_idf import ExtendedIDF
-from plan2eplus.helpers.ep_geom_helpers import WallNormal
+from plan2eplus.geometry.directions import WallNormal
 from plan2eplus.plan.local_room_def import RoomDefinition, create_two_room_layout
 from plan2eplus.plan.plan_to_eppy import add_eppy_blocks
 from plan2eplus.subsurfaces.creator import add_subsurfaces_to_case
@@ -10,7 +10,7 @@ from plan2eplus.subsurfaces.interfaces import (
     SubsurfaceObjects,
     NinePointsLocator,
 )
-from plan2eplus.helpers.geometry_interfaces import Dimensions
+from plan2eplus.geometry.range import Dimensions
 
 
 def test_ezcase():

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ..helpers.geometry_interfaces import WallNormal
+from ..geometry.directions import WallNormal
 from ..helpers.helpers import key_from_value, load_data_from_json
 from ..subsurfaces.interfaces import (
     Dimensions,

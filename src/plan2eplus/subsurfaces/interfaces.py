@@ -2,14 +2,15 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Literal, NamedTuple
 
-from plan2eplus.helpers.geometry_interfaces import Dimensions
-from ..helpers.geometry_interfaces import WallNormal
+from plan2eplus.geometry.range import Dimensions
+from ..geometry.directions import WallNormal
 from eppy.bunch_subclass import EpBunch
 
 
 class SubsurfaceObjects(Enum):
     DOOR = 0
     WINDOW = 1
+
 
 # SubsurfaceObjects = Literal["DOOR" | "WINDOW"]
 
@@ -30,7 +31,7 @@ class NinePointsLocator(Enum):
 
 @dataclass
 class SubsurfaceAttributes:
-    object_type: SubsurfaceObjects # TODO whey couldnt this be a literal? 
+    object_type: SubsurfaceObjects  # TODO whey couldnt this be a literal?
     construction: EpBunch | None
     dimensions: Dimensions
     location_in_wall: NinePointsLocator

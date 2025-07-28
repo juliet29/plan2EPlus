@@ -2,9 +2,10 @@ from copy import deepcopy
 
 from eppy.bunch_subclass import EpBunch
 from geomeppy import IDF
+
+from ..geometry.directions import WallNormal
 from ..helpers.ep_geom_helpers import create_domain_for_rectangular_wall
 from ..helpers.ep_helpers import (
-    WallNormal,
     get_zone_name_by_num,
     get_zone_walls_by_zone_num,
 )

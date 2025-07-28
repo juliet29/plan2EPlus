@@ -1,5 +1,9 @@
 from typing import Optional, TypedDict, NamedTuple
-from ..helpers.geometry_interfaces import Domain, Range, Coord
+
+from ..geometry.coords import Coord
+
+from ..geometry.domain import Domain
+from ..geometry.range import Range
 
 from dataclasses import dataclass
 
@@ -42,9 +46,11 @@ class GraphEdgeJSON(TypedDict):
     target: str
     details: DetailsJSON
 
+
 class RoomCoordinates(NamedTuple):
     id: int
     coords: Coord
+
 
 @dataclass
 class RoomFromJSON:
@@ -63,10 +69,11 @@ class RoomFromJSON:
         left, top, width, height = self.convert_numbers()
         return Domain(Range(left, left + width), Range(top - height, top))
 
-    # TODO remove from here.. 
+    # TODO remove from here..
     def create_zone_name(self):
-        return f"0{self.id} `{self.label}`" # TODO - make zero padded.. 
-    # `{self.label}` -> # TODO to not break rest of code, going to break Plan Zones.. 5/31/25 8:17pm 
+        return f"0{self.id} `{self.label}`"  # TODO - make zero padded..
+
+    # `{self.label}` -> # TODO to not break rest of code, going to break Plan Zones.. 5/31/25 8:17pm
 
     def get_coordinates(self):
         left, top, *_ = self.convert_numbers()

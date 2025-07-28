@@ -3,17 +3,17 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from ..constants import IDD_PATH, IDF_PATH, DEFAULT_IDF_NAME
-
-from ..constants import WEATHER_FILE
 from eppy.runner.run_functions import EnergyPlusRunError
 from geomeppy import IDF
 from ladybug.analysisperiod import AnalysisPeriod
 from ladybug.epw import EPW
 from rich import print as rprint
-from typing import NamedTuple
 
-IDF.setiddname(IDD_PATH)
+from plan2eplus.case_edits.default_paths import DEFAULT_IDD, DEFAULT_IDF, WEATHER_FILE
+from plan2eplus.paths import DEFAULT_IDF_NAME
+
+# TODO happens once in a run.. -> how to make this fail quietly? 
+IDF.setiddname(DEFAULT_IDD)
 
 
 def update_idf_location(idf: IDF, epw: EPW):
@@ -60,7 +60,7 @@ class EneryPlusCaseEditor:
 
     def get_idf(self):
         if not self.starting_path:
-            self.idf = IDF(IDF_PATH)
+            self.idf = IDF(DEFAULT_IDF)
         else:
             self.idf = IDF(self.starting_path)
 
@@ -121,9 +121,8 @@ class EneryPlusCaseEditor:
         if not self.analysis_period:
             self.analysis_period = AnalysisPeriod(
                 st_month=7, end_month=7, st_day=1, end_day=1
-            )
+            ) # TODO: move to default AP code.. 
         self.idf = update_idf_run_period(self.idf, self.analysis_period)
-
 
 
 def read_existing_idf(folder_path: Path):

@@ -2,8 +2,14 @@ from itertools import groupby
 from geomeppy import IDF
 from eppy.bunch_subclass import EpBunch
 
+from ..geometry.directions import WallNormal
+
+from ..geometry.coords import Coordinate3D
+
+from ..geometry.domain import Domain
+
 from .ep_helpers import get_zone_walls_by_zone_num, get_zones
-from .geometry_interfaces import Coordinate3D, Domain, Range, WallNormal
+from ..geometry.range import Range
 
 
 def create_total_range(res: list[Domain]):

@@ -7,15 +7,23 @@ from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from rich import print as rprint
 
-from plan2eplus.helpers.ep_constants import DOOR, FLOOR, OUTDOORS, ROOF, WALL, BUILDING_SURFACE, ZONE
-from plan2eplus.helpers.geometry_interfaces import (
-    Domain,
-    MultiDomain,
+from plan2eplus.geometry.directions import WallNormal
+from plan2eplus.geometry.domain import Domain, MultiDomain
+from plan2eplus.helpers.ep_constants import (
+    DOOR,
+    FLOOR,
+    OUTDOORS,
+    ROOF,
+    WALL,
+    BUILDING_SURFACE,
+    ZONE,
+)
+from plan2eplus.helpers.ep_helpers import get_zones
+from plan2eplus.geometry.range import (
     Range,
-    WallNormal,
 )
 from plan2eplus.helpers.helpers import chain_flatten, sort_and_group_objects_dict
-from plan2eplus.plan.interfaces import Coord
+from plan2eplus.geometry.coords import Coord
 from plan2eplus.visuals.idf_name import decompose_idf_name
 from plan2eplus.visuals.projections import (
     compute_unit_normal,
@@ -23,7 +31,7 @@ from plan2eplus.visuals.projections import (
     get_position_along_normal_axis,
 )
 from typing import NamedTuple
-from plan2eplus.custom_exceptions import PlanMismatch
+from plan2eplus.custom_exceptions import PlanMismatchException
 
 
 def get_idfobject_by_name_and_key(idf: IDF, key: str, name: str):
@@ -247,18 +255,18 @@ class Zone(GeometryObject):
         return f"{self.nickname}"
 
 
-def get_zones(idf: IDF) -> list[EpBunch]:
-    return [i for i in idf.idfobjects["ZONE"]]
+# def get_zones(idf: IDF) -> list[EpBunch]:
+#     return [i for i in idf.idfobjects["ZONE"]]
 
 
-class PlanExternalPositions(NamedTuple):
-    NORTH: Coord
-    EAST: Coord
-    SOUTH: Coord
-    WEST: Coord
+# class PlanExternalPositions(NamedTuple):
+#     NORTH: Coord
+#     EAST: Coord
+#     SOUTH: Coord
+#     WEST: Coord
 
-    def __getitem__(self, i):
-        return getattr(self, i)
+#     def __getitem__(self, i):
+#         return getattr(self, i)
 
 
 @dataclass
@@ -267,7 +275,9 @@ class PlanZones:  # can just call Plan..
 
     @property
     def zones(self):
-        return [Zone(obj) for obj in get_zones(self.idf)]
+        return [
+            Zone(obj) for obj in get_zones(self.idf)
+        ]  # TODO replace with ephelpers?
 
     @property
     def zone_dict(self):
@@ -287,25 +297,13 @@ class PlanZones:  # can just call Plan..
         for v in self.zones:
             if v.dname.zone_number == num:
                 return v
-        raise PlanMismatch("Invalid zone number")
+        raise PlanMismatchException("Invalid zone number")
 
     def get_zone_by_plan_name(self, plan_name: str):
         for v in self.zones:
             if v.dname.plan_name_alone == plan_name:
                 return v
-        raise PlanMismatch(f"Name: {plan_name} is not valid")
-
-    # def get_plan_extents(self, PAD_BASE=1.4):
-    #     PAD = PAD_BASE * 1.1
-    #     min_x = min([i.horz_range.min for i in self.domains]) - PAD
-    #     max_x = max([i.horz_range.max for i in self.domains]) + PAD
-    #     min_y = min([i.vert_range.min for i in self.domains]) - PAD
-    #     max_y = max([i.vert_range.max for i in self.domains]) + PAD
-    #     return (min_x, max_x), (min_y, max_y)
-
-    # def get_plan_external_positions(self):
-    #     xs, ys = self.get_plan_extents() # TODO will need a different fx to base on, bc these need to be in the plot also..
-    #     domain = Domain(Range(*xs), Range(*ys))
+        raise PlanMismatchException(f"Name: {plan_name} is not valid")
 
     # TODO all plotting stuff extends the object and goes in a different file
     def plot_zone_domains(self, ax: Axes | None = None):
@@ -320,6 +318,6 @@ class PlanZones:  # can just call Plan..
         for zone in self.zones:
             zone.plot_zone_name(ax)
 
-        # plt.show()
+        plt.show()
 
         return ax

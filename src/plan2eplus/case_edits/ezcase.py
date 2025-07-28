@@ -4,8 +4,8 @@ from pathlib import Path
 from ladybug.analysisperiod import AnalysisPeriod
 from ladybug.epw import EPW
 
-from plan2eplus.constants import PATH_TO_OUTPUT_CASES
-from plan2eplus.constants import PATH_TO_SVG2PLAN_CASES
+from plan2eplus.paths import PATH_TO_OUTPUT_CASES
+from plan2eplus.paths import PATH_TO_SVG2PLAN_CASES
 
 from ..airflow_network.airboundary import add_air_boundaries
 from .epcase import EneryPlusCaseEditor
@@ -43,6 +43,7 @@ def get_path_to_outputs(outputs_dir: str):
 def add_rooms(_idf: IDF, path_to_inputs: Path, plan_name: Optional[str] = None):
     idf = deepcopy(_idf)
     idf = add_eppy_blocks_from_file(idf, path_to_inputs, plan_name)
+
     idf.intersect_match()
     # idf.set_default_constructions()
     return idf
@@ -75,14 +76,17 @@ def get_paths_from_dirs(outputs_dir, inputs_dir):
 
 def finish_creating_ezcase(
     case: EneryPlusCaseEditor,
-    path_to_inputs: Path,
     cons_set_type: CONSTRUCTION_SET_TYPE = "Medium",
+    add_afn=False,
     air_boundaries=False,
+    path_to_inputs: Path | None = None,
 ):
     case.idf = assign_cons_set(case.idf, cons_set_type)
 
-    case.idf = add_airflownetwork(case.idf)
+    if add_afn:
+        case.idf = add_airflownetwork(case.idf)
     if air_boundaries:
+        assert path_to_inputs
         case.idf = add_air_boundaries(case.idf, path_to_inputs)
     case.idf = add_all_output_requests(case.idf)
     case.compare_and_save()
@@ -116,7 +120,7 @@ def create_ezcase(
     case.idf = add_rooms(case.idf, path_to_inputs)
     case.idf = add_subsurfaces(case.idf, path_to_inputs, win_change_data)
 
-    return finish_creating_ezcase(case, path_to_inputs, cons_set_type)
+    return finish_creating_ezcase(case,  cons_set_type) # TODO decice if want AFN or not! => also use the builder pattern!
     # return case
 
 

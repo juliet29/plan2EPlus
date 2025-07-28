@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from ..helpers.geometry_interfaces import Dimensions
-from ..helpers.geometry_interfaces import WallNormal
+from ..geometry.range import Dimensions
+from ..geometry.directions import WallNormal
 from .interfaces import RoomFromJSON
 
 

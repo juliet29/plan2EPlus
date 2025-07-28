@@ -6,6 +6,11 @@ cases/**
 # !cases/graphbem_cali/**/eplusout.sql
 # !cases/graphbem_cali/**/out.idf
 # !cases/graphbem_cali/**/surface_data.csv
+static/_03_models/** 
+!static/_03_models/
+!static/_03_models/**/eplusout.sql
+!static/_03_models/**/out.idf
+
 
 *.html
 
@@ -14,9 +19,12 @@ cases/**
 *.pkl
 
 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 *.pyc
 .log
+*.env
+.env

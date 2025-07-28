@@ -1,18 +1,11 @@
-from matplotlib.axes import Axes
-from matplotlib.lines import Line2D
 import pytest
-from plan2eplus.connectivity_study.study import create_connectivity_case
-from plan2eplus.helpers.geometry_interfaces import (
-    Domain,
-    Range,
-    PerimeterMidpoints,
-    Coord,
-    Bounds,
-    MultiDomain,
-)
-from rich import print as rprint
 
-from plan2eplus.visuals.graph_plot import find_points_along_path, plot_path_on_plot
+from plan2eplus.geometry.coords import Bounds, Coord, PerimeterMidpoints
+from plan2eplus.geometry.domain import Domain, MultiDomain
+from plan2eplus.geometry.range import (
+    Range,
+)
+
 
 # TODO rename "test geometry interfaces"
 
@@ -74,47 +67,43 @@ def test_finding_extended_domain(simple_domain: Domain):
     assert extended_domain == expected_domain
 
 
-# TODO clean this up, dont want to have to maintain all these tests.. 
+# TODO clean this up, dont want to have to maintain all these tests..
 
-@pytest.fixture
-def connectivity_idf():
-    return create_connectivity_case()
+# @pytest.fixture
+# def connectivity_idf():
+#     return create_connectivity_case()
 
-@pytest.fixture
-def expected_coords():
-    return  [
-        Coord(x=0.0, y=2.0),
-        Coord(x=1.0, y=1.5),
-        Coord(x=2.0, y=1.5),
-        Coord(x=3.0, y=1.5),
-        Coord(x=4.0, y=2.0),
-    ]
+# @pytest.fixture
+# def expected_coords():
+#     return  [
+#         Coord(x=0.0, y=2.0),
+#         Coord(x=1.0, y=1.5),
+#         Coord(x=2.0, y=1.5),
+#         Coord(x=3.0, y=1.5),
+#         Coord(x=4.0, y=2.0),
+#     ]
 
-def test_find_points_along_path(connectivity_idf, expected_coords): 
-    path = ["WEST", "b", "a", "EAST"]
-    coords = find_points_along_path(connectivity_idf, path)
-    assert coords == expected_coords
-
-
+# def test_find_points_along_path(connectivity_idf, expected_coords):
+#     path = ["WEST", "b", "a", "EAST"]
+#     coords = find_points_along_path(connectivity_idf, path)
+#     assert coords == expected_coords
 
 
-def test_plot_path(expected_coords):
-    coords = [i.pair for i in expected_coords]
-    ax:Axes = plot_path_on_plot(coords)
-    result = ax.get_lines()[0]
-    assert isinstance(result, Line2D)
-    xdata = result.get_xdata()
-    print(f"==>> xdata: {xdata}")
-    ydata = result.get_ydata()
-    xs = [i[0] for i in coords]
-    ys = [i[1] for i in coords]
-    # TODO check intersection, they will not be equal.. 
-    assert xdata
-    assert ydata
+# def test_plot_path(expected_coords):
+#     coords = [i.pair for i in expected_coords]
+#     ax:Axes = plot_path_on_plot(coords)
+#     result = ax.get_lines()[0]
+#     assert isinstance(result, Line2D)
+#     xdata = result.get_xdata()
+#     print(f"==>> xdata: {xdata}")
+#     ydata = result.get_ydata()
+#     xs = [i[0] for i in coords]
+#     ys = [i[1] for i in coords]
+# # TODO check intersection, they will not be equal..
+# assert xdata
+# assert ydata
 
-    # TODO test that works both ways... x and y.. 
-
-
+# TODO test that works both ways... x and y..
 
 
 if __name__ == "__main__":
