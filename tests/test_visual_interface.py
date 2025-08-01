@@ -1,10 +1,6 @@
-from plan2eplus.paths import DEFAULT_IDF_NAME, PATH_TO_DUMMY_OUTPUTS
-from plan2eplus.case_edits.epcase import read_existing_idf
 from plan2eplus.geometry.directions import WallNormal
 from plan2eplus.helpers.ep_helpers import get_zones
 from plan2eplus.visuals.interfaces import Surface, Zone
-from plan2eplus.visuals.plot import plot_zone_domains
-from plan2eplus.paths import path_class
 
 
 def test_create_idf_from_saved_data(defaults, test_case):
